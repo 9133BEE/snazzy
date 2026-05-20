@@ -276,6 +276,9 @@ mark{background:#fef3c7;color:#92400e;border-radius:3px;padding:0 2px;font-weigh
 .i-rand-info{font-size:10px;color:var(--sub);margin-top:3px;text-align:center}
 .card.saving{border-color:var(--a)!important;background:var(--al)!important;transition:none}
 .saved-badge{position:absolute;bottom:6px;right:8px;font-size:9px;color:var(--a);font-weight:700}
+.rgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:4px}
+.rtag{font-size:11px;padding:4px 6px;border:1px solid var(--bd);border-radius:5px;cursor:pointer;color:var(--tx);background:var(--s);transition:var(--transition);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3}
+.rtag:hover{border-color:var(--ab);background:var(--al);color:var(--a);transform:translateY(-1px)}
 </style><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script></head><body>
 <header>
   <div class="logo">M</div>
@@ -520,25 +523,23 @@ function saveTag(v,el){
   buildICats();
 }
 function randomTags(){
-  const catMap={};
-  D.forEach(d=>{if(!catMap[d.c])catMap[d.c]=[];catMap[d.c].push(d);});
-  const avail=Object.entries(catMap).map(([cat,tags])=>[cat,tags.filter(d=>!savedTags.has(d.cp))]).filter(([,tags])=>tags.length>=3);
   const shuffle=arr=>{for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;};
+  // Deduplicate D by cp first, then exclude already saved tags
+  const seenCp=new Set();
+  const dedupedD=D.filter(d=>{if(seenCp.has(d.cp))return false;seenCp.add(d.cp);return true;});
+  const catMap={};
+  dedupedD.forEach(d=>{if(!catMap[d.c])catMap[d.c]=[];catMap[d.c].push(d);});
+  const avail=Object.entries(catMap).map(([cat,tags])=>[cat,tags.filter(d=>!savedTags.has(d.cp))]).filter(([,tags])=>tags.length>=3);
   const top=shuffle([...avail]).slice(0,20);
   const ri2=document.getElementById('randInfo'),out=document.getElementById('io');
   if(!top.length){if(ri2)ri2.textContent='所有標籤都已儲存！';return;}
-  if(ri2)ri2.textContent='已從 '+top.length+' 個分類各取 10 個';
+  if(ri2)ri2.textContent='隨機抽 '+top.length+' 個分類各 20 個';
   _selCat='';document.querySelectorAll('.i-cat-item').forEach(e=>e.classList.remove('active'));
   const allBtn=document.getElementById('iCatAll');if(allBtn)allBtn.classList.add('active');
   out.innerHTML=top.map(([cat,tags])=>{
-    const picks=shuffle([...tags]).slice(0,10);
-    return '<div class="sec"><div class="sh"><div class="st">'+cat+'</div><div class="sc">'+picks.length+' 個（隨機）</div><div class="ln"></div></div><div class="grid">'+
-    picks.map(d=>{
-      const savedBadge='';
-      const spBadge=d.sp==='rich'?'<div class="tc tc-rich">有錢興趣</div>':d.sp==='young'?'<div class="tc tc-young">年輕興趣</div>':d.sp==='hidden'?'<div class="tc tc-hidden">隱藏興趣</div>':d.sp==='re'?'<div class="tc tc-re">房地產興趣</div>':d.sp==='tech'?'<div class="tc tc-tech">科技業興趣</div>':d.sp==='civil'?'<div class="tc tc-civil">公務員興趣</div>':'';
-      const zhCatR=d.c&&d.c!=='其他'?(d.z?d.z+' / '+d.c:d.c):(d.z||'');
-      return '<div class="card" onclick="cardClick(this)" data-cp="'+d.cp.replace(/"/g,'&quot;')+'"><span class="cb">複製</span><div class="te">'+d.cp+'</div>'+(zhCatR?'<div class="tz">'+zhCatR+'</div>':'')+spBadge+savedBadge+'</div>';
-    }).join('')+'</div></div>';
+    const picks=shuffle([...tags]).slice(0,20);
+    return '<div class="sec"><div class="sh"><div class="st">'+cat+'</div><div class="sc">'+picks.length+' 個（隨機）</div><div class="ln"></div></div><div class="rgrid">'+
+    picks.map(d=>'<div class="rtag" onclick="ct(\''+d.cp.replace(/'/g,"\\'")+'\')" title="'+d.cp+'">'+d.cp+'</div>').join('')+'</div></div>';
   }).join('');
   const qEl=document.getElementById('q');const ciEl=document.getElementById('ci');
   if(qEl)qEl.value='';if(ciEl)ciEl.textContent='';
@@ -555,12 +556,15 @@ function ri(){
     const qOk=!q||d.cp.toLowerCase().includes(q)||(d.z&&d.z.toLowerCase().includes(q))||d.c.toLowerCase().includes(q);
     return cOk&&qOk;
   });
-  const ciEl=document.getElementById('ci');if(ciEl)ciEl.textContent='共 '+f.length+' 筆';
-  if(!f.length){out.innerHTML='<div class="empty">沒有符合的標籤</div>';return;}
-  _riAll=f;_riLimit=500;
-  const show=f.slice(0,_riLimit),g={};
+  // Deduplicate by cp (same English tag may appear in multiple categories)
+  const _seenCp=new Set();
+  const fUniq=f.filter(d=>{if(_seenCp.has(d.cp))return false;_seenCp.add(d.cp);return true;});
+  const ciEl=document.getElementById('ci');if(ciEl)ciEl.textContent='共 '+fUniq.length+' 筆';
+  if(!fUniq.length){out.innerHTML='<div class="empty">沒有符合的標籤</div>';return;}
+  _riAll=fUniq;_riLimit=500;
+  const show=fUniq.slice(0,_riLimit),g={};
   show.forEach(d=>{if(!g[d.c])g[d.c]=[];g[d.c].push(d);});
-  const more=f.length>_riLimit?'<div style="text-align:center;padding:20px"><button onclick="loadMoreRi()" style="padding:9px 28px;background:var(--a);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">顯示更多（還有 '+(f.length-_riLimit)+' 筆）</button></div>':'';
+  const more=fUniq.length>_riLimit?'<div style="text-align:center;padding:20px"><button onclick="loadMoreRi()" style="padding:9px 28px;background:var(--a);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">顯示更多（還有 '+(f.length-_riLimit)+' 筆）</button></div>':'';
   out.innerHTML=Object.entries(g).sort((a,b)=>b[1].length-a[1].length).map(([c,items])=>
     '<div class="sec"><div class="sh"><div class="st">'+c+'</div><div class="sc">'+items.length+' 個</div><div class="ln"></div></div><div class="grid">'+
     items.map(d=>{
