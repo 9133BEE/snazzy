@@ -498,16 +498,8 @@ function selectCat(el,cat){
   ri();
 }
 
-function cardClick(el){
-  const v=el.getAttribute('data-cp');
-  clearTimeout(el._ct);
-  el._ct=setTimeout(()=>ct(v),250);
-}
-function cardDblClick(el){
-  clearTimeout(el._ct);
-  const v=el.getAttribute('data-cp');
-  saveTag(v,el);
-}
+function cardClick(el){ct(el.getAttribute('data-cp'));}
+function cardDblClick(el){saveTag(el.getAttribute('data-cp'),el);}
 
 function saveTag(v,el){
   const t=document.getElementById('toast');
