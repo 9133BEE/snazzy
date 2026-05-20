@@ -1,0 +1,675 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meta 受眾包工具</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+/* ============================================================
+   META AUDIENCE TOOL — Redesigned CSS (Notion / Linear aesthetic)
+   Primary: #2563eb  |  Dark header: #0f172a
+   ============================================================ */
+
+/* --- Reset & Base ----------------------------------------- */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Microsoft JhengHei","PingFang TC","Segoe UI",sans-serif;background:#f1f5f9;color:#1e293b;font-size:13px;line-height:1.5;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* --- Header ---------------------------------------------- */
+.hdr{background:#0f172a;border-bottom:1px solid #1e293b;padding:0 24px;height:46px;flex-shrink:0;display:flex;align-items:center;gap:10px}
+.hdr h1{font-size:13px;font-weight:600;color:#f1f5f9;letter-spacing:0.02em}
+.hdr h1::before{content:"";display:inline-block;width:8px;height:8px;background:linear-gradient(135deg,#3b82f6,#6366f1);border-radius:2px;margin-right:8px;vertical-align:middle}
+
+/* --- Tab Bar --------------------------------------------- */
+.tabs{background:#0f172a;border-bottom:1px solid #1e293b;padding:0 24px;display:flex;flex-shrink:0;gap:2px}
+.tab{padding:10px 16px;cursor:pointer;border-bottom:2px solid transparent;color:#94a3b8;font-size:12px;font-weight:500;user-select:none;transition:color 0.15s,border-color 0.15s;letter-spacing:0.01em}
+.tab:hover{color:#cbd5e1}
+.tab.active{color:#60a5fa;border-bottom-color:#3b82f6}
+
+/* --- Page Shell ------------------------------------------ */
+.page{display:none;flex:1;overflow:hidden}
+.page.active{display:flex}
+
+/* --- Form Controls --------------------------------------- */
+select,input[type=text],input[type=number],textarea{border:1px solid #cbd5e1;border-radius:6px;padding:0 10px;height:32px;font-size:12px;color:#1e293b;background:#fff;font-family:inherit;transition:border-color 0.15s,box-shadow 0.15s}
+select:focus,input:focus,textarea:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.12)}
+textarea{height:auto;padding:8px 10px;resize:vertical}
+
+/* --- Buttons --------------------------------------------- */
+.btn{height:32px;padding:0 14px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:500;white-space:nowrap;transition:all 0.15s;font-family:inherit}
+.btn-blue{background:#2563eb;color:#fff;box-shadow:0 1px 2px rgba(37,99,235,0.25)}
+.btn-blue:hover{background:#1d4ed8;box-shadow:0 2px 6px rgba(37,99,235,0.35)}
+.btn-blue:disabled{background:#93c5fd;box-shadow:none;cursor:default;opacity:0.7}
+.btn-gray{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+.btn-gray:hover{background:#e2e8f0;color:#1e293b}
+.btn-sm{height:28px;padding:0 10px;font-size:11px}
+
+/* --- Tag Chips ------------------------------------------- */
+.tag{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 11px;min-height:46px;border:1px solid #e2e8f0;border-radius:10px;background:#fff;cursor:pointer;user-select:none;transition:all 0.18s;text-align:center;gap:3px;box-shadow:0 1px 2px rgba(0,0,0,0.04)}
+.tag:hover{background:#eff6ff;border-color:#93c5fd;box-shadow:0 2px 8px rgba(59,130,246,0.12);transform:translateY(-1px)}
+.tag:hover .tag-en{color:#2563eb}
+.tag:hover .tag-zh{color:#60a5fa}
+.tag.copied{background:#f0fdf4!important;border-color:#86efac!important;box-shadow:0 2px 8px rgba(34,197,94,0.12)!important}
+.tag.copied .tag-en{color:#16a34a!important}
+.tag-en{font-size:11.5px;font-weight:600;color:#0f172a;line-height:1.3;word-break:break-word}
+.tag-zh{font-size:10px;color:#94a3b8;line-height:1.2;word-break:break-word;font-weight:400}
+
+/* --- Badges ---------------------------------------------- */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:600;white-space:nowrap;letter-spacing:0.01em}
+.bn{background:#f3e8ff;color:#7c3aed}
+.bm{background:#dcfce7;color:#15803d}
+.bf{background:#dbeafe;color:#1d4ed8}
+.bi{background:#fef9c3;color:#92400e}
+.bo{background:#fee2e2;color:#b91c1c}
+
+/* --- Toast ----------------------------------------------- */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0f172a;color:#f1f5f9;padding:7px 16px;border-radius:20px;font-size:12px;opacity:0;transition:opacity 0.2s;pointer-events:none;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.25);border:1px solid #1e293b}
+.toast.show{opacity:1}
+
+/* --- Spinner --------------------------------------------- */
+.spin{display:inline-block;width:12px;height:12px;border:2px solid #e2e8f0;border-top-color:#3b82f6;border-radius:50%;animation:sp .6s linear infinite;vertical-align:middle;margin-right:5px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* --- Empty State ----------------------------------------- */
+.empty{display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:12px;padding:40px;gap:6px}
+.empty::before{content:"—";color:#cbd5e1}
+
+/* ============================================================
+   PAGE 1 — Tag Library
+   ============================================================ */
+#page-tags{flex-direction:row}
+.p1-side{width:200px;flex-shrink:0;padding:16px 14px;background:#ffffff;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;gap:8px;overflow-y:auto;box-shadow:inset -1px 0 0 #f1f5f9}
+.p1-side select,.p1-side input{width:100%}
+.p1-side-lbl{font-size:10px;color:#64748b;font-weight:700;margin-top:8px;letter-spacing:0.07em;text-transform:uppercase}
+.p1-main{flex:1;overflow-y:auto;padding:18px 20px;background:#f8fafc}
+.cat-blk{margin-bottom:24px}
+.cat-ttl{color:#1e40af;font-size:11.5px;font-weight:700;margin-bottom:10px;padding:6px 10px 6px 12px;background:linear-gradient(90deg,#eff6ff,#f8fafc);display:flex;align-items:center;gap:8px;border-radius:8px;border:1px solid #dbeafe}
+.cat-cnt{background:#2563eb;color:#fff;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;margin-left:auto;letter-spacing:0.02em}
+.tag-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:7px;align-items:stretch}
+
+/* ============================================================
+   PAGE 2 — Best Audiences
+   ============================================================ */
+#page-best{flex-direction:column}
+.p2-bar{padding:10px 20px;background:#ffffff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.p2-stats{font-size:12px;color:#94a3b8;margin-left:auto}
+.p2-stats strong{color:#2563eb;font-weight:600}
+.p2-body{flex:1;overflow-y:auto;padding:16px 20px;background:#f8fafc}
+.aud-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;align-items:stretch}
+.aud-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,0.05);transition:box-shadow 0.18s,transform 0.18s}
+.aud-card:hover{box-shadow:0 4px 14px rgba(0,0,0,0.09);transform:translateY(-1px)}
+.aud-hd{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #f1f5f9;flex-wrap:wrap;background:linear-gradient(180deg,#f8fafc,#ffffff)}
+.aud-ta{font-weight:700;color:#0f172a;font-size:12px;flex:1;min-width:80px}
+.aud-tgs{padding:10px 14px}
+.aud-tg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px}
+
+/* ============================================================
+   PAGE 3 — AI Audience Generator
+   ============================================================ */
+#page-ai{flex-direction:row;justify-content:center;overflow-y:auto;align-items:flex-start}
+.p3-left{width:350px;flex-shrink:0;padding:14px;background:#ffffff;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;gap:12px;min-height:100%;box-shadow:1px 0 0 #f1f5f9}
+.p3-right{flex:1;max-width:750px;padding:14px;display:flex;flex-direction:column;gap:12px;background:#f8fafc}
+.p3-sec{background:#ffffff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.p3-sh{padding:9px 13px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,#f8fafc,#ffffff)}
+.p3-st{font-size:11.5px;font-weight:700;color:#0f172a;letter-spacing:0.01em}
+.p3-sb{padding:12px 13px}
+.pf{margin-bottom:10px}
+.pf label{display:block;font-size:11px;color:#64748b;margin-bottom:4px;font-weight:600;letter-spacing:0.01em}
+.pf input,.pf select,.pf textarea{width:100%}
+.price-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.price-row input{flex:1;min-width:0}
+.price-row span{color:#94a3b8;flex-shrink:0;font-size:12px}
+#leafletMap{height:195px;border-radius:8px;margin-top:8px;z-index:1;border:1px solid #e2e8f0}
+.loc-lbl{font-size:11px;color:#94a3b8;margin-top:5px;min-height:15px}
+.ratio-row{display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid #f1f5f9}
+.ratio-row:last-child{border-bottom:none}
+.rc{width:14px;height:14px;cursor:pointer;flex-shrink:0;accent-color:#2563eb}
+.rn{flex:1;font-size:12px;color:#2563eb;font-weight:600;cursor:pointer}
+.rn:hover{color:#1d4ed8}
+.rp{width:50px;text-align:right;height:28px;font-size:12px}
+.rpct{font-size:12px;color:#94a3b8;flex-shrink:0}
+.rtot{font-size:11px;text-align:right;margin-top:6px;font-weight:600;padding:4px 0}
+.rtot.ok{color:#16a34a}
+.rtot.warn{color:#dc2626}
+.rdet{padding:4px 0 2px 21px;display:none;flex-wrap:wrap;gap:4px}
+.rdet.open{display:flex}
+.rmtag{font-size:11px;padding:2px 8px;border:1px solid #e2e8f0;border-radius:4px;cursor:pointer;user-select:none;background:#f8fafc;color:#475569;transition:all 0.12s}
+.rmtag:hover{background:#eff6ff;border-color:#bfdbfe}
+.rmtag.sel{background:#dbeafe;border-color:#93c5fd;color:#1d4ed8;font-weight:600}
+
+/* --- Output Cards ---------------------------------------- */
+.out-card{background:#ffffff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
+.out-ch{padding:10px 14px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,#f8fafc,#ffffff)}
+.out-ct{font-size:12px;font-weight:700;color:#0f172a;letter-spacing:0.01em}
+.out-cb{padding:13px 14px}
+.ana-txt{font-size:12px;color:#334155;line-height:1.85;white-space:pre-wrap}
+.gen-desc{font-size:12px;color:#475569;line-height:1.75;background:#f8fafc;border-radius:6px;padding:10px 12px;margin-bottom:12px;border:1px solid #f1f5f9}
+.gen-loc{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:12px}
+.gen-loc:last-child{border-bottom:none}
+.gen-loc-n{width:20px;height:20px;background:linear-gradient(135deg,#2563eb,#6366f1);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;box-shadow:0 1px 3px rgba(37,99,235,0.3)}
+.gen-loc-name{font-weight:600;color:#0f172a}
+.gen-loc-why{color:#94a3b8;font-size:11px;margin-top:2px}
+.gen-tg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:6px;margin-bottom:12px}
+.perf-box{border-radius:8px;padding:10px 13px;display:flex;align-items:flex-start;gap:10px;margin-top:12px;border:1px solid transparent}
+.perf-box.good{background:#f0fdf4;border-color:#bbf7d0}
+.perf-box.ok{background:#fefce8;border-color:#fde68a}
+.perf-box.bad{background:#fff1f2;border-color:#fecdd3}
+.prat{font-size:24px;font-weight:800;flex-shrink:0;line-height:1}
+.prat.good{color:#16a34a}
+.prat.ok{color:#d97706}
+.prat.bad{color:#dc2626}
+.pbody{flex:1}
+.pscore{font-size:11px;color:#64748b;margin-bottom:3px;font-weight:500}
+.preason{font-size:12px;color:#334155;line-height:1.6}
+.pcpc{font-size:11px;color:#94a3b8;margin-top:4px}
+.err{color:#dc2626;font-size:11px;min-height:14px;margin-top:3px}
+.locs-hdr{font-size:11px;color:#94a3b8;font-weight:600;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<div class="hdr"><h1>Meta 受眾包工具</h1></div>
+<div class="tabs">
+  <div class="tab active" data-page="tags">受眾標籤庫</div>
+  <div class="tab" data-page="best">優效受眾包</div>
+  <div class="tab" data-page="ai">智能生成受眾</div>
+</div>
+<div class="page active" id="page-tags">
+  <div class="p1-side">
+    <div class="p1-side-lbl">分類</div>
+    <select id="catSel" onchange="renderP1()"><optgroup label="&#x2605; &#x7CBE;&#x9078;&#x5206;&#x985E;"><option value="pin_rich">有錢興趣 (Wealthy Interests) (28)</option><option value="pin_stock">股市期貨 (Stocks & Futures) (27)</option><option value="pin_senior">長輩興趣 (Senior Interests) (24)</option><option value="pin_youth">年輕人興趣 (Youth Interests) (25)</option><option value="pin_tech">科技業興趣 (Tech Industry) (26)</option><option value="pin_gov">公務員興趣 (Civil Servant) (19)</option><option value="pin_re">房地產興趣 (Real Estate) (30)</option></optgroup><optgroup label="&#x25A0; &#x6240;&#x6709;&#x5206;&#x985E;"><option value="" selected>-- &#x5168;&#x90E8;&#x985E;&#x5225; --</option><option value="re">Real Estate (房地產) (37)</option><option value="invest">Investment (投資理財) (47)</option><option value="rich">Luxury Wealth (高端消費) (51)</option><option value="home">Home Living (居家生活) (62)</option><option value="food">Food Dining (美食餐飲) (89)</option><option value="travel">Travel Tourism (旅遊觀光) (53)</option><option value="tech">Technology (科技數位) (73)</option><option value="sports">Sports Health (運動健康) (38)</option><option value="education">Education (教育學習) (43)</option><option value="business">Business Marketing (商業行銷) (72)</option><option value="media">Media Entertainment (媒體娛樂) (48)</option><option value="gov">Government Public (政府公共) (25)</option><option value="insurance">Finance Insurance (金融保險) (5)</option><option value="industry">Industry Manufacturing (工業製造) (43)</option><option value="beauty">Fashion Beauty (時尚美容) (57)</option><option value="auto">Automotive (汽車交通) (36)</option><option value="medical">Health Medical (醫療健康) (29)</option><option value="agri">Agriculture Rural (農業農村) (25)</option><option value="family">Family Wedding (家庭婚姻) (40)</option><option value="youth">Youth Lifestyle (年輕族群) (9)</option><option value="shopping">Shopping Deals (購物優惠) (30)</option><option value="arts">Arts Design (藝術設計) (35)</option><option value="gaming">Gaming E-sports (遊戲電競) (24)</option><option value="pets">Pets Animals (寵物動物) (18)</option><option value="engineering">Engineering Science (工程科學) (25)</option><option value="craft">Crafts DIY (手工藝) (11)</option><option value="community">Community Non-profit (社區公益) (5)</option><option value="corporate">Corporate Executive (企業高管) (27)</option><option value="leisure">Leisure Outdoor (休閒戶外) (27)</option><option value="finance">Banking Payments (銀行支付) (25)</option></optgroup></select>
+    <div class="p1-side-lbl" style="margin-top:4px">搜尋</div>
+    <input type="text" id="tagQ" placeholder="關鍵字…">
+    <div class="p1-side-lbl" id="sideInfo" style="margin-top:8px;color:#1a5fc8"></div>
+  </div>
+  <div class="p1-main" id="p1main"><div class="empty">請選擇分類</div></div>
+</div>
+<div class="page" id="page-best">
+  <div class="p2-bar">
+    <select id="projSel" style="width:180px"><option value="">全部專案</option></select>
+    <input type="text" id="audQ" placeholder="搜尋受眾或興趣…" style="width:210px">
+    <div class="p2-stats" id="p2stats"></div>
+  </div>
+  <div class="p2-body"><div class="aud-grid" id="audList"></div></div>
+</div>
+<div class="page" id="page-ai">
+  <div class="p3-left">
+    <div class="p3-sec">
+      <div class="p3-sh"><span class="p3-st">建案總價</span></div>
+      <div class="p3-sb">
+        <div class="price-row">
+          <input type="number" id="priceMin" placeholder="最低" min="0"><span>萬</span><span>—</span>
+          <input type="number" id="priceMax" placeholder="最高" min="0"><span>萬</span>
+        </div>
+        <div class="price-row">
+          <span style="color:#888">或單坪</span>
+          <input type="number" id="pricePing" placeholder="單坪" min="0" style="width:80px"><span>萬</span>
+        </div>
+      </div>
+    </div>
+    <div class="p3-sec">
+      <div class="p3-sh"><span class="p3-st">地點</span></div>
+      <div class="p3-sb" style="padding-bottom:10px">
+        <div class="pf" style="margin-bottom:6px">
+          <label>輸入地址（或直接點地圖釘選）</label>
+          <div style="display:flex;gap:5px">
+            <input type="text" id="locInput" placeholder="例：台中市七期重劃區" style="flex:1">
+            <button class="btn btn-gray btn-sm" onclick="searchLoc()">定位</button>
+          </div>
+          <div class="loc-lbl" id="locLbl"></div>
+        </div>
+        <div id="leafletMap"></div>
+      </div>
+    </div>
+    <div class="p3-sec">
+      <div class="p3-sh">
+        <span class="p3-st">興趣占比</span>
+        <button class="btn btn-blue btn-sm" onclick="aiPickRatios()">AI智能選</button>
+      </div>
+      <div class="p3-sb">
+        <div id="ratioList"></div>
+        <div class="rtot" id="ratioTot"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:7px;padding:2px 0">
+      <button class="btn btn-gray" style="flex:1" onclick="doAnalyze()">分析建案</button>
+      <button class="btn btn-blue" style="flex:1" onclick="doGenerate()">智能生成受眾</button>
+    </div>
+    <div class="err" id="p3err"></div>
+  </div>
+  <div class="p3-right">
+    <div class="out-card" id="anaCard" style="display:none">
+      <div class="out-ch"><span class="out-ct">建案分析</span><span id="anaSpin"></span></div>
+      <div class="out-cb"><div class="ana-txt" id="anaTxt"></div></div>
+    </div>
+    <div class="out-card" id="genCard" style="display:none">
+      <div class="out-ch"><span class="out-ct">智能生成受眾包</span><span id="genSpin"></span></div>
+      <div class="out-cb" id="genBody"></div>
+    </div>
+    <div class="empty" id="p3hint">填寫左側資訊後，點擊「分析建案」或「智能生成受眾」</div>
+  </div>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>const AUD=[{"ta":"30-60 公務員 教職","project":"晴山白里","interest":"廚房（家居和園藝用品）、閱讀（傳播）、園藝（戶外活動）、親子教育（兒童和親子教育）、居家裝修（家居和園藝用品）、591房屋交易網、幼兒教育（小學和中學教育）、教育（社會觀念）、大自然（科學）、自行車（體育運動）、書籍（媒體刊物）、家庭（社會觀念）、房地產（產業）、烹飪（美食和餐飲）、質感設計","type":"訊息"},{"ta":"35-65 開店 投資","project":"錢連","interest":"被動收入（商業與財務）、房地產投資（投資）、財富（經濟）、不動產（房地產）、公司、收入（商業與財務）、企業家（商業與財務）、商業（商業與財務）、獨資企業（商業與財務）、加盟連鎖（行銷）、新創公司（商業與財務）、居家事業（商業與財務）","type":"訊息"},{"ta":"30-65 彰化 國道1沿線 工業 置產 、20名單","project":"新都峰","interest":"加工出口工廠、製造業（產業）、食品產業、紡織工業、投資（商業與財務）、房地產（產業）、投資報酬率（投資）、批發（零售）、新聞媒體（新聞服務）、時事（政治）、網路購物（零售）、個人理財（銀行業）","type":"名單"},{"ta":"28-60 科技工業 賺錢 、58訊息","project":"大興家園","interest":"金錢（貨幣）、財富（經濟）、投資（商業與財務）、收入（商業與財務）、汽車（交通工具）、電子商務（零售）、股票（投資）、羽球 (球拍類運動)、酒精飲品（美食和餐飲）、房地產（產業）、房屋（房地產）、591房屋交易網、樂屋網","type":"訊息"},{"ta":"30-55 教職員 休閒 、16訊息","project":"大興家園","interest":"閱讀（傳播）、書籍（媒體刊物）、廚房（家居和園藝用品）、教育（社會觀念）、大自然（科學）、家庭（社會觀念）、烹飪（美食和餐飲）、學區、旅遊（產業）、休閒活動（休閒）、假期（活動）、房地產（產業）、591房屋交易網、樂屋網","type":"訊息"},{"ta":"30-64 高知識 財經","project":"松恩頌子鳥","interest":"學術期刊、學術研討會、研究、展覽館、高等教育（教育）、教育（社會觀念）、投資（商業與財務）、新聞播報（新聞服務）、大眾媒體（娛樂與媒體）、財經（商業與財務）、房屋（房地產）、591房屋交易網、行業類別：健康照護與醫療服務、教育和圖書館","type":"名單"},{"ta":"30-60 科技新貴 旅遊","project":"松恩頌子鳥","interest":"高科技（電腦和電子產品）、智慧科技 (消費電子產品)、人工智慧（計算）、大數據 (科學)、新興技術（科學）、旅遊（旅遊觀光）、飯店（住宿）、http://booking.com/（旅遊觀光業）、旅遊網站（網站）、http://hotels.com/（住宿）、Trivago、房地產（產業）、房屋（房地產）、免稅商店","type":"名單"},{"ta":"35-60 / 清水 神岡 潭子 / 藍領+日用品","project":"中科峇里島17","interest":"技術員、工廠（製造業）、加工出口工廠、製造業（產業）、物流（商業與財務）、保險（商業與財務）、保單（保險）、家庭（社會觀念）、超市（食品零售業者）、量販店（食品零售業者）、家樂福、居家裝修（家居和園藝用品）、五金行（零售業者）、房地產（產業）、591房屋交易網","type":"訊息"},{"ta":"28-55 金融+運動","project":"光華盛璟","interest":"豪華轎車（交通工具）、收入（商業與財務）、股票（投資）、金錢（貨幣）、數位貨幣（貨幣）、股票市場（投資）、體育、運動（體育運動）、跑步（體育運動）、財富（經濟）、外匯市場（貨幣）、戶外休閒活動（戶外活動）、房屋（房地產）、591房屋交易網","type":"訊息"},{"ta":"30-55 / 台3 74沿/ 新婚上班族","project":"大漁樂芙","interest":"訂婚（婚禮）、求婚（婚禮）、婚禮（社會觀念）、旅遊（旅遊觀光）、Booking.com（旅遊觀光業）、旅遊網站（網站）、Trivago、Hotels.com（住宿）、咖啡（美食和餐飲）、星巴克（咖啡）、宜家家居（零售業者）、家電（消費電子產品）、591房屋交易網、房屋廣告和入口網站 (網站)","type":"訊息"},{"ta":"65-65 教職員+房產興趣","project":"中科峇里島17","interest":"高等教育（教育）、新聞媒體（新聞服務）、書籍（媒體刊物）、文化（社會觀念）、財經（商業與財務）、電視台、教育（社會觀念）、圖書館、房屋（房地產）、公寓（房地產）、房地產投資（投資）、591房屋交易網、房屋廣告和入口網站 (網站), 行業類別：教育和圖書館","type":"訊息"},{"ta":"30-60 傳產 公務員 、11訊息","project":"新都峰","interest":"住家修繕（居家裝修）、保養、維修和操作（建築業）、製造業（產業）、物流（商業與財務）、工廠（製造業）、機械加工、工具機 (興建和維修)、批發（零售）、機器、經銷（商業）、房屋（房地產）、591房屋交易網、上班族（流行文化）、社群媒體（網路媒體）、行業類別：行政服務、教育和圖書館、安裝與維修服務、運輸與搬運","type":"訊息"},{"ta":"30-60 設計+休閒","project":"光華盛璟","interest":"居家裝修（家居和園藝用品）、室內設計（設計）、設計（設計）、住家修繕（居家裝修）、平面設計（視覺藝術）、網站設計（網站）、時尚設計（設計）、服裝（服飾）、時尚配件（飾品配件）、休閒娛樂（社會觀念）、休閒遊戲（電玩遊戲）、網路購物（零售）、百貨公司（零售）、房屋（房地產）、房屋廣告和入口網站 (網站) 27-60 -室內設計（設計）、房屋（房地產）、平面設計（視覺藝術）、百貨公司（零售）、居家裝修（家居和園藝用品）、時尚設計（設計）、網路購物（零售）、時尚配件（飾品配件）、休閒娛樂（社會觀念）、網站設計（網站）、服裝（服飾）、設計（設計）、房屋廣告和入口網站 (網站)、休閒餐廳 (餐廳)、美容（社會觀念）、居家事業（商業與財務）","type":"訊息"},{"ta":"30-60 純房產興趣","project":"大漁樂芙","interest":"房屋（房地產）、公寓大樓（房地產）、住宅區（房地產）、起步房（房地產）、591房屋交易網、房屋廣告和入口網站 (網站)、房地產經濟學 (經濟)、租賃（房地產）、由擁有者出售 (房地產)","type":"訊息"},{"ta":"30-55 軍公教 、80","project":"至善人本","interest":"學習（教育）、書籍（媒體刊物）、新聞媒體（新聞服務）、學校（教育）、社區議題（法律與政府）、家庭（社會觀念）、均衡飲食（個人護理）、健康和保健（個人護理）、社群媒體（網路媒體）、政府機關概念和作法 (法律和政府)、行業類別：行政服務、保護服務、教育和圖書館、社區和社會服務、軍事（全球）","type":"訊息"},{"ta":"28-60 科技質感興趣 、117","project":"至善人本","interest":"Apple Watch（消費電子產品）、智慧科技 (消費電子產品)、穿戴式科技（消費電子產品）、新興技術（科學）、物聯網、商業智慧 (商業和金融業)、網路購物（零售）、時尚設計（設計）、室內設計（設計）、時尚配件（飾品配件）、現代家具（居家裝潢）、宜家家居（零售業者）、時事（政治）、美食（美食和餐飲）、排屋、連棟住宅（建築）","type":"訊息"},{"ta":"28-60 / 北屯太平東區 / 年輕自住 、61訊息","project":"大興家園","interest":"服裝（服飾）、購物中心（零售）、美容（社會觀念）、時尚配件（飾品配件）、化妝品（個人護理）、個人理財（銀行業）、儲蓄（銀行業）、熱門話題、網路銀行（銀行業）、網路購物（零售）、淘寶網、momo購物網、行動支付（貨幣）、LINE、行動應用程式（軟體）、流行音樂（音樂）、啤酒（酒精飲料）、UberEATS、運動（體育運動）、591房屋交易網、房屋廣告和入口網站 (網站)","type":"訊息"},{"ta":"**30-60 / 中科南屯南區 / 年輕人興趣","project":"元境大喜","interest":"591房屋交易網、房地產（產業）、不動產（房地產）","type":"名單"},{"ta":"28-55 / 神岡豐原中科 / 年輕娛樂","project":"中科峇里島17","interest":"服裝（服飾）、購物中心（零售）、美容（社會觀念）、時尚配件（飾品配件）、快時尚（服飾）、儲蓄（銀行業）、個人理財（銀行業）、熱門話題、網路銀行（銀行業）、淘寶網、網路購物（零售）、行動支付（貨幣）、LINE、行動應用程式（軟體）、釀造（啤酒）、運動（體育運動）、休閒娛樂（社會觀念）、Netflix（串流服務）、Spotify（串流服務）、591房屋交易網","type":"訊息"},{"ta":"30-60 / 豐原潭子后里 / 有小孩寵物","project":"晴山白里","interest":"親子教育（兒童和親子教育）、廚房（家居和園藝用品）、室內設計（設計）、現代家具（居家裝潢）、家電（消費電子產品）、幼兒教育（小學和中學教育）、生活用品（家居和園藝用品）、運動（體育運動）、暑假（小學和中學教育）、草地（園藝）、任天堂 (遊戲機和相關配件)、寵物食品（寵物用品）、狗狗美容（寵物）、遛狗（狗狗）、犬隻健康（寵物）、貓糧（寵物用品）, 家長：父母（全部）","type":"訊息"},{"ta":"30-60 / 太平74沿 / 創業 經營 美業","project":"錢連全联","interest":"居家事業（商業與財務）、收入（商業與財務）、食品和飲品 (食物和飲品)、指甲彩繪 (美妝)、美甲（化妝品）、美甲沙龍（化妝品）、足部護理 (美容服務)、角蛋白、髮型（護髮保養）、自僱（工作機會）、律師（法律和法律服務）、自由工作者（工作機會）、律師事務所 (法律和法律諮詢服務)、零售業（產業）、批發（零售）、經銷（商業）、早午餐（美食和餐飲）, 行為：小型企業主, 任職公司：自営業(個人事業主)","type":"訊息"},{"ta":"35-65 / 太平 大里 74沿 / 開店 投資","project":"錢連全联","interest":"公司（商業與財務）、個人理財（銀行業）、商業模式 (商業和金融業)、被動收入（商業與財務）、新創公司（商業與財務）、企業家（商業與財務）、獨資企業（商業與財務）、投資（商業與財務）、商業（商業與財務）、房地產投資（投資）、財富（經濟）、居家事業（商業與財務）、不動產（房地產）、公司、收入（商業與財務）, 任職公司：自営業(個人事業主)","type":"訊息"},{"ta":"30-60 / 太平大里 / 在地高收入","project":"錢連鋼骨雙併","interest":"醫學院 (高等教育)、律師（法律和法律服務）、法律（法律和法律服務）、科學 (期刊)、軟體開發（軟體）、程式語言（計算）、軟體工程（資訊技術）、電腦科學（資訊技術）、網站開發（網站）、健身和保健（健身）、日本消費電子產品品牌 (電腦和電子產品)、家庭（社會觀念）、商業模式 (商業和金融業)、轎車（汽車）、房屋（房地產）、住宅區（房地產）、別墅（住宿）, 任職公司：自営業(個人事業主), 行業類別：健康照護與醫療服務、商業決策者、資訊科技和技術服務、教育和圖書館、法律服務、計算與數學, 家長：父母（全部）","type":"訊息"},{"ta":"30-60 / 北屯太平 / 年輕娛樂","project":"","interest":"服裝（服飾）、網路購物（零售）、時尚配件（飾品配件）、美容沙龍（化妝品）、髮型（護髮保養）、快時尚（服飾）、行動支付（貨幣）、行動銀行（銀行業）、LINE、Netflix（串流服務）、流行音樂（音樂）、休閒娛樂（社會觀念）、麥當勞（餐廳）、街頭時尚（服飾）、運動場所 (體育運動)、個人理財（銀行業）、燒烤（烹飪）、啤酒（酒精飲料）、假期（活動）、591房屋交易網","type":""},{"ta":"28-55 / 頭份竹南竹北 / 職業+房產","project":"富廣ONNI","interest":"網路名人、YouTube（串流服務）、社群媒體行銷（行銷）、商業模式 (商業和金融業)、聯盟行銷（行銷）、電子商務（零售）、自由工作者（工作機會）、自僱（工作機會）、被動收入（商業與財務）、直銷、獨資企業（商業與財務）、創意創業 (商業和金融業)、居家事業（商業與財務）、591房屋交易網、房屋（房地產）、行為：網紅創作者、任職公司：自営業(個人事業主)","type":"1510"},{"ta":"27-55 / 中科世貿 / 年輕工程師","project":"惠田映悅","interest":"人工智慧（計算）、大數據 (科學)、軟體工程（資訊技術）、軟體開發（軟體）、電腦程式設計（電腦和電子產品）、資訊科技（電腦和電子產品）、電腦工程（工程）、機器學習（計算）、任天堂 (遊戲機和相關配件)、Python（程式語言）、PlayStation（遊戲機）、UberEATS、酒精飲品（美食和餐飲）、美食（美食和餐飲）、市場趨勢 (商業和金融業)、數位貨幣（貨幣）、任職公司：台灣積體電路製造、矽品精密","type":"名單"},{"ta":"**27-60/ 西屯中科 /銀行 精算師","project":"惠田好日子","interest":"財經（商業與財務）、會計學（商業與財務）、個人理財（銀行業）、財務規劃（投資）、金融服務（商業與財務）、銀行業（金融）、企業家（商業與財務）、會計系統、投資（商業與財務）、財務會計（商業與財務）、商業（商業與財務）、財富管理（銀行業）, 行為：小型企業主","type":"名單"},{"ta":"28-55 / 鹿港和美福興 / 年輕 育兒 首購 、27訊息","project":"青成康堤","interest":"生產、育兒、新生兒派對（兒童和親子教育）、家庭（社會觀念）、上班族（流行文化）、LINE、傢俱（居家裝潢）、室內設計（設計）、熱門話題、淘寶網、網路購物網站 (網站)、流行文化（社會觀念）、促銷（行銷）、婚禮（社會觀念）、美容（社會觀念）、iPhone（智慧型手機）、個人理財（銀行業）、591房屋交易網、房地產（產業）、家長：父母（全部）","type":"訊息"},{"ta":"27-60 / 十期 / 行銷 小資族","project":"惠田好日子","interest":"行銷企劃 (行銷)、數位行銷（行銷）、折扣商店（零售）、綜藝節目 (表演藝術)、傢俱（居家裝潢）、韓國電視劇（電視節目）、網紅行銷 (行銷)、網路購物（零售）、居家裝潢零售商 (零售)、廣告（行銷）、設計（設計）、政府（政府機構）、網路 (電腦運算)、行業類別：政府員工（全球）、行政服務、行銷企劃 (行銷)、傢俱（居家裝潢）、折扣商店（零售）、綜藝節目 (表演藝術)、韓國電視劇（電視節目）、網紅行銷 (行銷)、廣告（行銷）、設計（設計）、政府（政府機構）、網路 (電腦運算)、宜家家居（零售業者）、雅高達、銀行帳戶 (銀行業)、商業模式 (商業和金融業)、簡餐館（餐廳）、任職公司：自営業(個人事業主)、行業類別：行政服務、教育和圖書館、政府員工（全球）","type":"名單"},{"ta":"28-55 / 大里霧峰 / 理財 儲蓄","project":"大漁樂芙","interest":"儲蓄（銀行業）、儲蓄帳戶（銀行業）、存款帳戶 (銀行業)、儲蓄互助社、財務規劃（投資）、信用額度（借貸）、金錢（貨幣）、被動收入（商業與財務）、投資（商業與財務）、現金、股票市場（投資）、上班族（流行文化）、優惠券（優惠券和折扣）、折扣和折讓（優惠券和折扣）、7-11、便利商店（零售業者）、超市（食品零售業者）、熱門話題或 591房屋交易網","type":"名單"},{"ta":"27-55 / 竹科巨城 / 旅遊 年輕工程師","project":"美麗華山美","interest":"人工智慧（計算）、大數據 (科學)、新興技術（科學）、半導體、物聯網、商業智慧 (商業和金融業)、軟體開發（軟體）、軟體工程（資訊技術）、iPhone（智慧型手機）、Python（程式語言）、GitHub、美食（美食和餐飲）、旅遊（旅遊觀光）、http://booking.com/（旅遊觀光業）、旅遊網站（網站）、免稅商店、室內設計（設計）、品酒 (葡萄酒)、數位貨幣（貨幣）","type":"訊息"},{"ta":"30-60 / 竹科竹東 / 研究 高知識","project":"美麗華山美","interest":"研究所教育（高等教育）、科學 (期刊)、研究、文學（藝術）、教育學（教育）、新興技術（科學）、實驗室、投資（商業與財務）、財經（商業與財務）、新聞播報（新聞服務）、智慧科技 (消費電子產品)、工程和理工學院 (教育)、理工學院、行業類別：教育和圖書館、計算與數學、資訊科技和技術服務","type":"訊息"},{"ta":"27-55 / 西屯中科水湳 / 會計 金融顧問","project":"惠田好日子","interest":"金錢（貨幣）、被動收入（商業與財務）、投資管理（投資）、財務規劃（投資）、資產管理 (商業和金融業)、投資銀行業（銀行業）、經濟學（經濟）、會計系統、註冊會計師、私人銀行服務、財務顧問 (投資)、會計學（商業與財務）、納斯達克100指數、當沖交易（投資）、私募基金、私募股權投資 (投資) 1016-註冊會計師、投資銀行業（銀行業）、金錢（貨幣）、電腦運算、財經（商業與財務）、會計學（商業與財務）、財務規劃（投資）、財務顧問 (投資)、被動收入（商業與財務）、投資管理（投資）、私募基金、私募股權投資 (投資)、納斯達克100指數、會計系統、財務會計（商業與財務）、資產管理 (商業和金融業)、商業（商業與財務）、房地產投資（投資）、經濟學（經濟） 1023-註冊會計師、投資銀行業（銀行業）、電腦運算、會計學（商業與財務）、財務規劃（投資）、財務顧問 (投資)、被動收入（商業與財務）、投資管理（投資）、私募基金、私募股權投資 (投資)、納斯達克100指數、會計系統、財務會計（商業與財務）、資產管理 (商業和金融業)、商業（商業與財務）、房地產投資（投資）、經濟學（經濟）、財富管理（銀行業）、當沖交易（投資）、道瓊斯工業平均指數、證券交易所（投資）、股份 (金融)","type":"名單"},{"ta":"28-60 / 大林大埔美 / 藍領 休閒","project":"中祐雅苑","interest":"儲蓄（銀行業）、上班族（流行文化）、超市（食品零售業者）、配電系統、個人理財（銀行業）、折扣和折讓（優惠券和折扣）、保險（商業與財務）、技術員、數位相機 (相機和相機設備)、食品產業、玻璃、家庭（社會觀念）、佳能企業、代工生產、休閒活動（休閒）、工業工程 (工程)、科技（電腦和電子產品）、製造生產服務和組織 (製造業), 行為：通勤者","type":"訊息"},{"ta":"30-55 / 清水神岡潭子 / 工業 儲蓄 家居","project":"中科峇里島17","interest":"工廠（製造業）、保單（保險）、傢俱（居家裝潢）、個人理財（銀行業）、技術員、食品（美食和餐飲）、家樂福、家電（消費電子產品）、製造業（產業）、生活用品（家居和園藝用品）、機械工程（工程）、製造生產服務和組織 (製造業)、行業類別：建築與工程、製造、安裝與維修服務、運輸與搬運","type":"訊息"},{"ta":"28-55 / 鹿港和美福興 / 藍領 銀行保險 、24訊息","project":"青成康堤","interest":"保單（保險）、人壽保險（保險）、業務（商業與財務）、零售銀行業務（銀行業）、投資銀行業（銀行業）、銀行業（金融）、金融服務（商業與財務）、證券交易所（投資）、股市指數 (投資)、技術員、製造業（產業）、製造生產服務和組織 (製造業)、工廠（製造業）、股票經紀人 (投資)、配電系統、代工生產、上班族（流行文化）、熱門話題","type":"訊息"},{"ta":"28-55 / 南區東區太平 / 餐廳 串流媒體","project":"大漁樂芙","interest":"簡餐館（餐廳）、甜點（美食和餐飲）、在地美食（美食和餐飲）、烘培坊（烘焙食品）、火鍋、燒烤（烹飪）、韓式料理（美食和餐飲）、美食家（美食和餐飲）、壽司（美食和餐飲）、鮭魚、Netflix（串流服務）、Spotify（串流服務）、Apple Music、YouTube（串流服務）、UberEATS、行動支付（貨幣）","type":"名單"},{"ta":"28-60 / 竹南竹北 / 教育 生活","project":"富廣ONNI","interest":"語言教育、外語、航空公司、教育（社會觀念）、工程和理工學院 (教育)、旅遊（旅遊觀光）、旅遊網站（網站）、網路 (電腦運算)、慢跑（跑步）、園藝（家居和園藝用品）、超市（食品零售業者）、生活用品（家居和園藝用品）、網路社區、韓國電視劇（電視節目）、美容（社會觀念）、美學（哲學）、商業模式 (商業和金融業)、咖啡廳（咖啡）","type":"1510"},{"ta":"28-55 / 南區東區太平 / 年輕創業","project":"大漁樂芙","interest":"居家事業（商業與財務）、被動收入（商業與財務）、自僱（工作機會）、女性企業家（商業與財務）、獨資企業（商業與財務）、創意創業 (商業和金融業)、美學（哲學）、設計（設計）、美容（社會觀念）、商業模式 (商業和金融業)、行銷企劃 (行銷)、攝影師（攝影）、角蛋白、髮型（護髮保養）、室內設計（設計）、零售業（產業）、商業計畫 (商業活動)、行為：小型企業主","type":"名單"},{"ta":"25-55 / 大台中 /百葉簾 家具","project":"臻富裕","interest":"居家裝修（家居和園藝用品）、室內設計（設計）、現代家具（居家裝潢）、百葉簾、窗戶（建築）、宜家家居（零售業者）、居家飾品 (居家裝潢)、居家裝潢零售商 (零售)、美學（哲學）、生活風格 (生活風格內容)、居家用品零售商 (零售)、LifeStyle Home、室內建築（建築）、住家翻新 (住家修繕)、Architecture & Interior Design","type":"訊息"},{"ta":"28-55 / 中科西屯 / 工程師興趣","project":"永尚樾山丘","interest":"軟體開發（軟體）、大數據 (科學)、人工智慧（計算）、新興技術（科學）、智慧科技 (消費電子產品)、股票（投資）、網路社區、棒球（體育運動）、NBA季後賽、行動支付（貨幣）、Google電子錢包或 Uber（公司）、棒球（體育運動）、大數據 (科學)、資訊科技（電腦和電子產品）、行動支付（貨幣）、智慧科技 (消費電子產品)、股票（投資）、新興技術（科學）、軟體開發（軟體）、網路社區、Uber（公司）、Trivago、http://geek.com/、旅遊網站（網站）、棒球（體育運動）、GitHub、旅遊網站（網站）、大數據 (科學)、資訊科技（電腦和電子產品）、行動支付（貨幣）、智慧科技 (消費電子產品)、股票（投資）、新興技術（科學）、軟體開發（軟體）、網路社區、Uber（公司）、Trivago、http://geek.com/、健身俱樂部（健身）、重量訓練（舉重）、智慧裝置（消費電子產品）、雞肉 (食品)、羅技或 Razer","type":"訊息"},{"ta":"28-55 / 大林新港 / 家庭主婦","project":"中祐雅苑","interest":"廚房（家居和園藝用品）、廚具（廚房與餐廚）、餐具、家電（消費電子產品）、家務（家居和園藝用品）、中式料理（美食和餐飲）、生活用品（家居和園藝用品）、家庭（社會觀念）、親子教育（兒童和親子教育）、個人理財（銀行業）、優惠券（優惠券和折扣）、超市（食品零售業者）、一般保險 (保險)、591房屋交易網、財務規劃（投資）、居家裝修（家居和園藝用品）","type":"訊息"},{"ta":"28-55 / 十期東區 / 餐廳 串流媒體 、90訊息","project":"大興家園","interest":"簡餐館（餐廳）、甜點（美食和餐飲）、在地美食（美食和餐飲）、烘培坊（烘焙食品）、火鍋、燒烤（烹飪）、韓式料理（美食和餐飲）、美食家（美食和餐飲）、壽司（美食和餐飲）、鮭魚、Netflix（串流服務）、Spotify（串流服務）、Apple Music、YouTube（串流服務）、UberEATS、Spotify（串流服務）、烘培坊（烘焙食品）、甜點（美食和餐飲）、行動支付（貨幣）、簡餐館（餐廳）、在地美食（美食和餐飲）、火鍋、鮭魚、韓式料理（美食和餐飲）、壽司（美食和餐飲）、Netflix（串流服務）、速食休閒餐廳 (餐廳)、燒烤（烹飪）、美食家（美食和餐飲）、YouTube（串流服務）、Apple Music、速食餐廳（餐飲）、自助餐、真人實境秀（電影和電視）","type":"訊息"},{"ta":"28-60 / 伸港鹿港龍井大肚 / 有小孩寵物 、23","project":"至善人本","interest":"親子教育（兒童和親子教育）、廚房（家居和園藝用品）、室內設計（設計）、現代家具（居家裝潢）、家電（消費電子產品）、幼兒教育（小學和中學教育）、生活用品（家居和園藝用品）、運動（體育運動）、暑假（小學和中學教育）、草地（園藝）、任天堂 (遊戲機和相關配件)、寵物食品（寵物用品）、狗狗美容（寵物）、犬隻健康（寵物）、遛狗（狗狗）、貓糧（寵物用品）、排屋、住宅區（房地產）、別墅（住宿）、家長：父母（全部）","type":"訊息"},{"ta":"27-55 / 十期 / 行銷設計","project":"原潮APT","interest":"行銷企劃 (行銷)、數位行銷（行銷）、折扣商店（零售）、綜藝節目 (表演藝術)、傢俱（居家裝潢）、韓國電視劇（電視節目）、網紅行銷 (行銷)、網路購物（零售）、居家裝潢零售商 (零售)、廣告（行銷）、設計（設計）、政府（政府機構）、網路 (電腦運算)、平面設計（視覺藝術）、服裝（服飾）、行業類別：政府員工（全球）、教育和圖書館、行政服務","type":"名單"},{"ta":"28-60 / 伸港鹿港和美 / 零售批發自營 、142","project":"至善人本","interest":"零售業（產業）、批發（零售）、經銷（商業）、供應鏈、居家事業（商業與財務）、小型企業（商業與財務）、銀行帳戶 (銀行業)、貿易（經濟）、電子商務（零售）、行銷企劃 (行銷)、社群媒體行銷（行銷）、網紅行銷 (行銷)、銀行帳戶 (銀行業)、行銷企劃 (行銷)、批發（零售）、經銷（商業）、電子商務（零售）、商業模式 (商業和金融業)、網路購物（零售）、社群媒體行銷（行銷）、網紅行銷 (行銷)、居家事業（商業與財務）、零售業（產業）、物聯網、排屋、連棟住宅（建築）、火鍋、速食休閒餐廳 (餐廳)、Apple Watch（消費電子產品）","type":"訊息"},{"ta":"28-60 / 秀水埔鹽福興 / 在地產業","project":"(傑芳) 維瓦第明日City","interest":"食品產業、包裝和標籤（商業與財務）、製造生產服務和組織 (製造業)、機械加工、電子工程、保單（保險）、超市（食品零售業者）、技術員、汽車（交通工具）、休閒餐廳 (餐廳)、網路購物（零售）、數位媒體（電腦和電子產品）、家電（消費電子產品）、居家裝修（家居和園藝用品）、彩券（博奕）、自行車（交通工具）","type":"名單"},{"ta":"27-55 / 十期 / 財會 公務員","project":"惠田好日子","interest":"會計系統、政府（政府機構）、時事（政治）、新聞媒體（新聞服務）、傢俱（居家裝潢）、網路 (電腦運算)、韓國電視劇（電視節目）、壽司（美食和餐飲）、燒牛肉、鮭魚、室內設計（設計）、科技（電腦和電子產品）、行業類別：教育和圖書館、政府員工（全球）、保護服務、燒牛肉、傢俱（居家裝潢）、鮭魚、時事（政治）、會計系統、壽司（美食和餐飲）、財務會計（商業與財務）、韓國電視劇（電視節目）、政府（政府機構）、網路 (電腦運算)、新聞媒體（新聞服務）、科技（電腦和電子產品）、雲端運算（計算）、私人銀行服務、財政預算案、快時尚（服飾）、簿記、行業類別：教育和圖書館、社區和社會服務、保護服務、政府員工（全球）","type":"名單"},{"ta":"27-55 / 中科南屯烏日 / 食衣住行","project":"原潮APT","interest":"住宿加早餐酒店、http://booking.com/（旅遊觀光業）、美食（美食和餐飲）、火鍋、日本料理（美食和餐飲）、牛肉（美食和餐飲）、服裝（服飾）、襯衫（服飾）、時尚配件（飾品配件）、電動車（交通工具）、BMW（交通工具）、特斯拉汽車（交通工具）、購物中心（零售）、配送（商務）、UberEATS","type":"名單"},{"ta":"28-55 / 南區東區太平 / 網紅行銷 美食","project":"大漁樂芙","interest":"社群媒體行銷（行銷）、網紅行銷 (行銷)、病毒營銷、開發潛在顧客 (行銷)、Instagram（社群媒體）、網路廣告（行銷）、速食休閒餐廳 (餐廳)、烘培坊（烘焙食品）、鮭魚、Apple Music、YouTube（串流服務）、行動支付（貨幣）、韓式料理（美食和餐飲）、蛋糕（烘焙食品）","type":"名單"},{"ta":"28-55 / 十期東區 / 餐廳 串流媒體","project":"原潮APT","interest":"簡餐館（餐廳）、甜點（美食和餐飲）、在地美食（美食和餐飲）、烘培坊（烘焙食品）、火鍋、燒烤（烹飪）、韓式料理（美食和餐飲）、美食家（美食和餐飲）、壽司（美食和餐飲）、鮭魚、Netflix（串流服務）、Spotify（串流服務）、Apple Music、YouTube（串流服務）、UberEATS、行動支付（貨幣）","type":"名單"},{"ta":"28-60 / 北屯太平東區 / 娛樂購物","project":"原潮APT","interest":"服裝（服飾）、購物中心（零售）、美容（社會觀念）、時尚配件（飾品配件）、化妝品（個人護理）、個人理財（銀行業）、熱門話題、網路銀行（銀行業）、網路購物（零售）、淘寶網、行動支付（貨幣）、LINE、行動應用程式（軟體）、韓國電視劇（電視節目）、速食休閒餐廳 (餐廳)、流行音樂（音樂）、綜藝節目 (表演藝術)、房屋廣告和入口網站 (網站)、假期（活動）、快時尚（服飾）","type":"名單"},{"ta":"28-55 / 彰師大+3K / 房地產","project":"坤辰師大苑","interest":"不動產（房地產）、房地產投資（投資）、公寓大樓（房地產）、租賃（房地產）、591房屋交易網","type":"名單"},{"ta":"28-55 / 彰師大+5K / 新婚成家","project":"坤辰師大苑","interest":"婚禮（社會觀念）、婚宴（婚禮）、訂婚戒指（珠寶）、媽媽寶寶-懷孕、生產、育兒、喜帖（婚禮）、餐廳（餐飲）","type":"名單"},{"ta":"30-60 / 中北部 / 企業管理","project":"昇祐ONE PLUS","interest":"管理（商業與財務）、品牌管理、企業家（商業與財務）、廣告行銷活動 (行銷)、企業管理（商業與財務）、人力資源管理（商業與財務）、徵才（工作機會）、徵才網站（工作機會）、行銷策略（行銷）、培訓和開發 (商業活動)、資金、投資銀行業（銀行業）、股市指數 (投資)、房地產投資（投資）","type":"訊息"},{"ta":"30-60 / 沙鹿龍井伸港 / 上班族 / 家具設計","project":"璞邑恆樂","interest":"管理（商業與財務）、製造業（產業）、商業（商業與財務）、傢俱（居家裝潢）、室內設計（設計）、居家裝修（家居和園藝用品）、現代家具（居家裝潢）、宜家家居（零售業者）、政府（政府機構）、網路購物（零售）、時尚配件（飾品配件）、排屋、住宅區（房地產）、連棟住宅（建築）、保單（保險）、中型企業對企業（B2B）企業員工（200 - 500 名員工）","type":"名單"},{"ta":"28-60 / 龍井東海中科 / 科技房產興趣","project":"璞邑恆樂","interest":"新興技術（科學）、AI、三星電子、羅技、NVIDIA GeForce、時尚設計（設計）、證券（金融）、個人理財服務和組織 (銀行業)、商業智慧 (商業和金融業)、時尚配件（飾品配件）、宜家家居（零售業者）、網路購物網站 (網站)、電子商務網站 (網站)、排屋、住宅區（房地產）、連棟住宅（建築）、三星電子、AI、連棟住宅（建築）、NVIDIA GeForce、證券（金融）、591房屋交易網、時尚設計（設計）、鮭魚、智慧科技 (消費電子產品)、時尚配件（飾品配件）、商業智慧 (商業和金融業)、新興技術（科學）、酒精飲品（美食和餐飲）、宜家家居（零售業者）、住宅區（房地產）、排屋、羅技、個人理財服務和組織 (銀行業)、網路購物網站 (網站)、電子商務網站 (網站) 1201 -燒牛肉、AI、連棟住宅（建築）、NVIDIA GeForce、證券（金融）、591房屋交易網、時尚設計（設計）、鮭魚、智慧科技 (消費電子產品)、時尚配件（飾品配件）、新興技術（科學）、酒精飲品（美食和餐飲）、宜家家居（零售業者）、住宅區（房地產）、排屋、羅技、個人理財服務和組織 (銀行業)、電子商務網站 (網站)、LifeStyle Food、旅行社和預訂 (旅遊觀光業)","type":"名單"},{"ta":"30-60 / 西屯七期 / 精品房產","project":"門門一合院","interest":"高級訂製時裝（服飾）、排屋、住宅區（房地產）、連棟住宅（建築）、別墅（住宿）、私人銀行服務、愛馬仕（服飾）、私人銀行服務、精品店（零售業者）、愛馬仕（服飾）、路易威登（時尚品牌）、別墅（住宿）、住宅區（房地產）、排屋、高級訂製時裝（服飾）、Cartier（珠寶商）、凡賽斯（時尚品牌）、商務艙（航空旅行） 1201 -黎明路三段","type":"名單"},{"ta":"28-60 / 竹科園區 / 親子 / 美食","project":"富廣ONNI","interest":"家庭（社會觀念）、教養方式 (兒童和親子教育)、私立學校（教育）、基本英語、兒童發展（小學和中學教育）、宮崎駿、樂高（玩具）、美食（美食和餐飲）、食品媒體和內容 (食物和飲品)、早午餐（美食和餐飲）、烹飪（美食和餐飲）、壽司（美食和餐飲）、燒牛肉、鮭魚、美食家（美食和餐飲）、氣泡酒 (葡萄酒)","type":"1510"},{"ta":"30-65 / 嶺東烏日南區 / 企業主管","project":"富旺商城","interest":"管理（商業與財務）、商業（商業與財務）、商業計畫 (商業活動)、中小型企業（商業與財務）、戰略計劃、商業模式 (商業和金融業)、社群媒體行銷（行銷）、行銷企劃 (行銷)、網紅行銷 (行銷)、購物中心（零售）、業務開發 (商業活動)、價格、節慶（活動）","type":"名單"},{"ta":"27-55 / 西屯南屯 / 登山運動工程師","project":"原潮APT","interest":"程式語言（計算）、滑雪勝地 (登山和滑雪勝地)、亞瑟士、羽球 (球拍類運動)、智慧科技 (消費電子產品)、Lexus 汽車（交通工具）、優乃克、股票（投資）、滑雪（滑雪和單板滑雪）、電腦記憶體（電腦硬體）、信用卡（借貸）、網球（體育運動）、美津濃、滑雪板（滑雪和單板滑雪）、電子工程、電腦程式設計（電腦和電子產品）、科技（電腦和電子產品）、PlayStation 4","type":"名單"},{"ta":"35-60 / 南區東區大里 / 子女置產 潭子北屯太平","project":"原潮APT","interest":"跟團旅行 (旅遊觀光)、糕點（烘焙食品）、文化遺產 (藝術和文化)、民俗學、古蹟、超市（食品零售業者）、亞洲文化 (文化)、肥皂劇 (電視節目)、綜藝節目 (表演藝術)、證券交易所（投資）、房地產（產業）、婚禮（社會觀念）、公園與遊憩或 YouTube（串流服務）","type":"名單"},{"ta":"30-60 / 東海逢甲太原 / 企業主管 靜宜東海西屯北屯","project":"富旺商城","interest":"行銷企劃 (行銷)、商業計畫 (商業活動)、中小型企業（商業與財務）、商業模式 (商業和金融業)、戰略計劃、社群媒體行銷（行銷）、購物中心（零售）、商業（商業與財務）、網紅行銷 (行銷)、管理（商業與財務）、企業孵化器、會員集點計畫 (優惠券、折扣和購物回饋)、商務旅遊（旅遊觀光業）","type":"名單"},{"ta":"28-60 / 林口三井+3K / 房地產","project":"家悦美(主)","interest":"不動產（房地產）、房地產投資（投資）、房地產開發（房地產）、房地產投資俱樂部（俱樂部）、創意房地產投資 (房地產)、591房屋交易網","type":"名單"},{"ta":"27-55 / 林口三井+3K / 新婚成家","project":"家悦美(副)","interest":"婚宴（婚禮）、喜帖（婚禮）、婚紗攝影（攝影）、媽媽寶寶-懷孕、生產、育兒、戒指（珠寶）、結婚蛋糕（婚禮） 1127主粉專 -結婚蛋糕（婚禮）、婚宴（婚禮）、媽媽寶寶-懷孕、生產、育兒、兒童文學（文學）、戒指（珠寶）、私立學校（教育）、婚紗攝影（攝影）、蒙台梭利教育法、喜帖（婚禮）、婚禮（社會觀念）、親子 (雜誌)","type":"訊息"},{"ta":"28-60 / 伸港鹿港龍井大肚 / 科技家庭自住 、108","project":"至善人本","interest":"（美食和餐飲）、生活用品（家居和園藝用品）、家務（家居和園藝用品）、家電（消費電子產品）、傢俱（居家裝潢）、一般保險 (保險)、房屋（房地產）、591房屋交易網、室內設計（設計）、房屋保險（保險）、排屋、連棟住宅（建築）、iPhone（智慧型手機）、物聯網、智慧科技 (消費電子產品)、家長：父母（全部）","type":"訊息"},{"ta":"28-60 / 林口三井+3K / 附近職業","project":"家悦美(主)","interest":"新興技術（科學）、半導體、食品產業、能源（科學）、物流（商業與財務）、行業類別：政府員工（全球）、健康照護與醫療服務","type":"名單"},{"ta":"30-60 / 西屯南屯 / 企業家高奢興趣","project":"門門一合院","interest":"比爾·蓋茨、私人銀行服務、古馳（時尚品牌）、席夢思、路易威登（時尚品牌）、私人公司、水療（個人護理）、Tax law、遊艇（船舶）、企業家（商業與財務）、股份 (金融)、財富（經濟）、房地產（產業）、投資者（投資）、機場貴賓室、高爾夫球（體育運動）、現代藝術（藝術）、手錶（飾品配件）、收藏品 (收藏品)、度假（社會觀念）、比爾·蓋茨、私人銀行服務、古馳（時尚品牌）、席夢思、水療（個人護理）、私人公司、Tax law、遊艇（船舶）、機場貴賓室、路易威登（時尚品牌）、企業家（商業與財務）、收藏品 (收藏品)、股份 (金融)、高爾夫球（體育運動）、財富（經濟）、房地產（產業）、投資者（投資）、手錶（飾品配件）、豪華轎車（交通工具）、古董、跑車（交通工具）、拍賣","type":"名單"},{"ta":"28-55 / 沙鹿清水 / 公教職員","project":"華偉知見","interest":"學習（教育）、專業發展（職業訓練）、書籍（媒體刊物）、新聞媒體（新聞服務）、學校（教育）、社區議題（法律與政府）、家庭（社會觀念）、均衡飲食（個人護理）、健身和保健（健身）、社群媒體（網路媒體）、政府機關概念和作法 (法律和政府)、財政預算案、快時尚（服飾）, 行業類別：保護服務、教育和圖書館、社區和社會服務","type":"訊息"},{"ta":"28-55 / 北區北屯西屯 / 業務媒體餐廳","project":"大城二月埕","interest":"業務（商業與財務）、Apple Watch（消費電子產品）、時尚配件（飾品配件）、銀行業（金融）、房地產（產業）、社群媒體行銷（行銷）、社群媒體（網路媒體）、保險（商業與財務）、大眾媒體（娛樂與媒體）、新聞媒體（新聞服務）、個人發展（個人身分）、聯盟行銷（行銷）、休閒餐廳 (餐廳)、星巴克（咖啡）、早午餐（美食和餐飲）、社交媒體優化 1203 + LifeStyle Food、Lifestyle brand、美食家（美食和餐飲）、精品咖啡 (咖啡)、業務開發 (商業活動)","type":"名單"},{"ta":"30-60 / 台1沿線 / 科技工業","project":"華偉知見","interest":"工廠（製造業）、製造業（產業）、配電系統、代工生產、能源效率（能源與公用事業）、半導體、NVIDIA GeForce、綜合企業、羅技、Razer、行動應用程式（軟體）、聯結車（交通工具）、材料科學、科技新聞 (新聞服務)、儲蓄帳戶（銀行業）、時事（政治）、科技品牌 (科技)、物聯網、Gadget & Gear、專業發展（職業訓練）、職涯發展（工作機會）、物聯網、工廠（製造業）、NVIDIA GeForce、配電系統、材料科學、儲蓄帳戶（銀行業）、智慧科技 (消費電子產品)、半導體、製造業（產業）、代工生產、聯結車（交通工具）、機械工程（工程）、Compensation and benefits、行動應用程式（軟體）、科技新聞 (新聞服務)、Razer、輪胎品牌和商店 (零售)、釀造（啤酒）、充電器、電池、製冷、自動化技術、駕駛（交通工具）、二手商品 (購物和銷售)","type":"訊息"},{"ta":"27-55 / 中區北區洲際 / 跑咖追星出國2.0","project":"原潮APT","interest":"網路名人、音樂節（活動）、咖啡廳（咖啡）、甜點（美食和餐飲）、旅遊網站（網站）、住宿加早餐酒店、免稅商店、蛋糕（烘焙食品）、韓國流行音樂（音樂）、航空公司、華語流行音樂、Instagram（社群媒體）、星巴克（咖啡）、旅遊（旅遊觀光）、http://booking.com/（旅遊觀光業）、地點 (地標)、旅行社和預訂 (旅遊觀光業)、休閒餐廳 (餐廳)、數位相機 (相機和相機設備)、肖像攝影 (攝影)、購物中心（零售）、即時成像相機","type":"名單"},{"ta":"27-45/ 東區北區洲際 / 小家庭自營商","project":"原潮APT","interest":"KitchenAid（家用電器）、個人理財（銀行業）、幼兒照護（兒童和親子教育）、教養方式 (兒童和親子教育)、居家裝修（家居和園藝用品）、生活風格和家務內容 (居家和園藝用品)、居家和園藝媒體 (住家修繕)、家庭桌遊 (遊戲)、創意創業 (商業和金融業)、電子商務（零售）、新創公司（商業與財務）、顧客關係管理（公關）、銷售時點情報系統、行為：小型企業主、任職公司：自営業(個人事業主)","type":"名單"},{"ta":"28-55 / 北屯太平 / 藍領 公教職 (+隱藏興趣) 、31訊息","project":"大興家園","interest":"技術員、上班族（流行文化）、工廠（製造業）、保單（保險）、存款帳戶 (銀行業)、配電系統、代工生產、公共運輸（交通運輸）、超市（食品零售業者）、本日優惠（零售）, 行業類別：保護服務、政府員工（全球）、教育和圖書館、行政服務 1204(普) +教育資源 (教育)、節儉生活風格內容 (零售)、教養方式 (兒童和親子教育)、專業發展（職業訓練）、Retirement Insurance Benefits、退伍軍人福利（軍事）、工廠（製造業）、師範教育（職業訓練）、存款帳戶 (銀行業)、超市（食品零售業者）、保單（保險）、配電系統、技術員、退伍軍人福利（軍事）、代工生產、專業發展（職業訓練）、節儉生活風格內容 (零售)、教育資源 (教育)、旋轉式刮鬍刀、摩托車配件（交通工具）、市政事務 (法律和政府)、生活風格 (生活風格內容), 行業類別：行政服務、教育和圖書館、保護服務","type":"訊息"},{"ta":"30-60 / 北區北屯西屯 / 生活面向 (多隱藏興趣)","project":"大城二月埕","interest":"零售銀行業務（銀行業）、Podcast (音樂和音訊串流)、網路廣告（行銷）、買一送一 (行銷)、生活風格 (生活風格內容)、Lifestyle Travel、LifeStyle Food、Professional services、Business networking、休閒餐廳 (餐廳)、女裝品牌 (服飾)、Cash on delivery、男裝品牌 (服飾) 1209 -Cash on delivery、零售銀行業務（銀行業）、Business networking、買一送一 (行銷)、Podcast (音樂和音訊串流)、LifeStyle Food、生活風格 (生活風格內容)、Lifestyle Travel、行動應用程式（軟體）、休閒餐廳 (餐廳)、男裝品牌 (服飾)、女裝品牌 (服飾)、消費電子展、會員集點計畫 (優惠券、折扣和購物回饋)、電影愛好者 (電影)、線上訂餐（美食和餐飲）、momo購物網","type":"名單"},{"ta":"28-55 / 竹北竹南科 / 科技商務 (多隱藏興趣)","project":"八德盛景","interest":"Professional services、LifeStyle Food、Podcast (音樂和音訊串流)、男裝品牌 (服飾)、女裝品牌 (服飾)、消費電子產品媒體和內容 (電腦和電子產品)、Travel Deals、Apple Music、財務規劃（投資）、科技新聞 (新聞服務)、行動應用程式（軟體）、健身和保健（健身）、教育資源 (教育)、休閒餐廳 (餐廳)、生產率 1224 +數位媒體（電腦和電子產品）、信貸服務和組織 (信貸和借貸)、消費電子產品零售商 (零售)","type":"訊息"},{"ta":"28-55 / 南區東區太平 / 餐廳 串流媒體","project":"大漁樂芙","interest":"簡餐館（餐廳）、甜點（美食和餐飲）、在地美食（美食和餐飲）、烘培坊（烘焙食品）、火鍋、燒烤（烹飪）、韓式料理（美食和餐飲）、美食家（美食和餐飲）、壽司（美食和餐飲）、鮭魚、Netflix（串流服務）、Spotify（串流服務）、Apple Music、YouTube（串流服務）、UberEATS、行動支付（貨幣） 1201 +FineDiningLovers、LifeStyle Food、美食 (食品零售商)、一般生活風格內容 (生活風格內容)","type":"訊息"},{"ta":"28-55 / 大林新港 / 傳產家庭 (多隱藏興趣)","project":"中祐雅苑","interest":"製造業（產業）、代工生產、農業機械（農業）、現金回贈獎勵方案 (信貸和借貸)、會員集點計畫 (優惠券、折扣和購物回饋)、Compensation and benefits、Workwear、生活風格 (生活風格內容)、教養方式 (兒童和親子教育)、家庭（關係）、節儉生活風格內容 (零售)、排屋、別墅（住宿）, 行為：科技早期採用者, 行業類別：安裝與維修服務","type":"訊息"},{"ta":"28-55 / 竹北竹南科 / 教育享樂 (多隱藏興趣)","project":"八德盛景","interest":"Travel Deals、LifeStyle Food、男裝品牌 (服飾)、女裝品牌 (服飾)、教育資源 (教育)、Craft Beer and Brewing、派對策劃 (特殊場合和活動)、早午餐（美食和餐飲）、英式早餐、World Gym、當代藝術（視覺藝術）、語言教育、成人教育（職業訓練）、專業發展（職業訓練）、數字藝術、自助旅行 (旅遊)","type":"訊息"},{"ta":"28-55 / 南區中區洲際 / 社交網路娛樂","project":"大漁樂芙","interest":"網路娛樂 (娛樂和媒體)、隨選影片 (影片串流服務)、socializing、現場活動 (活動)、Entertainment News、音樂和音訊串流 (音樂)、歡樂時光（酒精飲料）、數位媒體（電腦和電子產品）、爆紅影片 (網路影片)、派對（活動）、生活風格 (生活風格內容)、行動支付（貨幣）、信用卡（借貸）、Christmas Holiday","type":"訊息"},{"ta":"28-55 / 林口五股 / 教育享樂","project":"家悦美(副)","interest":"當代藝術（視覺藝術）、教育資源 (教育)、藝術展覽（視覺藝術）、Craft Beer and Brewing、早午餐（美食和餐飲）、語言教育、女裝品牌 (服飾)、男裝品牌 (服飾)、英式早餐、專業發展（職業訓練）、派對策劃 (特殊場合和活動)、自助旅行 (旅遊)、精品咖啡 (咖啡)、HydraFacial 1223 +Spotify（串流服務）、冒險旅遊（旅遊觀光）、露營（戶外活動）、釀造（啤酒）","type":"名單"},{"ta":"30-65 / 西屯南屯 / 有錢興趣 (多隱藏興趣)","project":"門門一合院","interest":"30-65 / 西屯南屯 / 有錢興趣 -龍富路五段、Business networking、蘇富比、百達翡麗（手錶）、度假村（旅遊觀光業）、品酒 (葡萄酒)、路易威登（時尚品牌）、企業家（商業與財務）、豪奢生活方式（網站）、慈善和公益（社會公益理念）、Country club、高淨值人士（商業與財務）、高爾夫球（體育運動）、登山（爬山）、健行裝備（運動用品）、健行和露營 (戶外活動)、觀鳥、茶（非酒精飲料）","type":"名單"},{"ta":"27-55 / 林口+3K / 醫護族群","project":"家悦美(主)","interest":"牙科學院 (高等教育)、護理教育（醫學教育）、免稅商店、自助旅行 (旅遊)、一般保險 (保險)、高等教育（教育）、衛生學、生物學（科學）、美容（社會觀念）、清潔（個人護理）、CeraVe Skincare、Cetaphil, 行業類別：健康照護與醫療服務 1223 +衛生政策研究、科學 (期刊)、Uber（公司）","type":"訊息"},{"ta":"30-60 / 草屯霧峰大里 / 通勤教育戶外","project":"水琉璃","interest":"上班族（流行文化）、教育資源 (教育)、教養方式 (兒童和親子教育)、一般健康 (個人護理)、課外活動、家務管理和整理 (居家和園藝用品)、速食（美食和餐飲）、Outdoor Living、露營（戶外活動）、自行車（體育運動）、新聞媒體（新聞服務）、商業（商業與財務）、服裝（服飾）、時事（政治）, 行為：通勤者, 行業類別：政府員工（全球） 0113 +馬拉松 (跑步)、戶外休閒活動（戶外活動）、園藝（戶外活動）","type":"訊息"},{"ta":"25-45 / 中科大雅 / 科技工業年輕成家","project":"中科峇里島17","interest":"物聯網、共同基金 (投資)、GitHub、大數據 (科學)、智慧科技 (消費電子產品)、半導體、航空公司、能量飲料（非酒精飲料）、製造生產服務和組織 (製造業)、Compensation and benefits、Gadget & Gear、LifeStyle Home、專業發展（職業訓練）、股票經紀人 (投資)、隨選影片 (影片串流服務)、婚禮網站和部落格 (網站)、婚紗攝影（攝影）、婚戒（婚禮）","type":"訊息"},{"ta":"30-60/大台中/出國旅遊","project":"原潮APT","interest":"免稅商店、航空公司、商務艙（航空旅行）、機場、機場貴賓室、Travel the World、Visa Cash、房地產（產業）","type":"名單"},{"ta":"35-36/竹北東區湖口/高階主管","project":"昌禾大苑首席","interest":"高階管理人員、商業模式 (商業和金融業)、企業家（商業與財務）、獨資企業（商業與財務）、酒精飲品（美食和餐飲）、產品經理、豪華轎車（交通工具）、高級訂製時裝（服飾）, 行為：經常旅行的用戶、小型企業主、國際飛行常客, 職稱：區經理、副總經理、創辦人、總監、董事長 0112 +生產率、企業孵化器、業務開發 (商業活動)、商機 (商業和金融業)","type":"名單"},{"ta":"30-65 / 新竹基地5K / 小家庭+房地產","project":"LUCE VIVA","interest":"30-64 / 新竹基地5K / 小家庭+房地產 -房屋（房地產）、傢俱（居家裝潢）、親子教育（兒童和親子教育）、新生兒派對（兒童和親子教育）、家電（消費電子產品）、兒童（兒童和親子教育）、不動產（房地產）, 家長：家長（子女最大 12 個月）、嬰幼兒家長（01-02 歲）、學齡前兒童的家長（03-05 歲）、低年級學童（06-08 歲）的家長、青少年學童（09-12 歲）的家長 0108 +嬰幼兒和孕婦用品店 (零售)、教養方式 (兒童和親子教育)、超市（食品零售業者）、啤酒（酒精飲料）","type":"名單"},{"ta":"25-50 / 南區東區 / 吃喝玩樂","project":"大漁樂芙","interest":"快時尚（服飾）、網紅行銷 (行銷)、火鍋、在地美食（美食和餐飲）、燒烤（烹飪）、美食家（美食和餐飲）、酒精飲品（美食和餐飲）、可樂、簡餐館（餐廳）、乳製品 (乳製品)、羽球 (球拍類運動)、保齡球、卡拉OK、韓國電視劇（電視節目）、刺青（身體藝術）、PlayStation（遊戲機）、淘寶網、美妝店 (零售)","type":"名單"},{"ta":"28-55 / 大林斗南斗六 / 通勤傳統文化","project":"中祐雅苑","interest":"排屋、代工生產、節儉生活風格內容 (零售)、別墅（住宿）、文化遺產 (藝術和文化)、旅遊景點和活動 (旅遊觀光業)、行動應用程式（軟體）、Google地圖、五金行（零售業者）、印刷（出版）、真空包裝、不動產（房地產）, 行為：通勤者, 行業類別：安裝與維修服務、政府員工（全球）、漁業 0113 +連棟住宅（建築）、食品加工、配電系統、民俗學、節慶（活動）、茶葉品牌 (食物和飲品)、休閒釣魚（釣魚）","type":"訊息"},{"ta":"30-50 / 北屯北區太平 / 3金融1房產","project":"原潮APT","interest":"金融服務（商業與財務）、保險（商業與財務）、房地產（產業）","type":"名單"},{"ta":"30-65 / 北屯太平潭子 / 會計金融休閒","project":"大城二月埕","interest":"個人理財（銀行業）、儲蓄（銀行業）、存款帳戶 (銀行業)、財務規劃（投資）、財務會計（商業與財務）、行動銀行（銀行業）、會計系統、金融服務（商業與財務）、登山（爬山）、自行車（體育運動）、戶外休閒活動（戶外活動）、露營（戶外活動）、釣魚（戶外活動）、自助旅行 (旅遊)、漁具、迪卡儂","type":"名單"},{"ta":"30-60 / 彰市+8K / 批發商業房產","project":"(傑芳) 維瓦第明日City","interest":"經銷（商業）、零售業（產業）、進口（郵遞）、出口貿易、業務（商業與財務）、直運（零售業者）、物流（商業與財務）、商業（商業與財務）、資金、591房屋交易網、房地產（產業）、電動車（交通工具）、汽車（交通工具）, 行為：Facebook 付款用戶（90 天）","type":"訊息"},{"ta":"30-60 / 基地+5K / 軍公教","project":"LUCE VIVA","interest":"學習（教育）、教育技術學（教育）、專業發展（職業訓練）、政府機關概念和作法 (法律和政府)、財政預算案、家庭（社會觀念）、健身和保健（健身）、新聞媒體（新聞服務）、保險（商業與財務）、時事（政治）、行業類別：保護服務、教育和圖書館、軍事（全球）、政府員工（全球）、社區和社會服務 0109 擴大","type":"名單"},{"ta":"30-60 / 基地+5K / 投資理財房產","project":"LUCE VIVA","interest":"信用卡（借貸）、儲蓄（銀行業）、被動收入（商業與財務）、財務規劃（投資）、網路銀行（銀行業）、納斯達克100指數、股市指數 (投資)、共同基金 (投資)、一般保險 (保險)、房地產（產業）、房屋廣告和入口網站 (網站)、室內設計（設計）、地板","type":"名單"},{"ta":"35-60 / 中部 / 露營興趣","project":"自然紅屋","interest":"Outdoor Living、戶外休閒活動（戶外活動）、生態旅遊（旅遊觀光）、自然攝影 (攝影)、野餐 (食品和飲料)、居家裝修（家居和園藝用品）、露營（戶外活動）、大自然（科學）、自助旅行 (旅遊)、露營車 (旅遊觀光)、草地（園藝）、Lifestyle Travel、Weekend Getaway 0108 +休旅車營地（露營）、自助旅行 (旅遊)、Prefabricated home、居家風格和類型 (房地產)","type":"名單"},{"ta":"*28-55 / 地基+5K / 年輕興趣","project":"坤辰師大苑","interest":"上班族（流行文化）、PC Gamer、Spotify（串流服務）、演唱會（音樂活動）、戶外休閒活動（戶外活動）、歌唱（音樂）、音樂節（活動）、甜點（美食和餐飲）、派對（活動）、網路遊戲（電玩遊戲）、野餐 (食品和飲料)、攀岩 (極限運動)、股票（投資）、卡拉OK、露營（戶外活動）、Netflix（串流服務）、拼圖、攀石、登山（爬山）、房地產投資（投資）、運動類遊戲 (電玩遊戲)、電腦遊戲（電玩遊戲）、不動產（房地產）、電玩遊戲（遊戲）、社群媒體（網路媒體）、YouTube（串流服務）","type":"名單"},{"ta":"28-60 / 和美 沿台19 / 小家庭+上班族 、30名單","project":"新都峰","interest":"591房屋交易網、不動產（房地產）、公寓大樓（房地產）、住宅區（房地產）、金融服務（商業與財務）、金錢（貨幣）、促銷（行銷）、政府（政府機構）、團購、證券（金融）、銀行業（金融）、教育、優惠券","type":"名單"},{"ta":"30-64 高知識 財經","project":"松恩頌子鳥","interest":"學術期刊、學術研討會、研究、展覽館、高等教育（教育）、教育（社會觀念）、投資（商業與財務）、新聞播報（新聞服務）、大眾媒體（娛樂與媒體）、財經（商業與財務）、房屋（房地產）、591房屋交易網、行業類別：健康照護與醫療服務、教育和圖書館","type":"訊息"},{"ta":"30-60 科技新貴 旅遊","project":"松恩頌子鳥","interest":"高科技（電腦和電子產品）、智慧科技 (消費電子產品)、人工智慧（計算）、大數據 (科學)、新興技術（科學）、旅遊（旅遊觀光）、飯店（住宿）、Booking.com（旅遊觀光業）、旅遊網站（網站）、Hotels.com（住宿）、Trivago、房地產（產業）、房屋（房地產）、免稅商店","type":"訊息"},{"ta":"**30-60 / 林口五股新北 / 金融投資","project":"家悦美(副)","interest":"金融市場（投資）、金錢（貨幣）、金融經濟學、財經（商業與財務）、金融服務（商業與財務）、金融分析、被動收入（商業與財務）、投資管理（投資）、股票市場（投資）、投資（商業與財務）、投資者（投資）、不動產（房地產）、收入（商業與財務）、投資報酬率（投資）","type":"名單"},{"ta":"30-65 / 南投中興草屯霧峰 / 長輩興趣","project":"寬心璽玥","interest":"天然食品（美食和餐飲）、農業新聞和內容 (農業)、教育資源 (教育)、純素營養（飲食）、健康的習慣 (生活風格內容)、觀鳥、旅行社和預訂 (旅遊觀光業)、魚油、全價值營養、膽固醇（科學）、中式料理（美食和餐飲）、簡餐館（餐廳）、休閒活動（休閒）","type":"訊息"},{"ta":"30-60 / 龍潭中壢 / 成家科技業","project":"君品天玥","interest":"電腦科學（資訊技術）、科學 (期刊)、實驗室、軟體工程（資訊技術）、Python（程式語言）、GitHub、科技新聞 (新聞服務)、高等教育（教育）、生物化學、發電、婚宴（婚禮）、喜帖（婚禮）、社群媒體（網路媒體）、網紅行銷 (行銷)、行業類別：大型企業對企業（B2B）企業員工（500 名以上員工）、中型企業對企業（B2B）企業員工（200 - 500 名員工）、政府員工（全球）、資訊科技和技術服務 0116 -實驗室、婚宴（婚禮）、GitHub、電腦科學（資訊技術）、科學 (期刊)、發電、高等教育（教育）、軟體工程（資訊技術）、喜帖（婚禮）、網紅行銷 (行銷)、Python（程式語言）、社群媒體（網路媒體）、科技新聞 (新聞服務)、軟體開發（軟體）、電腦工程（工程）、數位貨幣（貨幣）、納斯達克100指數、被動收入（商業與財務）, 行業類別：資訊科技和技術服務、政府員工（全球）","type":"名單"},{"ta":"28-60 / 基地+6K / 純房產","project":"LUCE VIVA","interest":"房地產（產業）、房屋廣告和入口網站 (網站)、住宅房地產 (房地產)、首次購房者（房地產）","type":"名單"},{"ta":"28-50 / 東區竹北 / 教育生活相關","project":"LUCE VIVA","interest":"外語、航空公司、工程和理工學院 (教育)、旅遊（旅遊觀光）、網路 (電腦運算)、慢跑（跑步）、園藝（家居和園藝用品）、超市（食品零售業者）、生活用品（家居和園藝用品）、網路社區、韓國電視劇（電視節目）、美容（社會觀念）、美學（哲學）、商業模式 (商業和金融業)、護膚保養（化妝品）、咖啡廳（咖啡）","type":"名單"},{"ta":"28-55 / 中山松山大安 / 科技商務","project":"家悦美(副)","interest":"男裝品牌 (服飾)、女裝品牌 (服飾)、Podcast (音樂和音訊串流)、LifeStyle Food、Professional services、業務開發 (商業活動)、Apple Music、英式早餐、行動應用程式（軟體）、健身和保健（健身）、科技新聞 (新聞服務)、消費電子產品媒體和內容 (電腦和電子產品)、生產率、數位媒體（電腦和電子產品）","type":"名單"},{"ta":"25-55 / 北部中彰 / 軟裝整建","project":"臻富裕","interest":"家務管理和整理 (居家和園藝用品)、居家用品零售商 (零售)、生活風格和家務內容 (居家和園藝用品)、百葉簾、整建（建築業）、住家翻新 (住家修繕)、大掃除（清潔服務）、節慶（活動）、傢俱（居家裝潢）、居家飾品 (居家裝潢)","type":"訊息"},{"ta":"28-55 / 彰市和美 / 育兒寵物","project":"坤辰師大苑","interest":"親子教育（兒童和親子教育）、廚房（家居和園藝用品）、室內設計（設計）、現代家具（居家裝潢）、消費電子產品媒體和內容 (電腦和電子產品)、幼兒教育（小學和中學教育）、生活用品（家居和園藝用品）、運動（體育運動）、暑假（小學和中學教育）、草地（園藝）、任天堂 (遊戲機和相關配件)、寵物食品（寵物用品）、寵物（動物）、貓糧（寵物用品）","type":"名單"},{"ta":"28-55 / 大林新港斗南 / 農企業","project":"中祐雅苑","interest":"農業服務和組織 (產業)、肥料（農業）、農業機械（農業）、有機農業（農業）、農夫市集（食品零售業者）、出口貿易、批發（零售）、物流（商業與財務）、園藝（農業）、天氣預報、政府機關概念和作法 (法律和政府)、溫室、食品加工、中式料理（美食和餐飲）、食品保存、生物技術、住宅區（房地產）、農企業（農業）、園藝（戶外活動）","type":"訊息"},{"ta":"28-55 / 竹北竹南科 / 程式運動電玩","project":"八德盛景","interest":"程式語言（計算）、開放原始碼軟體、PHP、科技新聞 (新聞服務)、Java、有氧運動 (健身)、健身（體育運動）、羽球 (球拍類運動)、電玩遊戲（遊戲）、PlayStation（遊戲機）、超級馬利奧系列、薩爾達傳說、電玩遊戲網路媒體 (電玩遊戲)、收藏用玩具 (玩具) 0306 +科技傳播學、馬拉松 (跑步)、玩命關頭、手機遊戲（電玩遊戲）","type":"訊息"},{"ta":"35-65 / 中北部 / 退休度假興趣","project":"自然紅屋","interest":"Prefabricated home、居家風格和類型 (房地產)、度假屋（住宿）、庭院家具（居家裝潢）、農家樂、日式旅館、度假屋出租（住宿）、退休規劃（銀行業）、退休社區（房地產）、觀鳥、健行和露營 (戶外活動)、水族飼養","type":"名單"},{"ta":"28-50 / 東區竹北 / 工程師汽車","project":"LUCE VIVA","interest":"軟體工程（資訊技術）、程式語言（計算）、C語言、軟體開發（軟體）、行動應用程式（軟體）、開放原始碼軟體、電動車（交通工具）、特斯拉汽車（交通工具）、油電混合車（交通工具）、洗車 (汽車零件和服務)、汽車美容（交通工具）、汽車保養（交通工具）、行業類別：資訊科技和技術服務 0127 +汽車維修廠（交通工具）、鍍膜、油電混合動力車（交通工具）、改裝車（交通工具）、露營車 (旅遊觀光)、自訂車款（交通工具）, 行業類別：資訊科技和技術服務","type":"名單"},{"ta":"28-55 / 中山 / 商務貿易","project":"家悦美(副)","interest":"業務開發 (商業活動)、國際貿易、進口（郵遞）、出口貿易、B2B（商業與財務）、銷售管理 (商業活動)、Procurement、商業（商業與財務）、物流（商業與財務）、供應鏈、經銷（商業）、倉儲業（產業）、企業家（商業與財務） 0130 +民族東路、價格、運輸和物流服務和組織 (商業和金融)、開發潛在顧客 (行銷)、商機 (商業和金融業)","type":"名單"},{"ta":"30-60 / 桃園蘆竹 / 藝術品投資","project":"家悦美(主)","interest":"當代藝術（視覺藝術）、藝術展覽（視覺藝術）、藝術品（視覺藝術）、手工藝（工藝品）、雕刻（藝術）、寶石（金屬與礦物）、裝飾風藝術、花卉（植物與花卉）、投資（商業與財務）、美國運通、納斯達克100指數、投資管理（投資）、插花、資產管理 (商業和金融業)、被動收入（商業與財務）、收藏（興趣）","type":"訊息"},{"ta":"35-65 / 龍潭石門 / 投資證券美股","project":"君品天玥","interest":"財務規劃（投資）、股票市場（投資）、被動收入（商業與財務）、股份 (金融)、投資管理（投資）、股票經紀人 (投資)、資產管理 (商業和金融業)、私募基金、私募股權投資 (投資)、Tax preparation、私人銀行服務、納斯達克100指數、道瓊斯工業平均指數、標準普爾500指數","type":"名單"},{"ta":"30-65 / 北屯太平潭子 / 換工作搬遷","project":"大城二月埕","interest":"Business networking、領英、領導（社會觀念）、專業發展（職業訓練）、職涯（就業）、商業領袖 (商業和金融)、新家、房屋（房地產）、起步房（房地產）、上班族（流行文化）、行為：通勤者、生活要事：最近搬家、遠離家鄉 0130(加了之後很穩定) +個人發展（個人身分）、成人教育（職業訓練）、在地美食（美食和餐飲）、生產率, 行為：不與家人同住","type":"名單"},{"ta":"35-65 / 龍潭石門 / 度假休閒品酒","project":"君品天玥","interest":"品酒 (葡萄酒)、酒莊 (葡萄酒)、Lifestyle Travel、Cultural travel、葡萄園、度假村（旅遊觀光業）、跨界休旅車、住宿加早餐酒店、遊輪（旅遊觀光業）、都會車 (汽車)、別墅（住宿）、美國運通、精品咖啡 (咖啡)、前菜、外匯市場（貨幣）","type":"名單"},{"ta":"28-55 / 伸港鹿港龍井大肚 / 科技工業賺錢","project":"至善人本","interest":"財富（經濟）、投資（商業與財務）、收入（商業與財務）、汽車（交通工具）、電子商務（零售）、股票（投資）、羽球 (球拍類運動)、酒精飲品（美食和餐飲）、591房屋交易網、排屋、連棟住宅（建築）、New Home, 行業類別：資訊科技和技術服務、製造","type":"訊息"},{"ta":"35-65 / 苗桃竹 / 長輩休閒","project":"自然紅屋","interest":"農家樂、度假屋（住宿）、水族飼養、觀鳥、釣魚（戶外活動）、登山步道（健行）、木工（手工藝）、茶葉品牌 (食物和飲品)、RV Travel、休旅車營地（露營）、國家公園 (旅遊目的地)、雕刻（藝術）、園藝（戶外活動）、水療（個人護理）、麻將、中華文化、歷史（歷史）","type":"名單"},{"ta":"30-50 / 北區 / 業務性質","project":"LUCE VIVA","interest":"30-50 / 北區 / 業務性質 -北大路、業務開發 (商業活動)、人壽保險（保險）、保單（保險）、證券（金融）、信用卡（借貸）、汽車業（產業）、Business networking、行銷（商業與財務）、行銷服務和組織 (行銷)、直效營銷、財務顧問 (投資)、B2B（商業與財務）、汽車經銷（零售業者）、開發潛在顧客 (行銷)、設計貿易展和專業組織 (貿易展)","type":"名單"},{"ta":"28-55 / 林口 / 外商科技業","project":"家悦美(副)","interest":"AI、科技傳播學、科技新聞 (新聞服務)、http://geek.com/、基於組件的軟體工程、機器學習（計算）、英語（語言）、跨國公司、IT諮詢、International business、半導體、物聯網、電光源、軟體工程（資訊技術）、物理學 (物理學)、生活要事：遠離家鄉、不與家人同住 0202 +國際新聞 (新聞服務)、消費電子展、科學媒體和內容 (科學)、Google開發人員, 行為：經常旅行的用戶","type":"名單"},{"ta":"28-50 / 伸港鹿港龍井 / 建築生活品質","project":"至善人本","interest":"建材（工業材料和設備）、結構工程、砌體結構、Sustainable architecture、整建（建築業）、新聞媒體（新聞服務）、建築媒體 (設計)、家電品牌和零售商 (零售)、居家裝飾 (室內裝潢)、生活風格 (生活風格內容)、生活品質（心理學）、身心健康（心理學）、營建管理","type":"訊息"},{"ta":"28-55 / 彰市和美 / 零售批發自營","project":"坤辰師大苑","interest":"零售業（產業）、批發（零售）、供應鏈、獨資企業（商業與財務）、經銷（商業）、居家事業（商業與財務）、小型企業（商業與財務）、銀行帳戶 (銀行業)、行銷企劃 (行銷)、貿易（經濟）、社群媒體行銷（行銷）、網紅行銷 (行銷)、網路購物（零售）、電子商務（零售） 0211 +價格、配送（商務）、節慶（活動）、淘寶網","type":"名單"},{"ta":"28-55 / 彰市和美 / 建築生活品質","project":"坤辰師大苑","interest":"建材（工業材料和設備）、結構工程、Sustainable architecture、營建管理、砌體結構、整建（建築業）、新聞媒體（新聞服務）、建築媒體 (設計)、居家用品零售商 (零售)、家電品牌和零售商 (零售)、生活品質（心理學）、生活風格 (生活風格內容)、自我照護（心理學）、身心健康（心理學）、行業類別：建築與工程","type":"名單"},{"ta":"30-60 / 花壇大村 / 汽車貿易業者","project":"鉅德富地","interest":"批發（零售）、電動車（交通工具）、經銷（商業）、出口貿易、二手車（交通工具）、Lexus 汽車（交通工具）、賓士（交通工具）、汽車業（產業）、國際貿易、運輸（交通運輸）、別墅（住宿）、貿易（經濟）、物流（商業與財務）、Nissan 汽車（交通工具）、新聞媒體（新聞服務）、進口（郵遞）、汽車零件製造和銷售 (汽車)","type":"訊息"},{"ta":"28-50 / 東區北區 / 年輕買房","project":"原潮APT","interest":"綜藝電視節目 (電視節目)、表演藝術（表演藝術）、演唱會（音樂活動）、現場活動 (活動)、節慶（活動）、派對（活動）、美妝網紅 (美妝)、被動收入（商業與財務）、低成本航空公司、股票市場（投資）、時事（政治）、房地產（產業）、房屋（房地產）、行為：網紅創作者、餐飲創作者、行業類別：業務、生活要事：不與家人同住","type":"名單"},{"ta":"28-55 / 竹南頭份 / 銀行保險業","project":"八德盛景","interest":"28-55 / 竹南頭份 / 銀行保險業 -公義路、證券（金融）、財務會計（商業與財務）、財務規劃（投資）、金融服務（商業與財務）、外匯市場（貨幣）、儲蓄（銀行業）、業務開發 (商業活動)、Professional services、個人理財（銀行業）、人壽保險（保險）、一般保險 (保險)、開發潛在顧客 (行銷)、行業類別：商業與金融、行政服務 0312 +零售銀行業務（銀行業）、Business networking、投資銀行業（銀行業）、旅遊平安保險","type":"訊息"},{"ta":"30-55 / 龍井 / 零售批發自營","project":"敘uno","interest":"批發（零售）、小型企業（商業與財務）、居家事業（商業與財務）、經銷（商業）、供應鏈、銀行帳戶 (銀行業)、貿易（經濟）、電子商務（零售）、行銷企劃 (行銷)、社群媒體行銷（行銷）、網紅行銷 (行銷)、網路購物（零售）、價格、商業模式 (商業和金融業)、開發潛在顧客 (行銷)、餐飲業（餐飲）、行為：通勤者","type":"1510"},{"ta":"28-50 / 后里中科 / 科技業家庭","project":"后麗18","interest":"智慧科技 (消費電子產品)、iPhone（智慧型手機）、房屋保險（保險）、室內設計（設計）、591房屋交易網、排屋、連棟住宅（建築）、家電（消費電子產品）、傢俱（居家裝潢）、一般保險 (保險)、家務（家居和園藝用品）、生活用品（家居和園藝用品）、一般健康 (個人護理)、美食家（美食和餐飲） 0312 +時尚設計（設計）、商業智慧 (商業和金融業)、酒精飲品（美食和餐飲）、消費電子展","type":"訊息"},{"ta":"28-55 / 西屯精科 / 親子教育工業","project":"佳瓚大讚","interest":"量販店（食品零售業者）、親子教育（兒童和親子教育）、家樂福、幼兒教育（小學和中學教育）、教育（社會觀念）、幼兒照護（兒童和親子教育）、製造業（產業）、婚姻（婚禮）、代工生產、親子天下、製造生產服務和組織 (製造業)","type":"訊息"},{"ta":"30-45 / 西屯西區 / 業務性質","project":"原潮APT","interest":"業務開發 (商業活動)、人壽保險（保險）、保單（保險）、證券（金融）、信用卡（借貸）、汽車業（產業）、Business networking、行銷（商業與財務）、行銷服務和組織 (行銷)、直效營銷、財務顧問 (投資)、B2B（商業與財務）、汽車經銷（零售業者）、開發潛在顧客 (行銷)、設計貿易展和專業組織 (貿易展)","type":"名單"},{"ta":"30-60 / 桃園蘆竹 / 親子教育","project":"家悦美(主)","interest":"教養方式 (兒童和親子教育)、育兒雜誌 (媒體刊物)、媽媽寶寶-懷孕、生產、育兒、親子教育（兒童和親子教育）、新生兒派對（兒童和親子教育）、嬰幼兒和孕婦用品店 (零售)、在家教育（小學和中學教育）、LifeStyle Home、繪畫（視覺藝術）、家庭（社會觀念）、運動類遊戲 (電玩遊戲)、家庭桌遊 (遊戲)、語言教育、家長：嬰幼兒家長（01-02 歲）、學齡前兒童的家長（03-05 歲）、低年級學童（06-08 歲）的家長 0310 +蒙台梭利教育法、兒童發展（小學和中學教育）、樂器（樂器）、親子 (雜誌)","type":"訊息"},{"ta":"30-50 / 草屯霧峰大里 / 通勤上班教育","project":"水琉璃","interest":"教育資源 (教育)、課外活動、新聞媒體（新聞服務）、製造生產服務和組織 (製造業)、商業（商業與財務）、人力資源管理（商業與財務）、時事（政治）、家務管理和整理 (居家和園藝用品)、一般健康 (個人護理)、本田汽車（交通工具）、豐田汽車（交通工具）、行為：通勤者、任職公司：自営業(個人事業主)、行業類別：政府員工（全球）、家長：父母（全部）","type":"訊息"},{"ta":"28-55 / 大肚烏日/ 建築生活品質","project":"坤辰師大苑","interest":"建材（工業材料和設備）、結構工程、Sustainable architecture、營建管理、砌體結構、整建（建築業）、新聞媒體（新聞服務）、建築媒體 (設計)、居家用品零售商 (零售)、家電品牌和零售商 (零售)、生活品質（心理學）、生活風格 (生活風格內容)、自我照護（心理學）、身心健康（心理學）、土木工程（工程）、風險管理、木工 (興建和維修)","type":"名單"},{"ta":"28-55 / 太平大里 / 藍領公教職","project":"大興家園","interest":"上班族（流行文化）、技術員、工廠（製造業）、保單（保險）、存款帳戶 (銀行業)、配電系統、代工生產、公共運輸（交通運輸）、超市（食品零售業者）、本日優惠（零售）、教育資源 (教育)、教養方式 (兒童和親子教育)、節儉生活風格內容 (零售)、Retirement Insurance Benefits、專業發展（職業訓練）、退伍軍人福利（軍事）、家務管理和整理 (居家和園藝用品)、行業類別：保護服務、政府員工（全球）、教育和圖書館、行政服務","type":"訊息"},{"ta":"30-60/ 中科中清/ 傳產製造食品加工","project":"原潮APT","interest":"房屋（房地產）、汽車美容（交通工具）、飲食業、591房屋交易網、工程（科學）、倉儲業（產業）、汽車經銷（零售業者）、食品加工、汽車業（產業）、製造業（產業）、運輸（交通運輸）、零部件市場、物流（商業與財務）、房地產（產業）、不動產（房地產）、科技（電腦和電子產品）, 行為：使用 Facebook 的管道（行動裝置）：所有行動裝置、餐飲創作者","type":"名單"},{"ta":"35-65 / 中彰投 / 企業主戶外","project":"自然紅屋","interest":"商業計畫 (商業活動)、市場趨勢 (商業和金融業)、Prefabricated home、建築媒體 (設計)、居家風格和類型 (房地產)、RV Travel、露營車 (旅遊觀光)、休旅車營地（露營）、生態旅遊（旅遊觀光）、Outdoor Living","type":"訊息"},{"ta":"35-65 / 桃竹苗 / 鄉村休閒","project":"自然紅屋","interest":"居家風格和類型 (房地產)、生態旅遊（旅遊觀光）、農家樂、拖掛式房車、農村、旅遊景點和活動 (旅遊觀光業)、休閒活動（休閒）、家庭（社會觀念）、公園與遊憩、Farm-to-table、園藝（戶外活動）、家長：父母（全部）","type":"訊息"},{"ta":"30-55 / 后里豐原 / 零售批發自營","project":"后麗18","interest":"零售業（產業）、批發（零售）、經銷（商業）、供應鏈、居家事業（商業與財務）、小型企業（商業與財務）、銀行帳戶 (銀行業)、貿易（經濟）、電子商務（零售）、行銷企劃 (行銷)、社群媒體行銷（行銷）、網紅行銷 (行銷)、網路購物（零售）","type":"訊息"},{"ta":"30-65 / 南投草屯霧峰 / 休閒園藝 南投中興草屯霧峰","project":"寬心璽玥","interest":"遊程承攬業、跟團旅行 (旅遊觀光)、園藝工具 (花園和園藝造景)、園藝（家居和園藝用品）、露營車 (旅遊觀光)、休旅車營地（露營）、國家公園 (旅遊目的地)、中華文化、登山步道（健行）、節儉生活風格內容 (零售)、咖啡豆（咖啡）、均衡飲食（個人護理）","type":"訊息"},{"ta":"28-55 / 苗栗(市區苑裡) / 居家裝飾設計","project":"臻富裕","interest":"居家裝飾 (室內裝潢)、居家裝潢構想 (室內裝潢)、室內裝潢品牌和零售商 (零售)、百葉簾、現代家具（居家裝潢）、生活風格 (生活風格內容)、北歐風設計（建築）、建築媒體 (設計)、室內設計（設計）、窗戶（建築）、房地產（產業） 0325 -Miaoli County","type":"訊息"},{"ta":"30-60 / 嶺東烏日南區 / 行銷人力管理","project":"富旺商城","interest":"行銷企劃 (行銷)、商機 (商業和金融業)、社群媒體行銷（行銷）、購物中心（零售）、銷售管理 (商業活動)、開發潛在顧客 (行銷)、行銷策略（行銷）、零售業（產業）、服裝（服飾）、共用工作空間、商業領袖 (商業和金融)、小型企業（商業與財務）、時尚（流行文化）、人力資源管理（商業與財務）","type":"名單"},{"ta":"30-60 / 林口五股新莊 / 金融投資","project":"家悦美(主)","interest":"交易策略（投資）、金錢（貨幣）、金融經濟學、財經（商業與財務）、金融服務（商業與財務）、金融分析、被動收入（商業與財務）、投資管理（投資）、股票市場（投資）、投資（商業與財務）、投資者（投資）、不動產（房地產）、收入（商業與財務）、投資報酬率（投資）","type":"名單"},{"ta":"30-60 / 草屯南投 / 汽車工業","project":"水琉璃","interest":"二手車（交通工具）、汽車經銷（零售業者）、汽車零件製造和銷售 (汽車)、卡車（交通工具）、批發（零售）、製造生產服務和組織 (製造業)、建築工程、土木工程（工程）、居家裝修（家居和園藝用品）、金屬、一般保險 (保險)、儲蓄（銀行業）、酒精飲品（美食和餐飲）、行業類別：安裝與維修服務","type":"訊息"},{"ta":"30-50 / 北屯潭子 / 自由業","project":"原潮APT","interest":"業務開發 (商業活動)、Business networking、創意創業 (商業和金融業)、開發潛在顧客 (行銷)、個人發展（個人身分）、攝影師（攝影）、設計（設計）、居家辦公家具 (居家裝潢)、Project management software、影音俱樂部、MacBook、Canva、生產率、網路銀行（銀行業）","type":"名單"},{"ta":"30-55 / 北斗田尾 / 公務員教育","project":"羣昱馥昕2","interest":"人壽保險（保險）、家庭（社會觀念）、教養方式 (兒童和親子教育)、教育技術學（教育）、政府機關概念和作法 (法律和政府)、銀行業（金融）、均衡飲食（個人護理）、社區議題（法律與政府）、健身和保健（健身）、新聞媒體（新聞服務）、行業類別：教育和圖書館、行政服務、社區和社會服務","type":"訊息"},{"ta":"28-55 / 台中(北屯豐原) / 家具零售","project":"臻富裕","interest":"百葉簾、居家裝潢構想 (室內裝潢)、室內裝潢品牌和零售商 (零售)、宜家家居（零售業者）、Workinghouse 生活工場、大創百貨、家樂福、網路購物網站 (網站)、momo購物網、居家裝修（家居和園藝用品）、住家翻新 (住家修繕)、整建（建築業）","type":"訊息"},{"ta":"30-55 / 伸港鹿港線西 / 傳產代工家庭","project":"至善人本","interest":"批發（零售）、出口貿易、排屋、進口（郵遞）、紡織品、化學工業、玻璃、生物可分解塑膠、汽車業（產業）、居家事業（商業與財務）、B2B（商業與財務）、Procurement、代工生產、會計學（商業與財務）、家長：父母（全部）","type":"訊息"},{"ta":"30-55 / 伸港和美 / 五金自營商","project":"至善人本","interest":"批發（零售）、排屋、代工生產、B2B（商業與財務）、五金行（零售業者）、零部件市場、製造業（產業）、不鏽鋼、水管修繕（建築業）、金屬加工（建築業）、建材（工業材料和設備）、居家裝修（家居和園藝用品）、住家翻新 (住家修繕)、傢俱（居家裝潢）、行為：小型企業主 0409 +電力、改裝車（交通工具）、配電系統、行為：小型企業主、通勤者","type":"訊息"},{"ta":"35-55 / 中清洲際 / 老闆高管","project":"家羽醇華","interest":"佳士得、Art auction、精品 (生活風格內容)、路易威登（時尚品牌）、愛馬仕（服飾）、藝術展覽（視覺藝術）、勞力士（手錶）、商業領袖 (商業和金融)、高階管理人員、保時捷、賓士（交通工具）、管理（商業與財務）、投資策略（投資）、私人銀行服務、企業家（商業與財務）","type":"訊息"},{"ta":"30-60 / 北屯太平潭子 / 餐廳零售業","project":"大城二月埕","interest":"管理（商業與財務）、食品和飲品 (食物和飲品)、咖啡文化 (咖啡)、烹飪學（美食和餐飲）、中式料理（美食和餐飲）、韓式料理（美食和餐飲）、日本料理（美食和餐飲）、零售業（產業）、業務開發 (商業活動)、社群媒體行銷（行銷）、廚具（廚房與餐廚）、節慶（活動）、行為：Instagram 商業檔案管理員","type":"名單"},{"ta":"35-55 / 西屯水湳 / 金融投資","project":"家羽醇華","interest":"金融經濟學、交易策略（投資）、被動收入（商業與財務）、投資管理（投資）、資產管理 (商業和金融業)、納斯達克100指數、倫敦證券交易所 (投資)、美國運通、現金、特斯拉汽車（交通工具）、NVIDIA GeForce、住宅房地產 (房地產)、房地產（產業）、黃金（金屬與礦物）","type":"訊息"},{"ta":"30-55 / 竹科關埔 / 精品私校教育","project":"元方學府首席1","interest":"私立學校（教育）、國際學校（小學和中學教育）、Bilingual education、樂器（樂器）、藝術和音樂（藝術）、兒童發展（小學和中學教育）、精品（零售）、精品 (生活風格內容)、園藝（家居和園藝用品）、豪華轎車（交通工具）、露台（園藝）、股票市場（投資）、高淨值人士（商業與財務）、家長：父母（全部）","type":"名單"},{"ta":"30-50 / 大台中 / 金融投資","project":"原潮APT","interest":"投資管理（投資）、交易策略（投資）、被動收入（商業與財務）、外匯市場（貨幣）、黃金（金屬與礦物）、石油、股票（投資）、新聞媒體（新聞服務）、半導體、精品（零售）、航空公司、家庭自動化（消費電子產品）、一般保險 (保險)","type":"名單"},{"ta":"30-50 / 鹿港和美 / 零售批發自營","project":"坤辰師大苑","interest":"商業模式 (商業和金融業)、零售業（產業）、批發（零售）、產品（公司）、經銷（商業）、供應鏈、居家事業（商業與財務）、電子商務（零售）、自僱（工作機會）、貿易（經濟）、行銷（商業與財務）、網路廣告（行銷）、價格、會計學（商業與財務）, 行為：商家的粉絲專頁管理員","type":"名單"},{"ta":"**30-60 / 新北三重 / 科技業+旅遊","project":"家悦美(主)","interest":"房屋（房地產）、旅遊網站（網站）、大數據 (科學)、免稅商店、智慧科技 (消費電子產品)、高科技（電腦和電子產品）、新興技術（科學）、飯店（住宿）、房地產（產業）、Hotels.com（住宿）、旅遊（旅遊觀光）、Trivago、Booking.com（旅遊觀光業）","type":"名單"},{"ta":"30-55 / 大埤斗南 / 食品代工","project":"中祐雅苑","interest":"連棟住宅（建築）、自僱（工作機會）、代工生產、製造生產服務和組織 (製造業)、食品產業、食品加工、化學、環境科學（科學）、包裝和標籤（商業與財務）、急凍食品、飲料（美食和餐飲）、批發（零售）、物流（商業與財務）、一般保險 (保險)","type":"訊息"},{"ta":"30-60 / 北區東區 / 教育/投資","project":"元方大景首席","interest":"教育（社會觀念）、學習（教育）、課程（教育）、學校（教育）、文學（藝術）、室內設計（設計）、電子書（媒體刊物）、個人理財（銀行業）、財務規劃（投資）、股票（投資）、書籍（媒體刊物）、房地產投資（投資）、行業類別：行政服務、教育和圖書館","type":"名單"},{"ta":"30-60 / 東區竹東 / 研究/高知識/綠生活","project":"元方大景首席","interest":"科學 (期刊)、高等教育（教育）、教育新聞 (教育)、自然科學、哲學、研究所教育（高等教育）、財經（商業與財務）、文學（藝術）、實驗室、新興技術（科學）、大眾媒體（娛樂與媒體）、工程和理工學院 (教育)、數學、植物園、森林生態學、觀賞植物（植物與花卉）、行業類別：教育和圖書館、計算與數學、資訊科技和技術服務","type":"名單"},{"ta":"30-55 / 伸港鹿港線西 / 科技家庭自住","project":"至善人本","interest":"生活用品（家居和園藝用品）、家務（家居和園藝用品）、家電（消費電子產品）、傢俱（居家裝潢）、一般保險 (保險)、房屋（房地產）、591房屋交易網、室內設計（設計）、房屋保險（保險）、排屋、連棟住宅（建築）、iPhone（智慧型手機）、物聯網、智慧科技 (消費電子產品)、家長：父母（全部）","type":"訊息"},{"ta":"(test)30-55/中科水湳中清/房地產/股票","project":"原潮APT","interest":"住宅房地產 (房地產)、591房屋交易網、不動產（房地產）、股市指數期貨 (商業金融)、股票（投資）、財務規劃（投資）、證券（金融）、股票經紀人 (投資)、交易策略（投資）","type":"1510"},{"ta":"(test)30-55/中科水湳中清/房地產/股票","project":"原潮APT","interest":"餐飲業（餐飲）、Restaurant management、商業模式 (商業和金融業)、食品保存、飲料（美食和餐飲）、中式料理（美食和餐飲）、咖啡文化 (咖啡)、在地美食（美食和餐飲）、早午餐（美食和餐飲）、輪班工作制（商業與財務）","type":"1510"},{"ta":"30-60 / 新北三重 / 資訊/金融期貨","project":"家悦美(主)","interest":"資料管理 (軟體)、資料分析 (商業和金融業)、資料視覺化 (科學)、機器學習（計算）、防毒軟體、金融經濟學、投資管理（投資）、股票（投資）、被動收入（商業與財務）、黃金（金屬與礦物）、石油、半導體、精品（零售）、航空公司、家庭自動化（消費電子產品）、交易策略（投資）","type":"名單"},{"ta":"30-60 / 林口蘆竹 / 精品/藝術品/投資","project":"家悦美(主)","interest":"當代藝術（視覺藝術）、藝術展覽（視覺藝術）、藝術品（視覺藝術）、雕刻（藝術）、寶石（金屬與礦物）、裝飾風藝術、花卉（植物與花卉）、美國運通、納斯達克100指數、投資管理（投資）、插花、被動收入（商業與財務）、收藏（興趣）、石英、黃金（金屬與礦物）、精品（零售）、房地產（產業）","type":"名單"},{"ta":"30-65/南興公園+6/金融投資","project":"景立方層峰-主","interest":"投資管理（投資）、交易策略（投資）、被動收入（商業與財務）、外匯市場（貨幣）、黃金（金屬與礦物）、石油、股票（投資）、新聞媒體（新聞服務）、半導體、精品（零售）、航空公司、家庭自動化（消費電子產品）、一般保險 (保險)","type":"名單"},{"ta":"30-60 / 員林埔心 / 軍公教/教育 (參考後台30-65/員林 永靖/軍公教 重教育家長 )","project":"坤悅原鄰薈","interest":"歌唱（音樂）、退伍軍人福利（軍事）、表演藝術（表演藝術）、圖書館、假期（活動）、教育技術學（教育）、時事（政治）、英語（語言）、婚禮（社會觀念）、師範教育（職業訓練）、政府（政府機構）、YouTube（串流服務）、休旅車（交通工具）、掀背車（交通工具）、行業類別：政府員工（全球）、教育和圖書館、行政服務、家長：低年級學童（06-08 歲）的家長、青少年學童（09-12 歲）的家長、學齡前兒童的家長（03-05 歲）","type":"訊息"},{"ta":"30-65/南興公園+6/置產/醫師/高管","project":"景立方層峰-主","interest":"中小型企業（商業與財務）、個人理財（銀行業）、金融服務（商業與財務）、生物技術、特斯拉汽車（交通工具）、股票（投資）、房地產開發（房地產）、健身和保健（健身）、生物學（科學）、書籍（媒體刊物）、醫學院 (高等教育)、房地產（產業）、管理（商業與財務）","type":"名單"},{"ta":"30-65/南興公園+6/政治/置產/科技","project":"景立方層峰-副","interest":"房屋（房地產）、社會運動（社會公益理念）、金融市場（投資）、個人理財（銀行業）、大數據 (科學)、機器學習（計算）、iPad、被動收入（商業與財務）、時事（政治）、股票（投資）、MacBook Pro、房地產投資（投資）、政府機關概念和作法 (法律和政府)、金融經濟學、政治和社會議題 (政治)、地緣政治學","type":"名單"},{"ta":"35-65 / 青埔竹科 / 金融投資","project":"新大墨","interest":"金融經濟學、交易策略（投資）、投資管理（投資）、資產管理 (商業和金融業)、納斯達克100指數、倫敦證券交易所 (投資)、美國運通、現金、特斯拉汽車（交通工具）、英偉達、住宅房地產 (房地產)、房地產（產業）、黃金（金屬與礦物）","type":"名單"},{"ta":"30-60 / 彰市 / 自營商/醫律/投資","project":"坤悅原鄰薈","interest":"室內設計（設計）、律師事務所 (法律和法律諮詢服務)、批發（零售）、供應鏈、個人理財（銀行業）、經銷（商業）、出口貿易、電子商務（零售）、食品產業、生物學（科學）、投資（商業與財務）、醫學院 (高等教育)、房地產（產業）、居家事業（商業與財務）、財產保險、零售業（產業）、行為：小型企業主、行業類別：健康照護與醫療服務、法律服務","type":"名單"},{"ta":"30-55/中科水湳中清/科技自營商A","project":"原潮APT","interest":"自動化技術、資訊科技（電腦和電子產品）、591房屋交易網、工程（科學）、力學、金屬、時事（政治）、電機工程（工程）、高科技（電腦和電子產品）、機械工程（工程）、電子工程、消費電子產品（電腦和電子產品）、科技（電腦和電子產品）、資訊, 行為：科技早期採用者, 行業類別：資訊科技和技術服務、管理、製造","type":"名單"},{"ta":"30-55/十期+8/科技新貴/旅遊","project":"原潮APT","interest":"房屋（房地產）、大數據 (科學)、圖形處理器、航空公司、高科技（電腦和電子產品）、旅遊（產業）、http://hotels.com/（住宿）、http://booking.com/（旅遊觀光業）、房地產（產業）","type":"1510"}];
+const TAGS={
+  re:["Real Estate 591 (591房屋交易網)","Housing (房屋)","Real Estate Industry (房地產)","Residential Area (住宅區)","Property Portal (房屋廣告)","Property (不動產)","Apartment (公寓)","Apartment Complex (公寓大樓)","Real Estate Investment (房地產投資)","Leju Network (樂屋網)","Home Style (居家風格)","Home Construction (住宅興建)","Starter Home (起步房)","Rental Property (租賃)","Real Estate Development (房地產開發)","Real Estate Economics (房地產經濟學)","Property Valuation (房地產估價)","First-Time Buyer (首次購房者)","Home Buyer Subsidy (首次購屋補助)","Mortgage Loan (房屋抵押貸款)","New Home (新家)","Retirement Community (退休社區)","Prefab Home (組合屋)","Real Estate Investing (房地產投資相關)","Residential Real Estate (住宅房地產)","Real Estate Investment Club (房地產投資俱樂部)","Commercial Property (商用不動產)","Home Renovation (住家翻新)","Townhouse (連棟住宅)","First-time Home Buyer (首次購房者)","Rental Listings (待租房屋資訊)","Sustainable Architecture Design (永續建築設計)","For Sale By Owner (由擁有者出售)","Property Listing Sites (房屋廣告入口網站)","Creative Real Estate Investing (創意房地產投資)","Home Insurance (房屋保險)","Row House (排屋)"],
+  invest:["Stocks (股票)","Financial Market (金融市場)","Foreign Exchange (外匯市場)","Cryptocurrency (數位貨幣)","Stock Index (股市指數)","Wealth (財富)","Money (金錢)","Income (收入)","Passive Income (被動收入)","Financial News (財經)","Investment (投資)","Financial Planning (財務規劃)","Personal Finance (個人理財)","Savings (儲蓄)","Stock Market (股票市場)","Trading Strategy (交易策略)","Day Trading (當沖交易)","Swing Trading (波段交易)","Forex Signals (外匯交易信號)","Investment Strategy (投資策略)","Financial Advisor (財務顧問)","Capital (資金)","Financial Services (金融服務)","Banking (銀行業)","Asset Management (資產管理)","Shares (股份)","ROI (投資報酬率)","Investor (投資者)","Securities (證券)","Mobile Payment (行動支付)","Savings Account (儲蓄帳戶)","Stock Broker (股票經紀人)","Algorithmic Trading (演算法自動交易)","Venture Capital (創投融資)","Angel Investing (天使投資)","Seed Accelerator (創業加速器)","ETF (指數型股票基金)","Mutual Fund (共同基金)","London Stock Exchange (倫敦證券交易所)","NASDAQ 100 (納斯達克100指數)","S&P 500 (標準普爾500指數)","Dow Jones (道瓊斯工業平均指數)","Stock Index Futures (股市指數期貨)","Private Equity (私募股權投資)","Private Fund (私募基金)","Investment Banking (投資銀行業)","Investment Management (投資管理)"],
+  rich:["Luxury Car (豪華轎車)","Duty-Free Shop (免稅商店)","Luxury Goods (精品)","Private Banking (私人銀行)","Hermes (愛馬仕)","Chanel (香奈兒)","Golf (高爾夫球)","Senior Executive (高階管理人員)","Haute Couture (高級訂製)","High Net Worth (高淨值人士)","Luxury Lifestyle (豪奢生活方式)","Country Club (高級俱樂部)","Fine Dining (高級餐飲愛好者)","Art Auction (藝術拍賣)","Priority Pass (機場貴賓室)","Frequent Flyer Program (飛行常客獎勵)","Philanthropy (慈善家)","Boutique Fashion (女性精品服飾)","Boutique Hotel (精品酒店)","Luxury Travel (豪華旅遊)","Luxury Resort (奢華渡假村)","Collectibles (收藏品)","High-end Audio (高端音響)","Gucci (古馳時尚品牌)","Versace (凡賽斯時尚品牌)","Louis Vuitton (路易威登時尚品牌)","Porsche (保時捷)","Patek Philippe (百達翡麗名錶)","Rolex (勞力士名錶)","Haute Couture Fashion (高級訂製時裝)","Antiques (古董)","Yacht (遊艇)","Gold (黃金)","Gemstones (寶石)","Auction (拍賣)","Christie's Auction (佳士得藝術拍賣)","Sotheby's Auction (蘇富比藝術拍賣)","Christie's (佳士得藝術拍賣)","Sotheby's (蘇富比藝術拍賣)"],
+  home:["Home Renovation (居家裝修)","IKEA (宜家家居)","Furniture (傢俱)","Interior Design (室內設計)","Modern Furniture (現代家具)","Home Improvement (住家修繕)","Quality Design (質感設計)","Fashion Design (時尚設計)","Kitchen (廚房)","Home Living (住家)","Home Appliances (家電)","Home Decor Store (居家裝潢)","Hardware Store (五金行)","Household Goods (生活用品)","Bedroom Furniture (臥室家具)","Tables & Desks (桌子)","Dehumidifier (除濕機)","Air Purifier (空氣凈化器)","Dyson (戴森)","KitchenAid (廚房家電)","Searchome Design (設計家)","Home & Living Mag (漂亮家居)","Blinds (百葉簾)","Lawn & Garden (草地)","Gardening (園藝)","Housework (家務)","Zara Home (居家品牌)","Interior Design Content (室內設計內容)","Home Organization (家務管理和整理)","Household Goods Retail (居家用品零售商)","LifeStyle Home (生活風格家居)","Kitchen Appliances Brand (廚房家電品牌)","Cabinetry (櫥櫃)","Garden Furniture (庭院家具)","Garden Architecture (花園建築裝飾)","Terrace (露台)","Spring Cleaning (大掃除)","Home Office Furniture (居家辦公家具)","Kitchen Design (廚房設計)","Scandinavian Design (北歐風設計)","Light Fixtures (燈具)","Home Decor (居家裝飾)","Smart Home Automation (家庭自動化)","HVAC (暖通空調)","Housewarming Party (入厝派對)","Home Decor Retail (居家裝飾零售)","Home Decor Media (居家和園藝媒體)","Home Style Types (居家風格和類型)","Interior Decoration Retail (居家裝潢零售商)","Home Decoration Ideas (居家裝潢構想)","Home Accessories (居家飾品)","Flooring (地板)","Windows (窗戶)","Stainless Steel (不鏽鋼)","Mattress Brand (床墊品牌)","KitchenAid (KitchenAid廚房家電)","Garden Tools (園藝工具)","Flowers (花卉)","Flower Arranging (插花)","Ornamental Plants (觀賞植物)","Greenhouse (溫室)","Home Appliance Brand (家電品牌和零售商)"],
+  food:["Cooking (烹飪)","Supermarket (超市)","Hypermarket (量販店)","Alcoholic Drinks (酒精飲品)","Gourmet Food (美食)","Coffee (咖啡)","Cafe (咖啡廳)","Chinese Cuisine (中式料理)","Organic Food (有機產品)","Picnic (野餐)","Casual Dining (休閒餐廳)","Restaurant (餐廳)","Home Brewing (自釀啤酒)","Beer Festival (啤酒節)","Starbucks (星巴克)","Farmer Market (農夫市集)","Carrefour (家樂福)","RT-Mart (大潤發)","7-Eleven (7-11)","FamilyMart (全家)","Costco (好市多)","Beverages (飲料)","Food Processing (食品加工)","Food (食品)","Seafood (海鮮)","Tea (茶)","Farm-to-Table (產地直送)","Baking & Cooking Tools (烘焙廚具)","Cookware (廚具)","Food & Beverage Industry (餐飲業)","Beer Brewing (釀造)","Brewery (釀造廠)","Food Preservation (食品保存)","Sauces (醬汁)","Wine Tasting (品酒)","Fine Dining Lovers (精緻料理愛好者)","Dining Out (外食)","Foodie (美食家)","Gourmet Food Lovers (美食愛好者)","Food Media (食品媒體和內容)","Wine Content (葡萄酒相關內容)","Specialty Coffee (精品咖啡)","Quality Foods (優質食品)","Microbrewery (小型精釀啤酒廠)","KIND Healthy Snacks (健康零食品牌)","Food Trucks (餐車飲食業)","Home Cooking (在家下廚)","Craft Beer (精釀啤酒手工啤酒)","Convenience Food (即時食品)","Food Ingredients (食材)","Tea Leaf Brand (茶葉品牌)","Liquor Retailer (酒類商品零售商)","Lifestyle Food (輕食均衡飲食)","Farm-to-Table (產地到餐桌)","Farmers Market (農夫市集)","Hospitality Industry (餐旅業)","Japanese Cuisine (日本料理)","Hotpot (火鍋)","Brunch (早午餐)","Beef (牛肉)","Desserts (甜點)","Local Cuisine (在地美食)","Cake (蛋糕)","Sushi (壽司)","Fast Food (速食)","Vegan Nutrition (純素營養)","Natural Food (天然食品)","Beer (啤酒)","Energy Drinks (能量飲料)","English Breakfast (英式早餐)","Culinary Arts (烹飪學)","Buffet (自助餐)","Bakery (烘培坊)","BBQ (燒烤)","Pastry (糕點)","Salmon (鮭魚)","Chicken (雞肉)","Food Creators (餐飲創作者)","Online Food Ordering (線上訂餐)","Korean Cuisine (韓式料理)","Coffee Culture (咖啡文化)","Coffee Beans (咖啡豆)","Winery (葡萄園)","Wine Estate (酒莊)","Sparkling Wine (氣泡酒)","Frozen Food (急凍食品)","Fast Casual Restaurant (速食休閒餐廳)","Balanced Diet (均衡飲食)","Fish Oil (魚油)"],
+  travel:["Tourism (旅遊)","Travel Website (旅遊網站)","Trivago (比價平台)","Hotel (飯店)","Booking.com (訂房平台)","Hotels.com (訂房網)","Backpacking (自助旅行)","Travel Channel (旅遊頻道)","Eco-Tourism (生態旅遊)","Light Travel (輕旅行)","Vacation (假期)","Leisure Activities (休閒活動)","Holiday (度假)","Camping (露營)","RV Camping (露營車)","Bed & Breakfast (民宿)","Trailer & RV (拖掛式房車)","Airline (航空公司)","Travel Agency (旅行社)","Travel Bag (背包)","Tourist Attractions (旅遊景點)","Travel Industry (旅遊產業)","Booking.com (訂房)","Hotels.com (訂房)","Lifestyle Travel (生活旅遊)","Campsite (營地)","Weekend Getaway (週末旅遊)","Cultural Tourism (文化觀光)","Cultural Travel (文化旅遊)","Urban Exploration (城市探險)","Flight Comparison Platform (機票比價平台)","Self-guided Tour (自助導覽自由行)","RV Travel (露營車旅遊)","National Parks (國家公園)","Road Trip (公路旅行)","Weekend Trips (週末旅行)","Lifestyle Travel (貼近日常深入在地旅遊)","Ski Resort (滑雪勝地)","Adventure Travel (冒險旅遊)","Resort (度假村)","Vacation Rental (度假屋出租)","Villa (別墅住宿)","Bed and Breakfast (住宿加早餐酒店)","Business Travel (商務旅遊)","Business Class Flight (商務艙)","Low-Cost Airline (低成本航空公司)","Tourist Attractions (旅遊景點和活動)","Cruise (遊輪)","Tour Operator (遊程承攬業)","Group Tour (跟團旅行)","Japanese Inn (日式旅館)","Airport (機場)","Self-guided Travel (自助旅行)"],
+  tech:["Smart Technology (智慧科技)","Artificial Intelligence (人工智慧)","Emerging Technology (新興技術)","Big Data (大數據)","YouTube (影音平台)","Electronics (電子產品)","Information Technology (資訊科技)","Technology (科技)","AI (人工智慧)","Computer (電腦)","iPad (平板)","MacBook (蘋果筆電)","Apple Watch (蘋果手錶)","PlayStation (遊戲主機)","Samsung Electronics (三星)","Philips (飛利浦)","Electrolux (伊萊克斯)","Virtual Reality (虛擬實境)","Gaming PC (電競電腦)","Video Editing Software (剪輯軟體)","Photo Editing (圖像編輯)","Smart Devices (智慧裝置)","IT & Tech Services (資訊科技服務)","Consumer Electronics (消費電子)","Instant Camera (即時成像相機)","Smart Technology News (科技新聞)","TechRadar (全球性科技媒體)","Open Source Software (開放原始碼軟體)","Wearable Technology (穿戴式科技)","Android Wear (Android智慧手錶系統)","Mobile App Development (行動應用程式開發)","Software Development (基於組件的軟體工程)","Linux (開放原始碼類Unix作業系統)","DevOps (開發維運整合)","Consumer Electronics Show (消費電子展)","AI (AI人工智能)","C Language (C語言)","Java Programming (Java程式語言)","PHP Programming (PHP程式語言)","Python Programming (Python程式語言)","GitHub (GitHub代碼平台)","Canva (Canva設計工具)","IoT Internet of Things (物聯網)","Software Engineering (軟體工程)","Software Development (軟體開發)","Computer Science (電腦科學)","Computer Programming (電腦程式設計)","Computer Technology (電腦運算)","Cloud Computing (雲端運算)","Machine Learning (機器學習)","Programming Languages (程式語言)","Antivirus Software (防毒軟體)","Web Development (網站開發)","Automation Technology (自動化技術)","GPU (圖形處理器)","RAM (電腦記憶體)","NVIDIA GeForce (NVIDIA顯卡)","Mobile App (行動應用程式)","Samsung Electronics (三星電子)","Japanese Electronics Brand (日本消費電子產品品牌)","Apple Watch (Apple Watch蘋果手錶)","MacBook (MacBook蘋果筆電)","iPad (iPad平板)","iPhone (iPhone蘋果手機)","Logitech (羅技外設)","Razer (Razer電競外設)","Consumer Electronics (消費電子產品)","Tech Brand (科技品牌)","Tech News (科技新聞)","Data Analytics (資料分析)","Data Visualization (資料視覺化)","Data Management (資料管理)","Semiconductor (半導體)"],
+  sports:["Sports & Athletics (運動)","Outdoor Activities (戶外休閒)","Badminton (羽球)","Cycling Sport (自行車)","Bicycle (自行車)","Running (跑步)","Fitness (健身)","Gym Fitness (健身房)","Mountain Hiking (登山)","Physical Sports (體育)","Decathlon (迪卡儂)","Wellness (身心健康)","Vitamins & Supplements (維他命)","Health & Wellbeing (健康和保健)","Health Education (健康教育)","Parks & Recreation (公園與遊憩)","Outdoor Lifestyle (戶外)","Sports Media (運動和媒體)","Team Sports (團隊運動)","Pilates Professional (皮拉提斯專業健身)","Stretching (伸展)","Ball Sports (球類運動)","Extreme Sports (極限運動)","Hiking Equipment (健行和露營裝備)","Hiking Trails (健行登山步道)","Mountain Trail (登山步道)","Hiking and Camping (健行和露營)","Jogging (慢跑)","Marathon (馬拉松)","Baseball (棒球)","Tennis (網球)","Weight Training (重量訓練)","Aerobics (有氧運動)","Fitness Club (健身俱樂部)","Rock Climbing (攀岩)","Bouldering (攀石)","Skiing (滑雪)","Snowboarding (滑雪板)"],
+  education:["Education (教育)","Higher Education (高等教育)","Academic Conference (學術研討會)","Reading (閱讀)","Academic Journal (學術期刊)","Exhibition Hall (展覽館)","Books (書籍)","Research (研究)","Library (圖書館)","Education & Library (教育和圖書館)","Montessori Education (蒙台梭利)","University (大學)","Graduate Education (研究所)","Parenting Education (親子教育)","Early Childhood Education (幼兒教育)","School District (學區)","Education Resources (教育資源)","Learning (學習)","Training (訓練)","Dental School (牙科學院)","General Education (教育)","Educational Resources (教育資源益智玩具)","Cultural Exchange (交換學生)","Continuing Education (繼續教育)","Extracurricular Activities (課外活動)","Nursing Education (護理教育)","EdTech (教育技術學)","Early Learning Centre (早教中心)","Bilingual Education (雙語教育)","Art Education (藝術教育)","Adult Education (成人教育)","Professional Development (專業發展)","Dental Education (牙醫學院教育)","Language Education (語言教育)","Foreign Language (外語)","English Language (英語學習)","Graduate Education (研究所教育)","Private School (私立學校)","Engineering School (理工學院)","Teacher Education (師範教育)","Montessori Education (蒙台梭利教育法)","Courses (課程)","School (學校)"],
+  business:["Entrepreneur (企業家)","Business (商業)","Small Business (小型企業)","Sole Proprietorship (獨資企業)","SME (中小型企業)","Home Business (居家事業)","E-commerce (電子商務)","Franchise (加盟連鎖)","Startup (新創公司)","Wholesale (批發)","Self-Employed (自僱)","Business Development (業務開發)","Business Opportunity (商機)","Digital Marketing (數位行銷)","Social Media Marketing (社群媒體行銷)","Advertising Agency (廣告代理)","Business Incubator (企業孵化器)","Business Model (商業模式)","Drop Shipping (直運)","Customer Service (顧客服務)","Small Business Owner (小型企業主)","Creative Startup (創意創業)","Legal Services (法律服務)","Trade (貿易)","Advertising (廣告)","Company (公司)","Sales (業務)","Administration Industry (行政服務)","Distribution (經銷)","Entrepreneurship (創意創業)","ERP (企業資源計劃)","Outsourcing (外包)","Professional Services (專業服務)","Conglomerate (綜合企業)","Office Supplies (辦公室用品)","Marketing Services (行銷服務)","Freelance Marketplace (自由工作者市場)","Business Opportunities (商機)","Digital Transformation (數位轉型)","Co-working Space (共用工作空間)","Influencer Marketing (網紅行銷)","Trade Shows (設計貿易展)","Risk Management (風險管理)","Lead Generation (開發潛在顧客)","Marketing Automation (行銷自動化)","Sales Management (銷售管理)","Innovation (創新)","International Business (國際商務)","Customer Support (客戶支援)","Project Management Software (專案管理軟體)","B2B Marketing (B2B商業行銷)","Direct Marketing (直效營銷)","Direct Sales (直銷)","Marketing (行銷)","Marketing Planning (行銷企劃)","Marketing Services (行銷服務和組織)","Marketing Strategy (行銷策略)","Ad Campaign (廣告行銷活動)","Brand Management (品牌管理)","Business Plan (商業計畫)","Business Intelligence (商業智慧)","Business Leader (商業領袖)","Data Analytics Business (資料分析)","Training and Development (培訓和開發)","Career Development (職涯發展)","Recruitment (徵才)","E-Commerce (電子商務)","Customer Relationship Management (顧客關係管理)","Affiliate Marketing (聯盟行銷)","Viral Marketing (病毒營銷)","Productivity (生產率)","Management (管理)"],
+  media:["Mass Media (大眾媒體)","News Media (新聞媒體)","Current Affairs (時事)","Entertainment (娛樂)","Netflix (串流影音)","TV Shows (電視節目)","TV Channel (電視台)","Short Video (短片)","Video Production (影片製作)","Viral Video (爆紅影片)","Radio Broadcasting (廣播)","Public Broadcasting (公共廣播)","Newspaper (報紙)","News Broadcasting (新聞播報)","Local News (本地新聞)","Pop Culture (流行文化)","Internet Memes (網路迷因)","Social Media (社群媒體)","Video Sharing Platform (影片分享)","Casual Games (休閒遊戲)","Entertainment News (娛樂新聞)","Celebrity News (名人娛樂新聞)","Video on Demand (隨選影片)","International News (國際新聞)","Film Awards (影視獎項)","Music Streaming (音樂和音訊串流)","Film and TV Industry (電影和電視業)","Digital Media (數位媒體)","Memes Community (迷因和社群媒體論壇)","Apple Music (Apple Music)","Netflix (Netflix)","Spotify (音樂串流)","LINE (LINE通訊)","Podcast (Podcast音頻)","Pop Music (流行音樂)","Music Festival (音樂節)","Concert (演唱會)","Singing (歌唱)","Mandopop (華語流行音樂)","K-Pop (韓國流行音樂)","K-Drama (韓國電視劇)","Variety Show (綜藝節目)","Soap Opera (肥皂劇)","Reality TV (真人實境秀)","E-book (電子書)","Viral Videos (爆紅影片)","Trending Topics (熱門話題)","Video Club (影音俱樂部)"],
+  gov:["Government (政府)","Local Government (地方政府)","Government Employee (政府員工)","Community Issues (社區議題)","Public Safety (公共安全)","National Security (國家安全)","Veterans Day (軍人節)","Retirement Insurance (退休保險)","Retirement Fund (退休基金)","Pension (退休金)","Retirement Planning (退休規劃)","Community Services (社區服務)","Public Transport (公共運輸)","Government Operations (政府機關概念)","Veteran Benefits (退伍軍人福利)","Public Administration (市政事務)","Retirement Insurance Benefits (退休保險福利)","Military (軍事)","Law (法律)","Lawyer (律師)","Law Firm (律師事務所)","Political and Social Issues (政治和社會議題)","Community and Social Services (社區和社會服務)","Tax Law (稅法)","Budget (財政預算案)"],
+  insurance:["Insurance (保險)","Insurance Policy (保單)","Credit Card (信用卡)","Loan (貸款)","PayPal (電子支付)"],
+  industry:["Manufacturing (製造業)","Food Industry (食品產業)","Factory (工廠)","Export Processing (加工出口工廠)","Logistics (物流)","Supply Chain (供應鏈)","Textile Industry (紡織工業)","Export Trade (出口貿易)","Machine Manufacturing (機械加工)","Metal Processing (金屬加工)","Warehousing (倉儲業)","Chemical Industry (化學工業)","Agriculture Industry (農業)","Fishery (漁業)","Transport & Moving (運輸與搬運)","Contract Manufacturing (代工生產)","Technician (技術員)","Industrial Engineering (工業工程)","Installation & Repair (安裝維修)","Building Materials (建材)","Water Industry (水利產業)","Procurement (採購管理)","Logistics Services (運輸和物流服務)","Freight Transport (運輸和物流貨運)","Industrial Technology (產業科技)","Electrical Wiring (電氣配線)","Forklift (叉車)","Sustainable Architecture (永續建築)","Building Construction (建築工程)","Manufacturing (製造)","Manufacturing Services (製造生產服務)","Packaging and Labeling (包裝和標籤)","Distribution (配送)","Electrical Distribution (配電系統)","Electric Lighting (電光源)","Battery (電池)","Oil and Gas (石油)","Quartz (石英)","Metal (金屬)","Glass (玻璃)","Masonry (砌體結構)","Machine Tools (工具機)","Printing (印刷)"],
+  beauty:["Clothing (服裝)","Fashion Accessories (時尚配件)","Beauty (美容)","Zara (時尚品牌)","H&M (服飾品牌)","MUJI (無印良品)","Lancome (蘭蔻)","MAC Cosmetics (MAC)","Jewelry (首飾)","Skincare (保養)","T-Shirt (T恤)","Garment (成衣)","Beauty Info Community (美妝社群)","Fragrance Oil (香精油)","HydraFacial (海菲秀水飛梭)","Fashion Technology (時尚科技機構)","Sustainable Fashion (永續時尚)","Footwear Media (鞋類媒體和內容)","Fashion Week (時裝周時裝秀)","Garment Industry (成衣服裝業)","Skincare (護膚保養)","Nail Art (指甲彩繪)","Nail Salon (美甲沙龍)","Beauty Salon (美容沙龍)","Beauty Store (美妝店)","Beauty Influencer (美妝網紅)","Keratin (角蛋白)","Hairstyle (髮型)","Tattoo (刺青)","CeraVe Skincare (CeraVe護膚)","Streetwear (街頭時尚)","Fast Fashion (快時尚)","Cartier (卡地亞珠寶)","Men's Fashion (男裝品牌)","Beauty Influencers (美妝網紅)","Keratin and Collagen (角蛋白膠原蛋白)","Men's Grooming (男性修容用品)","Women's Fashion Brand (女裝品牌)","Men's Fashion Brand (男裝品牌)"],
+  auto:["Car (汽車)","SUV (休旅車)","Auto Industry (汽車業)","Electric Vehicle (電動車)","Tesla (特斯拉)","Toyota (豐田)","BMW (寶馬)","Mercedes-Benz (賓士)","Honda (本田)","Car Insurance (汽車保險)","Car Loan (車貸)","Automobile Parts (汽車零件)","Electric Scooter (電動機車)","Motorcycle Accessories (摩托車配件)","Semi-Truck (聯結車)","Car Accessories (汽車零件)","Auto Repair (汽車技師)","Family Car (家用車)","Top Gear Magazine (極速誌雜誌)","Enterprise Car Rental (企業租車服務)","Used Car (二手車)","Custom Vehicle (自訂車款)","Car Maintenance (汽車保養)","Car Detailing (汽車美容)","Auto Parts Sales (汽車零件製造和銷售)","Hybrid Vehicle (油電混合車)","Sports Car (跑車)","Crossover SUV (跨界休旅車)","City Car (都會車)","Hatchback (掀背車)","Lexus (Lexus凌志汽車)","Nissan (Nissan日產汽車)","Car Dealership (汽車經銷)","Truck (卡車)","Car Wash (洗車)","Modified Car (改裝車)"],
+  medical:["Healthcare Services (醫療健康)","Medical School (醫學院)","Self-Care (自我照護)","Healthcare Industry (醫療行業)","Dentist (牙醫)","Hospital (醫院)","Mental Health (心理健康)","Pharmacy (藥局)","Traditional Chinese Medicine (中醫)","Nutrition (營養)","Physical Therapy (物理治療)","Aesthetic Medicine (醫美)","Health Checkup (健康檢查)","Yoga (瑜珈)","General Health (一般健康)","Healthy Lifestyle (健康的生活習慣)","Nutritional Supplements (維他命和營養補充品)","Health Food Brand (健康食品品牌)","Human Nutrition (人體營養科學)","Protein Supplements (蛋白質補充品)","Healthy Recipes (健康飲食的食譜)","Genetics (遺傳學)","Neuroscience (神經科學)","Yoga Studio (瑜珈教室和教學)","Dental School (牙科學院)","Water Therapy (水療)","Healthy Habits (健康的習慣)","Healthcare Services (健康照護與醫療服務)","Cholesterol (膽固醇)"],
+  agri:["Rural Area (農村)","Agritourism (農家樂)","Farm (農場)","Aquaculture (養殖漁業)","International Trade (國際貿易)","Organic Farming (有機農業)","Livestock (畜牧業)","Vegetable Farm (蔬菜農場)","Fruit Farm (果園)","Tea Garden (茶園)","Honey (蜂蜜)","Agricultural Technology (農業科技)","Rural Tourism (農村旅遊)","Farming Community (農業社群)","Commercial Fishing (商業捕魚)","Longline Fishing (延繩捕魚)","Sustainable Agriculture (永續農業)","Agricultural Media (農業新聞和內容)","Agricultural Machinery (農業機械)","Agricultural Services (農業服務和組織)","Agricultural News (農業新聞和內容)","Fertilizer (肥料)","Forest Ecology (森林生態學)","Botanical Garden (植物園)","Agribusiness (農企業)"],
+  family:["Family (家庭)","Parent of Toddler (嬰幼兒家長)","Parent of Elementary Child (小學家長)","Parent of Pre-Teen (青少年家長)","Engagement Proposal (求婚)","Wedding (婚禮)","Engagement (訂婚)","Childcare (幼兒照護)","Parenting Styles (教養方式)","Motherhood (育兒雜誌)","Baby Food (嬰兒副食品)","Family Board Games (家庭桌遊)","Red Envelope (紅包亞洲文化)","Kids Activities (兒童活動)","Baby & Maternity Store (嬰幼兒和孕婦用品店)","Working Parent (工作父母雙薪家庭)","Ring (戒指)","Engagement Ring (訂婚戒指)","Wedding Ring (婚戒)","Marriage (婚姻)","Wedding Banquet (婚宴)","Wedding Photography (婚紗攝影)","Wedding Website (婚禮網站和部落格)","Wedding Invitation (喜帖)","Wedding Cake (結婚蛋糕)","Parenting Magazine (育兒雜誌)","Parenting (育兒)","Children Education (兒童發展)","Children's Literature (兒童文學)","Newborn Party (新生兒派對)","Parenting Style (教養方式)","Parent Magazine (親子雜誌)","CommonWealth Education (親子天下)","Mom & Baby (媽媽寶寶懷孕)"],
+  youth:["Online Shopping (網路購物)","Young Professionals (上班族)","Instagram (社群)","Work From Home (遠距工作)","Chinese Culture (中華文化)","Movie Lovers (電影愛好者)","Online Entertainment (網路娛樂)","Online Social Community (網路社區)","Internet Celebrity (網路名人)"],
+  shopping:["Department Store (百貨公司)","Group Buying (團購)","Sales Promotion (促銷)","Convenience Store (便利商店)","Retail Industry (零售業)","Coupon (優惠券)","Discounts & Deals (折扣優惠)","Shopping (購物)","Flash Sale (特賣促銷)","Daily Deals (本日優惠)","Shopping Discount (購物折扣)","Amazon (亞馬遜)","Loyalty Program (會員集點計畫)","Online Fashion Store (網拍服飾品牌零售商)","Cash Rebate (現金回饋獎勵)","Buy One Get One (買一送一促銷)","Travel Deals (旅行優惠)","Daiso (大創百貨)","momo Shopping (momo購物網)","Taobao (淘寶網)","Discount Shopping (折扣和折讓)","Discount Store (折扣商店)","Thrifty Lifestyle (節儉生活風格)","Shopping Mall (購物中心)","Boutique Store (精品店)","Second-Hand Goods (二手商品)","Home Decor Store (居家裝潢零售商)","Electronics Store (消費電子產品零售商)","Online Shopping Website (網路購物網站)","Home Furnishing Retail (居家用品零售商)"],
+  arts:["Graphic Design (平面設計)","Arts (藝術)","Design (設計)","Web Design (網站設計)","Modern Art (現代藝術)","Culture (文化)","Architecture (建築)","Art Exhibition (藝術展覽)","Architecture Media (建築媒體)","Creativity (創意)","Illustration (插畫)","Contemporary Art Museum (當代美術館)","Painting (繪畫)","Museum (博物館)","Buildings (建築物)","Art Gallery (美術館)","User Experience Design (用戶體驗設計)","Digital Art (數字藝術)","Live Music (現場音樂音樂會)","Art Auction (藝術拍賣展)","Graffiti Art (塗鴉藝術)","National Gallery (國家藝廊)","Contemporary Art (當代藝術)","Artwork (藝術品)","Cultural Heritage (文化遺產)","Literature (文學)","History (歷史)","Performing Arts (表演藝術)","Sculpture (雕刻)","Interior Architecture (室內建築)","Art Deco (裝飾風藝術)","Portrait Photography (肖像攝影)","Photographer (攝影師)","Miyazaki Hayao (宮崎駿動漫)","Digital Camera (數位相機)"],
+  gaming:["Gamer (玩家)","Nintendo (任天堂)","Mobile Gaming (手機遊戲)","PC Gaming (電腦遊戲)","Console Gaming (主機遊戲)","Esports Tournament (電競賽事)","Steam (Steam平台)","Xbox (Xbox主機)","MOBA Games (MOBA遊戲)","RPG Games (角色扮演遊戲)","Battle Royale (大逃殺遊戲)","Twitch Streamer (遊戲直播)","Unity Game Engine (Unity遊戲引擎)","Board Games (桌上遊戲)","Video Game Culture (電子遊戲文化)","GameFAQs (電玩遊戲網路媒體)","Collectible Toys (收藏用玩具集換卡片)","Mobile Gaming (運動類遊戲)","Super Mario (超級馬利奧系列)","Legend of Zelda (薩爾達傳說)","Online Gaming (網路遊戲)","Video Games (電玩遊戲)","LEGO (樂高玩具)","Mahjong (麻將)"],
+  pets:["Pets & Animals (寵物)","Pet Food (寵物食品)","Dog (狗)","Cat (貓)","Pet Grooming (寵物美容)","Veterinary Clinic (動物醫院)","Pet Accessories (寵物配件)","Fish Aquarium (水族箱)","Bird (鳥類)","Pet Insurance (寵物保險)","Dog Training (狗狗訓練)","Pet Shelter (動物收容)","Dog Grooming (狗狗美容)","Dog Walking (遛狗)","Dog Health (犬隻健康)","Aquarium Keeping (水族飼養)","Cat Food (貓糧)","Fishing Gear (漁具)"],
+  engineering:["High-Tech (高科技)","Computer Engineering (電腦工程)","Electronic Engineering (電子工程)","Civil Engineering (土木工程)","Construction Engineering (建築工程)","Environmental Engineering (環境工程)","Mechanical Engineering (機械工程)","Electrical Engineering (電機工程)","Electronic Components (電子元件)","Genetic Engineering (基因工程)","Physical Security (保護人員和財產安全)","Science Communication (科技傳播學)","Structural Engineering (結構工程)","Materials Science (材料科學)","Mechanics (力學)","Chemistry (化學)","Biochemistry (生物化學)","Biotechnology (生物技術)","Biology (生物學)","Physics (物理學)","Energy Science (能源)","Energy Efficiency (能源效率)","Environmental Science (環境科學)","Natural Science (自然科學)","Mathematics (計算與數學)"],
+  craft:["Cotton Craft (棉花)","Sewing Machine (縫紉機)","Textile (紡織品)","Textile Crafts (紡織工藝)","Yarn (紗線)","Embroidery (刺繡)","Knitting (編織)","Sewing (縫紉)","Handicraft (手工藝)","Crafts & Hobbies (手工藝嗜好)","Woodworking (木工手工藝)"],
+  community:["Donation (捐贈)","Charity & Non-profit (慈善公益)","Non-profit Organization (非營利組織)","Club (俱樂部)","Political & Social Issues (政治社會)"],
+  corporate:["Product Manager (產品經理)","Founder (創辦人)","Director (總監)","Vice President (副總經理)","Corporate Management (企業管理)","CEO (執行長)","Manager (經理)","Human Resources (人力資源)","CFO (財務長)","Executive Coaching (高管教練)","Leadership (領導力)","Board of Directors (董事會)","Corporate Strategy (企業策略)","Business Networking (商業社交)","C-Suite Executive (高層主管)","Leadership Development (領導力發展)","Business Networking (商業社交人脈)","Consulting (顧問諮詢業)","Multinational Corporation (跨國公司)","Compensation and Benefits (薪水及福利)","Employee Engagement (員工敬業度)","Workwear (工作服)","Human Resources Management (人力資源管理)","Female Entrepreneur (女性企業家)","Business Decision Maker (商業決策者)","Leadership (領導)","Chairman (董事長)"],
+  leisure:["Leisure & Entertainment (休閒娛樂)","Nature & Science (大自然)","Leisure Lifestyle (休閒)","Nature Photography (自然攝影)","Outdoor Living (戶外生活)","Quality of Life (生活品質)","Park (公園)","Plants & Flowers (植物花卉)","Leisure Fishing (休閒釣魚)","Birdwatching (觀鳥)","Lifestyle Brand (生活品牌)","Weekend Getaway (週末小旅行)","Staycation (宅度假)","Christmas Holiday (聖誕假期)","Socializing (社交交際)","Aquarium Tourism (水族旅遊景點)","Live Events (現場活動)","Brunch Party Planning (派對策畫)","Lifestyle Magazine (生活風格雜誌)","Happy Hour (歡樂時光)","Movie Lovers (電影愛好者)","Karaoke (卡拉OK)","Jigsaw Puzzle (拼圖)","Bowling (保齡球)","Party (派對)","Festival Events (節慶活動)","Fishing (釣魚)"],
+  finance:["ATM (自動提款機)","Wire Transfer (電匯)","Digital Wallet (數位錢包)","Installment Plan (分期付款)","Credit Score (信用評分)","Online Banking (網路銀行)","FinTech (金融科技)","BNPL (先買後付)","Forex Trading (外匯交易)","Wealth Management (財富管理)","Financial Technology (金融科技)","Payment Service Provider (支付服務商)","Lending Services (信貸服務)","Mobile Banking (行動銀行)","Certified Financial Planner (認證理財規劃師)","Tax Preparation (報稅申報服務)","Foreign Exchange Market (外匯市場)","Credit Union (儲蓄互助社)","Bank Account (銀行帳戶)","Retail Banking (零售銀行業務)","Personal Finance Services (個人理財服務)","Credit Services (信貸服務)","American Express (美國運通)","Financial Accounting (財務會計)","Financial Economics (金融經濟學)"],
+  pin_rich:["Luxury Car (豪華轎車)","Luxury Goods (精品)","Private Banking (私人銀行)","Hermes (愛馬仕)","Chanel (香奈兒)","Golf (高爾夫球)","Haute Couture (高級訂製)","High Net Worth (高淨值人士)","Luxury Lifestyle (豪奢生活方式)","Country Club (高級俱樂部)","Christie's Auction (佳士得藝術拍賣)","Sotheby's Auction (蘇富比藝術拍賣)","Fine Dining (高級餐飲愛好者)","Art Auction (藝術拍賣)","Priority Pass (機場貴賓室)","Frequent Flyer Program (飛行常客獎勵)","Philanthropy (慈善家)","Boutique Fashion (女性精品服飾)","Boutique Hotel (精品酒店)","Luxury Travel (豪華旅遊)","Luxury Resort (奢華渡假村)","Collectibles (收藏品)","High-end Audio (高端音響)","Wine Tasting (品酒)","Fine Dining Lovers (精緻料理愛好者)","Specialty Coffee (精品咖啡)","Asset Management (資產管理)","Wealth (財富)"],
+  pin_stock:["Stocks (股票)","Financial Market (金融市場)","Foreign Exchange (外匯市場)","Cryptocurrency (數位貨幣)","Stock Index (股市指數)","Financial Planning (財務規劃)","Stock Market (股票市場)","Trading Strategy (交易策略)","Day Trading (當沖交易)","Swing Trading (波段交易)","Forex Signals (外匯交易信號)","Investment Strategy (投資策略)","Financial Advisor (財務顧問)","Capital (資金)","ROI (投資報酬率)","Investor (投資者)","Securities (證券)","Stock Broker (股票經紀人)","Algorithmic Trading (演算法自動交易)","Venture Capital (創投融資)","Angel Investing (天使投資)","ETF (指數型股票基金)","Forex Trading (外匯交易)","Wealth Management (財富管理)","FinTech (金融科技)","Passive Income (被動收入)","Investment (投資)"],
+  pin_senior:["Retirement Insurance (退休保險)","Retirement Fund (退休基金)","Pension (退休金)","Retirement Planning (退休規劃)","Retirement Community (退休社區)","Veteran Benefits (退伍軍人福利)","Retirement Insurance Benefits (退休保險福利)","General Health (一般健康)","Healthy Lifestyle (健康的生活習慣)","Traditional Chinese Medicine (中醫)","Health Checkup (健康檢查)","Physical Therapy (物理治療)","Yoga (瑜珈)","Nutritional Supplements (維他命和營養補充品)","Birdwatching (觀鳥)","Nature Photography (自然攝影)","Tea Leaf Brand (茶葉品牌)","Cultural Tourism (文化觀光)","National Gallery (國家藝廊)","Garden Architecture (花園建築裝飾)","Garden Furniture (庭院家具)","Home Cooking (在家下廚)","Healthcare Services (醫療健康)","Family Board Games (家庭桌遊)"],
+  pin_youth:["Mobile Gaming (手機遊戲)","PC Gaming (電腦遊戲)","Console Gaming (主機遊戲)","Esports Tournament (電競賽事)","Twitch Streamer (遊戲直播)","MOBA Games (MOBA遊戲)","RPG Games (角色扮演遊戲)","Battle Royale (大逃殺遊戲)","Memes Community (迷因和社群媒體論壇)","Entertainment News (娛樂新聞)","Music Streaming (音樂和音訊串流)","Online Shopping (網路購物)","Young Professionals (上班族)","Instagram (社群)","Work From Home (遠距工作)","Online Entertainment (網路娛樂)","Movie Lovers (電影愛好者)","YouTube (影音平台)","Virtual Reality (虛擬實境)","Cash Rebate (現金回饋獎勵)","Buy One Get One (買一送一促銷)","Video on Demand (隨選影片)","Celebrity News (名人娛樂新聞)","Digital Art (數字藝術)","Live Music (現場音樂音樂會)"],
+  pin_tech:["Smart Technology (智慧科技)","Artificial Intelligence (人工智慧)","Emerging Technology (新興技術)","Big Data (大數據)","Information Technology (資訊科技)","AI (人工智慧)","Virtual Reality (虛擬實境)","Smart Devices (智慧裝置)","IT & Tech Services (資訊科技服務)","Consumer Electronics (消費電子)","Open Source Software (開放原始碼軟體)","Wearable Technology (穿戴式科技)","Android Wear (Android智慧手錶系統)","Mobile App Development (行動應用程式開發)","Software Development (基於組件的軟體工程)","Linux (開放原始碼類Unix作業系統)","DevOps (開發維運整合)","Consumer Electronics Show (消費電子展)","Computer Engineering (電腦工程)","Electronic Engineering (電子工程)","High-Tech (高科技)","Electronic Components (電子元件)","Digital Transformation (數位轉型)","Innovation (創新)","Unity Game Engine (Unity遊戲引擎)","ERP (企業資源計劃)"],
+  pin_gov:["Government (政府)","Local Government (地方政府)","Government Employee (政府員工)","Community Issues (社區議題)","Public Safety (公共安全)","National Security (國家安全)","Veterans Day (軍人節)","Retirement Insurance (退休保險)","Retirement Fund (退休基金)","Pension (退休金)","Retirement Planning (退休規劃)","Community Services (社區服務)","Public Transport (公共運輸)","Government Operations (政府機關概念)","Veteran Benefits (退伍軍人福利)","Public Administration (市政事務)","Retirement Insurance Benefits (退休保險福利)","Compensation and Benefits (薪水及福利)","Employee Engagement (員工敬業度)"],
+  pin_re:["Real Estate 591 (591房屋交易網)","Housing (房屋)","Real Estate Industry (房地產)","Residential Area (住宅區)","Property Portal (房屋廣告)","Property (不動產)","Apartment (公寓)","Apartment Complex (公寓大樓)","Real Estate Investment (房地產投資)","Leju Network (樂屋網)","Home Construction (住宅興建)","Starter Home (起步房)","Rental Property (租賃)","Real Estate Development (房地產開發)","Real Estate Economics (房地產經濟學)","Property Valuation (房地產估價)","First-Time Buyer (首次購房者)","Home Buyer Subsidy (首次購屋補助)","Mortgage Loan (房屋抵押貸款)","New Home (新家)","Prefab Home (組合屋)","Real Estate Investing (房地產投資相關)","Residential Real Estate (住宅房地產)","Real Estate Investment Club (房地產投資俱樂部)","Commercial Property (商用不動產)","Home Renovation (住家翻新)","Townhouse (連棟住宅)","Rental Listings (待租房屋資訊)","Sustainable Architecture Design (永續建築設計)","Building Construction (建築工程)"]
+};
+const CATNAMES={
+  re:'Real Estate (房地產)',
+  invest:'Investment (投資理財)',
+  rich:'Luxury Wealth (高端消費)',
+  home:'Home Living (居家生活)',
+  food:'Food Dining (美食餐飲)',
+  travel:'Travel Tourism (旅遊觀光)',
+  tech:'Technology (科技數位)',
+  sports:'Sports Health (運動健康)',
+  education:'Education (教育學習)',
+  business:'Business Marketing (商業行銷)',
+  media:'Media Entertainment (媒體娛樂)',
+  gov:'Government Public (政府公共)',
+  insurance:'Finance Insurance (金融保險)',
+  industry:'Industry Manufacturing (工業製造)',
+  beauty:'Fashion Beauty (時尚美容)',
+  auto:'Automotive (汽車交通)',
+  medical:'Health Medical (醫療健康)',
+  agri:'Agriculture Rural (農業農村)',
+  family:'Family Wedding (家庭婚姻)',
+  youth:'Youth Lifestyle (年輕族群)',
+  shopping:'Shopping Deals (購物優惠)',
+  arts:'Arts Design (藝術設計)',
+  gaming:'Gaming E-sports (遊戲電競)',
+  pets:'Pets Animals (寵物動物)',
+  engineering:'Engineering Science (工程科學)',
+  craft:'Crafts DIY (手工藝)',
+  community:'Community Non-profit (社區公益)',
+  corporate:'Corporate Executive (企業高管)',
+  leisure:'Leisure Outdoor (休閒戶外)',
+  finance:'Banking Payments (銀行支付)',
+  pin_rich:'有錢興趣 (Wealthy Interests)',
+  pin_stock:'股市期貨 (Stocks & Futures)',
+  pin_senior:'長輩興趣 (Senior Interests)',
+  pin_youth:'年輕人興趣 (Youth Interests)',
+  pin_tech:'科技業興趣 (Tech Industry)',
+  pin_gov:'公務員興趣 (Civil Servant)',
+  pin_re:'房地產興趣 (Real Estate)'
+};
+let ALL_TAGS=Object.values(TAGS).flat();
+// Build reverse lookup: Chinese substring → full TAGS entry + category
+const TAG_LOOKUP={};const TAG_CAT={};
+Object.keys(TAGS).forEach(cat=>{
+  TAGS[cat].forEach(t=>{
+    TAG_CAT[t]=cat;
+    const m=t.match(/^(.+?)\s*\((.+)\)\s*$/);
+    if(m){
+      TAG_LOOKUP[m[2]]=t;
+      const simple=m[2].replace(/（[^）]*）/g,'').replace(/\([^)]*\)/g,'').trim();
+      if(simple&&!TAG_LOOKUP[simple])TAG_LOOKUP[simple]=t;
+    }
+  });
+});
+// Supplement TAGS with all unique raw tags from AUD not already mapped
+const _audRaw=[...new Set(AUD.flatMap(a=>parseTags(a.interest)))];
+const _extra=[];
+_audRaw.forEach(raw=>{
+  const norm=raw.replace(/（[^）]*）/g,'').replace(/\([^)]*\)/g,'').trim();
+  if(!TAG_LOOKUP[raw]&&!TAG_LOOKUP[norm]&&raw.length>0){
+    _extra.push(raw);
+    TAG_LOOKUP[raw]=raw;TAG_LOOKUP[norm]=raw;
+  }
+});
+if(_extra.length){
+  TAGS.extra=_extra;CATNAMES.extra='Uncategorized (未分類興趣)';
+  const sel=document.getElementById('catSel');
+  const opt=document.createElement('option');opt.value='extra';opt.textContent='Uncategorized (未分類興趣) ('+_extra.length+')';
+  const lastGrp=sel.querySelector('optgroup:last-of-type');(lastGrp||sel).appendChild(opt);
+}
+ALL_TAGS=Object.values(TAGS).flat();
+// Fix dropdown label in case of encoding issue
+
+let _tt;
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function copyText(t,el){
+  navigator.clipboard.writeText(t).then(()=>{
+    if(el){el.classList.add('copied');setTimeout(()=>el.classList.remove('copied'),900)}
+    const toast=document.getElementById('toast');
+    toast.textContent='已複製';toast.classList.add('show');clearTimeout(_tt);
+    _tt=setTimeout(()=>toast.classList.remove('show'),1400);
+  });
+}
+function mkTag(text,catKey){
+  const el=document.createElement('span');el.className='tag';
+  const m=text.match(/^(.+?)\s*\((.+)\)\s*$/);
+  if(m&&m[1]!==m[2]){
+    const en=document.createElement('span');en.className='tag-en';en.textContent=m[1];
+    const zh=document.createElement('span');zh.className='tag-zh';zh.textContent=m[2];
+    el.appendChild(en);el.appendChild(zh);
+    el.onclick=()=>copyText(m[1],el);
+  }else{
+    const simple=text.replace(/（[^）]*）/g,'').replace(/\([^)]*\)/g,'').trim()||text;
+    const en=document.createElement('span');en.className='tag-en';en.textContent=simple;
+    if(simple!==text){const zh=document.createElement('span');zh.className='tag-zh';zh.textContent=text;el.appendChild(zh);}
+    el.insertBefore(en,el.firstChild);
+    el.onclick=()=>copyText(simple,el);
+  }
+  return el;
+}
+function parseTags(s){
+  if(!s)return[];
+  return s.split(/[、，]|(?:或)(?=[^\s（,])|,/).map(t=>t.trim().replace(/^[-\s]+/,'').replace(/\s+/,' ')).filter(t=>t.length>1&&t.length<60);
+}
+function badgeCls(tp){const m={名單:'bn',訊息:'bm',流量:'bf',互動:'bi'};return m[tp]||'bo'}
+
+// PAGE 1
+function renderP1(){
+  const cat=document.getElementById('catSel').value;
+  const q=document.getElementById('tagQ').value.trim().toLowerCase();
+  const main=document.getElementById('p1main');
+  const info=document.getElementById('sideInfo');
+  main.innerHTML='';
+  if(cat){
+    const pool=q?TAGS[cat].filter(t=>t.toLowerCase().includes(q)):TAGS[cat];
+    info.textContent=pool.length+' 個標籤';
+    const blk=document.createElement('div');blk.className='cat-blk';
+    const ttl=document.createElement('div');ttl.className='cat-ttl';
+    ttl.innerHTML=CATNAMES[cat]+'<span class="cat-cnt">'+pool.length+'</span>';
+    const grid=document.createElement('div');grid.className='tag-grid';
+    pool.forEach(t=>grid.appendChild(mkTag(t,cat)));
+    blk.appendChild(ttl);blk.appendChild(grid);main.appendChild(blk);
+  } else if(q){
+    const pool=ALL_TAGS.filter(t=>t.toLowerCase().includes(q)||t.replace(/（[^）]*）/g,'').toLowerCase().includes(q));
+    info.textContent=pool.length+' 個標籤';
+    const blk=document.createElement('div');blk.className='cat-blk';
+    const ttl=document.createElement('div');ttl.className='cat-ttl';
+    ttl.innerHTML='搜尋結果<span class="cat-cnt">'+pool.length+'</span>';
+    const grid=document.createElement('div');grid.className='tag-grid';
+    pool.forEach(t=>grid.appendChild(mkTag(t,TAG_CAT[t]||'')));
+    blk.appendChild(ttl);blk.appendChild(grid);main.appendChild(blk);
+  } else {
+    let total=0;
+    Object.keys(TAGS).filter(k=>!k.startsWith('pin_')).forEach(k=>{
+      total+=TAGS[k].length;
+      const blk=document.createElement('div');blk.className='cat-blk';
+      const ttl=document.createElement('div');ttl.className='cat-ttl';
+      ttl.innerHTML=CATNAMES[k]+'<span class="cat-cnt">'+TAGS[k].length+'</span>';
+      const grid=document.createElement('div');grid.className='tag-grid';
+      TAGS[k].forEach(t=>grid.appendChild(mkTag(t,k)));
+      blk.appendChild(ttl);blk.appendChild(grid);main.appendChild(blk);
+    });
+    info.textContent='共 '+total+' 個標籤';
+  }
+}
+document.getElementById('catSel').addEventListener('change',renderP1);
+document.getElementById('tagQ').addEventListener('input',renderP1);
+renderP1();
+
+// PAGE 2
+const projs=[...new Set(AUD.map(a=>a.project).filter(p=>p))].sort();
+const ps=document.getElementById('projSel');
+projs.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;ps.appendChild(o);});
+
+function renderP2(){
+  const proj=document.getElementById('projSel').value;
+  const q=document.getElementById('audQ').value.trim().toLowerCase();
+  const list=document.getElementById('audList');
+  let pool=proj?AUD.filter(a=>a.project===proj):AUD;
+  if(q)pool=pool.filter(a=>(a.ta||'').toLowerCase().includes(q)||(a.interest||'').toLowerCase().includes(q)||(a.project||'').toLowerCase().includes(q));
+  const allTags=new Set();
+  pool.forEach(a=>parseTags(a.interest).forEach(t=>allTags.add(t)));
+  document.getElementById('p2stats').innerHTML='共 <strong>'+pool.length+'</strong> 組受眾 / <strong>'+allTags.size+'</strong> 個不重複興趣標籤';
+  list.innerHTML='';
+  if(!pool.length){list.innerHTML='<div class="empty">無符合結果</div>';return;}
+  pool.forEach(a=>{
+    const tags=parseTags(a.interest);
+    const card=document.createElement('div');card.className='aud-card';
+    const ta=(a.ta||'').replace(/\r?\n/g,' ').replace(/[、，,]\s*\d+(?:訊息|名單)[^\s（(]*/g,'').replace(/\s+\d+(?:訊息|名單)\s*$/,'').trim();
+    const projClean=(a.project||'').replace(/[、，,]\s*\d+(?:訊息|名單)[^\s（(]*/g,'').replace(/\s+\d+(?:訊息|名單)\s*$/,'').trim();
+    const proj_badge=projClean?'<span style="font-size:11px;color:#888;background:#f5f5f6;padding:2px 6px;border-radius:10px">'+esc(projClean)+'</span>':'';
+    const type_badge=a.type?'<span class="badge '+badgeCls(a.type)+'">'+esc(a.type)+'</span>':'';
+    card.innerHTML='<div class="aud-hd"><span class="aud-ta">'+esc(ta)+'</span>'+proj_badge+type_badge+'</div><div class="aud-tgs"></div>';
+    list.appendChild(card);
+    const tArea=card.querySelector('.aud-tgs');
+    if(tags.length){const g=document.createElement('div');g.className='aud-tg-grid';tags.forEach(raw=>{const full=TAG_LOOKUP[raw]||(TAG_LOOKUP[raw.replace(/（[^）]*）/g,'').trim()]);const entry=(full&&full!==raw)?full:null;g.appendChild(mkTag(entry||raw,entry?TAG_CAT[entry]:null));});tArea.appendChild(g);}
+    else tArea.innerHTML='<span style="color:#bbb;font-size:11px">（無可解析標籤）</span>';
+  });
+}
+document.getElementById('projSel').addEventListener('change',renderP2);
+document.getElementById('audQ').addEventListener('input',renderP2);
+renderP2();
+
+// PAGE 3 - Map
+let map_=null,marker_=null,selLoc=null;
+function initMap(){
+  if(map_)return;
+  map_=L.map('leafletMap').setView([24.15,120.7],11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map_);
+  map_.on('click',e=>setPin(e.latlng.lat,e.latlng.lng,'已釘選位置'));
+  setTimeout(()=>map_.invalidateSize(),200);
+}
+function setPin(lat,lng,name){
+  selLoc={lat,lng,name};
+  document.getElementById('locLbl').textContent=name+' ('+lat.toFixed(4)+', '+lng.toFixed(4)+')';
+  if(marker_)map_.removeLayer(marker_);
+  marker_=L.marker([lat,lng]).addTo(map_).bindPopup(name).openPopup();
+  map_.setView([lat,lng],14);
+}
+async function searchLoc(){
+  const q=document.getElementById('locInput').value.trim();
+  if(!q)return;
+  try{
+    const url='https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q+'台灣')+'&format=json&limit=1';
+    const r=await fetch(url,{headers:{'Accept-Language':'zh-TW'}});
+    const d=await r.json();
+    if(d.length){setPin(parseFloat(d[0].lat),parseFloat(d[0].lon),d[0].display_name.split(',')[0]);}
+    else document.getElementById('locLbl').textContent='找不到該地點';
+  }catch(e){document.getElementById('locLbl').textContent='定位失敗';}
+}
+
+// Interest ratios
+const ratioData=[
+  {id:'rich',name:'Wealthy (有錢)',pct:20,checked:true},
+  {id:'re',name:'Real Estate (房地產)',pct:30,checked:true},
+  {id:'youth',name:'Youth (年輕人)',pct:15,checked:true},
+  {id:'tech',name:'Tech (科技業)',pct:20,checked:true},
+  {id:'gov',name:'Civil Service (公務員)',pct:15,checked:true}
+];
+function buildRatios(){
+  const list=document.getElementById('ratioList');
+  list.innerHTML='';
+  ratioData.forEach((r,i)=>{
+    const row=document.createElement('div');row.className='ratio-row';
+    row.innerHTML='<input type="checkbox" class="rc" id="rc'+i+'" '+(r.checked?'checked':'')+'><span class="rn" onclick="toggleDet('+i+')">'+r.name+'</span><input type="number" class="rp" id="rp'+i+'" value="'+r.pct+'" min="0" max="100"><span class="rpct">%</span>';
+    list.appendChild(row);
+    const det=document.createElement('div');det.className='rdet';det.id='rdet'+i;
+    TAGS[r.id].slice(0,15).forEach(t=>{
+      const s=document.createElement('span');s.className='rmtag sel';s.textContent=t;
+      s.onclick=()=>s.classList.toggle('sel');det.appendChild(s);
+    });
+    list.appendChild(det);
+    row.querySelector('#rc'+i).addEventListener('change',updateRatioTotal);
+    row.querySelector('#rp'+i).addEventListener('input',updateRatioTotal);
+  });
+  updateRatioTotal();
+}
+function toggleDet(i){document.getElementById('rdet'+i).classList.toggle('open');}
+function updateRatioTotal(){
+  let sum=0;
+  ratioData.forEach((_,i)=>{if(document.getElementById('rc'+i).checked)sum+=parseInt(document.getElementById('rp'+i).value)||0;});
+  const el=document.getElementById('ratioTot');
+  el.textContent='合計 '+sum+'%'+(sum===100?' ✓':' (需達100%)');
+  el.className='rtot '+(sum===100?'ok':'warn');
+}
+buildRatios();
+
+function getRatioSummary(){
+  const parts=[];
+  ratioData.forEach((r,i)=>{
+    if(document.getElementById('rc'+i).checked){
+      const pct=parseInt(document.getElementById('rp'+i).value)||0;
+      const selTags=[...document.getElementById('rdet'+i).querySelectorAll('.rmtag.sel')].map(s=>s.textContent);
+      parts.push(r.name+'('+pct+'%): '+selTags.slice(0,5).join('、'));
+    }
+  });
+  return parts.join('\n');
+}
+
+function getApiKey(){
+  let k=localStorage.getItem('ant_k');
+  if(!k){k=prompt('請輸入 Anthropic API Key（sk-ant-api03-…）\n（只需輸入一次，將儲存於本機）');if(k&&k.trim())localStorage.setItem('ant_k',k.trim());}
+  return(k||'').trim();
+}
+
+// Analyze
+async function doAnalyze(){
+  const key=getApiKey();
+  if(!key){document.getElementById('p3err').textContent='未設定 API Key';return;}
+  document.getElementById('p3err').textContent='';
+  document.getElementById('p3hint').style.display='none';
+  const priceMin=document.getElementById('priceMin').value;
+  const priceMax=document.getElementById('priceMax').value;
+  const pricePing=document.getElementById('pricePing').value;
+  const loc=selLoc?selLoc.name+'（'+selLoc.lat.toFixed(3)+','+selLoc.lng.toFixed(3)+'）':'（未設定）';
+  const ratios=getRatioSummary();
+  const card=document.getElementById('anaCard');card.style.display='block';
+  const spin=document.getElementById('anaSpin');spin.innerHTML='<span class="spin"></span>';
+  document.getElementById('anaTxt').textContent='分析中…';
+  const priceDesc=priceMin&&priceMax?priceMin+'萬—'+priceMax+'萬':pricePing?'單坪'+pricePing+'萬':'未提供';
+  const sys='你是台灣房地產 Meta 廣告受眾策略師。根據建案資訊，用繁體中文條列分析最適受眾輪廓（5-8點），包含：目標客群職業與收入、生活型態特徵、投放建議、競爭重點。簡潔精準。';
+  const user='建案總價：'+priceDesc+'\n地點：'+loc+'\n興趣配比：\n'+ratios;
+  try{const r=await callClaude(key,sys,user,600);document.getElementById('anaTxt').textContent=r;}
+  catch(e){document.getElementById('anaTxt').textContent='錯誤：'+e.message;}
+  spin.innerHTML='';
+}
+
+// Generate
+async function doGenerate(){
+  const key=getApiKey();
+  if(!key){document.getElementById('p3err').textContent='未設定 API Key';return;}
+  document.getElementById('p3err').textContent='';
+  document.getElementById('p3hint').style.display='none';
+  const priceMin=document.getElementById('priceMin').value;
+  const priceMax=document.getElementById('priceMax').value;
+  const pricePing=document.getElementById('pricePing').value;
+  const loc=selLoc?selLoc.name:'（未設定地點）';
+  const lat=selLoc?selLoc.lat:24.15;
+  const lng=selLoc?selLoc.lng:120.7;
+  const ratios=getRatioSummary();
+  const priceDesc=priceMin&&priceMax?priceMin+'萬—'+priceMax+'萬':pricePing?'單坪'+pricePing+'萬':'未提供';
+  const card=document.getElementById('genCard');card.style.display='block';
+  const spin=document.getElementById('genSpin');spin.innerHTML='<span class="spin"></span>';
+  document.getElementById('genBody').innerHTML='<div class="empty">生成中…</div>';
+  const sys='你是台灣房地產 Meta 廣告受眾策略師。根據建案資訊生成完整受眾包。請以此 JSON 格式回傳（只回傳 JSON，不要說明）：{"description":"受眾包描述2-3句","locations":[{"name":"地名","reason":"選擇原因15字內"},{"name":"...","reason":"..."},{"name":"...","reason":"..."}],"interests":["標籤1","標籤2",...共30個],"performance":{"rating":"優","score":85,"reason":"評估說明","cpc":"$15-$25"}}';
+  const user='建案總價：'+priceDesc+'\n地點：'+loc+'（座標'+lat.toFixed(3)+','+lng.toFixed(3)+'）\n興趣配比：\n'+ratios;
+  try{
+    const raw=await callClaude(key,sys,user,1200);
+    const m=raw.match(/\{[\s\S]*\}/);
+    if(!m)throw new Error('無法解析回傳格式');
+    renderGenResult(JSON.parse(m[0]));
+  }catch(e){document.getElementById('genBody').innerHTML='<div class="empty" style="color:#b31412">錯誤：'+esc(e.message)+'</div>';}
+  spin.innerHTML='';
+}
+
+function renderGenResult(d){
+  const body=document.getElementById('genBody');body.innerHTML='';
+  const desc=document.createElement('div');desc.className='gen-desc';desc.textContent=d.description||'';body.appendChild(desc);
+  if(d.locations&&d.locations.length){
+    const lhdr=document.createElement('div');lhdr.className='locs-hdr';lhdr.textContent='推薦地點（點擊可在地圖標記）';body.appendChild(lhdr);
+    const locs=document.createElement('div');
+    d.locations.forEach((loc,i)=>{
+      const row=document.createElement('div');row.className='gen-loc';
+      row.innerHTML='<span class="gen-loc-n">'+(i+1)+'</span><div><div class="gen-loc-name">'+esc(loc.name)+'</div><div class="gen-loc-why">'+esc(loc.reason)+'</div></div>';
+      locs.appendChild(row);
+    });
+    body.appendChild(locs);
+  }
+  const ihdr=document.createElement('div');ihdr.className='locs-hdr';ihdr.style.marginTop='10px';ihdr.textContent='興趣標籤（點擊複製）';body.appendChild(ihdr);
+  const grid=document.createElement('div');grid.className='gen-tg-grid';
+  (d.interests||[]).forEach(t=>grid.appendChild(mkTag(t)));body.appendChild(grid);
+  if(d.performance){
+    const p=d.performance;const rMap={優:'good',可:'ok',差:'bad'};const cls=rMap[p.rating]||'ok';
+    const box=document.createElement('div');box.className='perf-box '+cls;
+    box.innerHTML='<div class="prat '+cls+'">'+(p.rating||'?')+'</div><div class="pbody"><div class="pscore">成效評估 '+(p.score||0)+'分</div><div class="preason">'+esc(p.reason||'')+'</div><div class="pcpc">預估 CPC：'+esc(p.cpc||'')+'</div></div>';
+    body.appendChild(box);
+  }
+}
+
+// AI Pick Ratios
+async function aiPickRatios(){
+  const key=getApiKey();
+  if(!key){document.getElementById('p3err').textContent='未設定 API Key';return;}
+  const priceMin=document.getElementById('priceMin').value;
+  const priceMax=document.getElementById('priceMax').value;
+  const pricePing=document.getElementById('pricePing').value;
+  const loc=selLoc?selLoc.name:'台灣中部';
+  const priceDesc=priceMin&&priceMax?priceMin+'萬—'+priceMax+'萬':pricePing?'單坪'+pricePing+'萬':'未提供';
+  const sys='你是 Meta 廣告受眾策略師，根據建案資訊建議各興趣類別比例。只回傳 JSON，格式：{"rich":20,"re":30,"youth":15,"tech":20,"gov":15}，5個值加總必須等於100。不要說明。';
+  const user='建案總價：'+priceDesc+'\n地點：'+loc;
+  try{
+    const raw=await callClaude(key,sys,user,200);
+    const m=raw.match(/\{[^}]+\}/);if(!m)return;
+    const d=JSON.parse(m[0]);
+    ratioData.forEach((_,i)=>{
+      const k2=ratioData[i].id;
+      if(d[k2]!==undefined){document.getElementById('rp'+i).value=d[k2];document.getElementById('rc'+i).checked=d[k2]>0;}
+    });
+    updateRatioTotal();
+  }catch(e){document.getElementById('p3err').textContent='AI選取失敗：'+e.message;}
+}
+
+// Claude API
+async function callClaude(key,sys,user,maxTok){
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:maxTok,system:sys,messages:[{role:'user',content:user}]})
+  });
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||'HTTP '+r.status);}
+  const d=await r.json();return d.content?.[0]?.text||'';
+}
+
+// Tabs
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('page-'+tab.dataset.page).classList.add('active');
+    if(tab.dataset.page==='ai')setTimeout(initMap,50);
+  });
+});
+</script></body></html>
