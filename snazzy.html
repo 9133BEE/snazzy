@@ -512,14 +512,17 @@ function cardClick(el){
 }
 
 function saveTag(v,el){
+  const t=document.getElementById('toast');
   if(savedTags.has(v)){
     savedTags.delete(v);el.classList.remove('saving');
     delete recentSaved[v];
+    if(t){t.textContent='已取消儲存 ✕ '+v;t.classList.add('on');clearTimeout(t._x);t._x=setTimeout(()=>t.classList.remove('on'),2000);}
   }else{
     savedTags.add(v);
     el.classList.add('saving');
     setTimeout(()=>el.classList.remove('saving'),2000);
     recentSaved[v]=Date.now();
+    if(t){t.textContent='已儲存 ★ '+v;t.classList.add('on');clearTimeout(t._x);t._x=setTimeout(()=>t.classList.remove('on'),2000);}
   }
   localStorage.setItem('snazzyTags',JSON.stringify([...savedTags]));
   _pruneRecent(recentSaved);localStorage.setItem('snazzyRecentSaved',JSON.stringify(recentSaved));
