@@ -350,7 +350,7 @@ mark{background:#fef3c7;color:#92400e;border-radius:3px;padding:0 2px;font-weigh
   <button class="ttu" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到最上面">↑</button>
 </div>
 <div class="main">
-  <div class="pg on" id="pi"><div class="i-side"><div class="i-side-lbl">搜尋</div><input class="i-search" id="q" placeholder="關鍵字..." oninput="ri()"><div class="i-count" id="ci"></div><div class="i-quick-btns"><button class="i-quick-btn" id="btnRecentUsed" onclick="selectCat(this,'__recent_used')">🕐 最近常用</button><button class="i-quick-btn" id="btnRecentSaved" onclick="selectCat(this,'__recent_saved')">⭐ 最近儲存</button></div><div class="i-side-lbl">分類</div><div id="iCats"></div><div class="i-cat-sep"></div><button class="i-rand-btn" onclick="randomTags()">🎲 隨機 20 類各 10 標籤</button><div class="i-rand-info" id="randInfo"></div></div><div class="i-main" id="io"></div></div>
+  <div class="pg on" id="pi"><div class="i-side"><div class="i-side-lbl">搜尋</div><input class="i-search" id="q" placeholder="關鍵字..." oninput="ri()"><div class="i-count" id="ci"></div><div class="i-quick-btns"><button class="i-quick-btn" id="btnRecentUsed" onclick="selectCat(this,'__recent_used')">🕐 最近常用</button><button class="i-quick-btn" id="btnRecentSaved" onclick="selectCat(this,'__recent_saved')">⭐ 最近儲存</button></div><button class="i-rand-btn" onclick="randomTags()">🎲 隨機生成</button><div class="i-rand-info" id="randInfo"></div><div class="i-side-lbl">分類</div><div id="iCats"></div></div><div class="i-main" id="io"></div></div>
   <div class="pg" id="py"><div id="yo" class="pgrid"></div></div>
   <div class="pg" id="pt"><div id="to" class="pgrid"></div></div>
   <div class="pg" id="pg">
@@ -455,6 +455,10 @@ let _selCat='';
 let _riAll=[];let _riLimit=500;
 let _clickTimers=new WeakMap();
 let savedTags=new Set(JSON.parse(localStorage.getItem('snazzyTags')||'[]'));
+let recentCopied=JSON.parse(localStorage.getItem('snazzyClickCount')||'{}');
+let recentSaved=JSON.parse(localStorage.getItem('snazzyRecentSaved')||'{}');
+const _ONE_MONTH=30*24*3600*1000;
+function _pruneRecent(obj,max=300){const keys=Object.keys(obj);if(keys.length>max){keys.sort((a,b)=>obj[a]-obj[b]).slice(0,keys.length-max).forEach(k=>delete obj[k]);}}
 
 function buildICats(){
   const c=document.getElementById('iCats');if(!c)return;
@@ -518,14 +522,14 @@ function saveTag(v,el){
 function randomTags(){
   const catMap={};
   D.forEach(d=>{if(!catMap[d.c])catMap[d.c]=[];catMap[d.c].push(d);});
-  const avail=Object.entries(catMap).map(([cat,tags])=>[cat,tags.filter(d=>!savedTags.has(d.cp))]).filter(([,tags])=>tags.length>0);
-  const top=avail.sort((a,b)=>b[1].length-a[1].length).slice(0,20);
+  const avail=Object.entries(catMap).map(([cat,tags])=>[cat,tags.filter(d=>!savedTags.has(d.cp))]).filter(([,tags])=>tags.length>=3);
+  const shuffle=arr=>{for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;};
+  const top=shuffle([...avail]).slice(0,20);
   const ri2=document.getElementById('randInfo'),out=document.getElementById('io');
   if(!top.length){if(ri2)ri2.textContent='所有標籤都已儲存！';return;}
   if(ri2)ri2.textContent='已從 '+top.length+' 個分類各取 10 個';
   _selCat='';document.querySelectorAll('.i-cat-item').forEach(e=>e.classList.remove('active'));
   const allBtn=document.getElementById('iCatAll');if(allBtn)allBtn.classList.add('active');
-  const shuffle=arr=>{for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;};
   out.innerHTML=top.map(([cat,tags])=>{
     const picks=shuffle([...tags]).slice(0,10);
     return '<div class="sec"><div class="sh"><div class="st">'+cat+'</div><div class="sc">'+picks.length+' 個（隨機）</div><div class="ln"></div></div><div class="grid">'+
@@ -545,8 +549,9 @@ function ri(){
   const out=document.getElementById('io');
   const isRich=(_selCat==='__rich'),isYoung=(_selCat==='__young'),isHidden=(_selCat==='__hidden'),isRe=(_selCat==='__re'),isTech=(_selCat==='__tech'),isCivil=(_selCat==='__civil'),isRU=(_selCat==='__recent_used'),isRS=(_selCat==='__recent_saved');
   const _now=Date.now();
+  const _topClicked30=new Set(Object.entries(recentCopied).sort((a,b)=>b[1]-a[1]).slice(0,30).map(([k])=>k));
   const f=D.filter(d=>{
-    const cOk=!_selCat||(isRU?recentCopied[d.cp]&&_now-recentCopied[d.cp]<_ONE_MONTH:isRS?recentSaved[d.cp]&&_now-recentSaved[d.cp]<_ONE_MONTH:isRich?d.sp==='rich':isYoung?d.sp==='young':isHidden?d.sp==='hidden':isRe?d.sp==='re':isTech?d.sp==='tech':isCivil?d.sp==='civil':d.c===_selCat);
+    const cOk=!_selCat||(isRU?_topClicked30.has(d.cp):isRS?recentSaved[d.cp]&&_now-recentSaved[d.cp]<_ONE_MONTH:isRich?d.sp==='rich':isYoung?d.sp==='young':isHidden?d.sp==='hidden':isRe?d.sp==='re':isTech?d.sp==='tech':isCivil?d.sp==='civil':d.c===_selCat);
     const qOk=!q||d.cp.toLowerCase().includes(q)||(d.z&&d.z.toLowerCase().includes(q))||d.c.toLowerCase().includes(q);
     return cOk&&qOk;
   });
@@ -630,7 +635,7 @@ function rt(){
 window.addEventListener('scroll',()=>{const b=document.getElementById('btt');b.classList.toggle('on',window.scrollY>200)});
 function cp(el){ct(el.querySelector('[data-cp]').getAttribute('data-cp'))}
 function ct(text){
-  if(typeof recentCopied!=='undefined'){recentCopied[text]=Date.now();_pruneRecent(recentCopied);localStorage.setItem('snazzyRecentUsed',JSON.stringify(recentCopied));buildICats();}
+  recentCopied[text]=(recentCopied[text]||0)+1;_pruneRecent(recentCopied);localStorage.setItem('snazzyClickCount',JSON.stringify(recentCopied));
   const done=()=>{const t=document.getElementById('toast');t.textContent='已複製 → '+text;t.classList.add('on');clearTimeout(t._x);t._x=setTimeout(()=>t.classList.remove('on'),2000)};
   if(navigator.clipboard){navigator.clipboard.writeText(text).then(done).catch(()=>fb(text,done))}else{fb(text,done)}
 }
