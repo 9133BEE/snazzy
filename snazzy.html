@@ -489,6 +489,7 @@ function buildICats(){
   h+='<div class="i-cat-sep"></div>';
   sortedCats.forEach(([cat,cnt])=>{h+='<div class="i-cat-item" onclick="selectCat(this,\''+cat+'\')"><span>'+cat+'</span><span class="i-cat-n">'+cnt+'</span></div>';});
   c.innerHTML=h;
+  const _btnRS=document.getElementById('btnRecentSaved');if(_btnRS)_btnRS.textContent='⭐ 最近儲存'+(savedTags.size?' ('+savedTags.size+')':'');
 }
 
 function selectCat(el,cat){
@@ -548,7 +549,7 @@ function ri(){
   const _now=Date.now();
   const _topClicked30=new Set(Object.entries(recentCopied).sort((a,b)=>b[1]-a[1]).slice(0,30).map(([k])=>k));
   const f=D.filter(d=>{
-    const cOk=!_selCat||(isRU?_topClicked30.has(d.cp):isRS?recentSaved[d.cp]&&_now-recentSaved[d.cp]<_ONE_MONTH:isRich?d.sp==='rich':isYoung?d.sp==='young':isHidden?d.sp==='hidden':isRe?d.sp==='re':isTech?d.sp==='tech':isCivil?d.sp==='civil':d.c===_selCat);
+    const cOk=!_selCat||(isRU?_topClicked30.has(d.cp):isRS?savedTags.has(d.cp):isRich?d.sp==='rich':isYoung?d.sp==='young':isHidden?d.sp==='hidden':isRe?d.sp==='re':isTech?d.sp==='tech':isCivil?d.sp==='civil':d.c===_selCat);
     const qOk=!q||d.cp.toLowerCase().includes(q)||(d.z&&d.z.toLowerCase().includes(q))||d.c.toLowerCase().includes(q);
     return cOk&&qOk;
   });
