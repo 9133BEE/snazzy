@@ -60,7 +60,7 @@ select:focus{border-color:var(--a);box-shadow:0 0 0 3px rgba(96,125,150,.12)}
 
 /* ── Tag grid ── */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:7px}
-.card{background:var(--s);border:1px solid var(--bd);border-radius:var(--radius-card);padding:10px 13px;cursor:pointer;transition:var(--transition);position:relative;display:flex;flex-direction:column;gap:3px;box-shadow:var(--shadow-xs)}
+.card{background:var(--s);border:1px solid var(--bd);border-radius:var(--radius-card);padding:10px 13px;cursor:pointer;transition:var(--transition);position:relative;display:flex;flex-direction:column;gap:3px;box-shadow:var(--shadow-xs);user-select:none}
 .card:hover{border-color:var(--ab);box-shadow:var(--shadow-sm);transform:translateY(-2px)}
 .card:active{transform:scale(.97);box-shadow:var(--shadow-xs)}
 .te{font-size:12.5px;font-weight:600;color:var(--tx);padding-right:40px;word-break:break-word;line-height:1.4}
@@ -460,7 +460,7 @@ function hl(s,q){
 }
 let _selCat='';
 let _riAll=[];let _riLimit=500;
-let _clickTimers=new WeakMap();
+let _lastClickEl=null,_lastClickTime=0;
 let savedTags=new Set(JSON.parse(localStorage.getItem('snazzyTags')||'[]'));
 let recentCopied=JSON.parse(localStorage.getItem('snazzyClickCount')||'{}');
 let recentSaved=JSON.parse(localStorage.getItem('snazzyRecentSaved')||'{}');
@@ -501,13 +501,13 @@ function selectCat(el,cat){
 
 function cardClick(el){
   const v=el.getAttribute('data-cp');
-  if(_clickTimers.has(el)){
-    clearTimeout(_clickTimers.get(el));
-    _clickTimers.delete(el);
+  const now=Date.now();
+  if(el===_lastClickEl&&now-_lastClickTime<400){
+    _lastClickEl=null;_lastClickTime=0;
     saveTag(v,el);
   }else{
-    const t=setTimeout(()=>{_clickTimers.delete(el);ct(v);},250);
-    _clickTimers.set(el,t);
+    _lastClickEl=el;_lastClickTime=now;
+    ct(v);
   }
 }
 
