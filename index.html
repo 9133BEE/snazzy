@@ -139,6 +139,9 @@ mark{background:#fef3c7;color:#92400e;border-radius:3px;padding:0 2px;font-weigh
 .gr-del:hover{background:#fee2e2;border-color:#fca5a5;color:#dc2626}
 .gr-add{padding:7px 16px;background:var(--al);border:1.5px solid var(--ab);border-radius:var(--radius-pill);color:var(--a);font-size:12px;cursor:pointer;font-weight:600;margin-top:4px;transition:var(--transition)}
 .gr-add:hover{background:var(--a);color:#fff;border-color:var(--a)}
+.gr-kw{flex:1;padding:7px 10px;background:var(--s2);border:1.5px solid var(--bd);border-radius:8px;font-size:12px;color:var(--tx);outline:none;transition:var(--transition)}
+.gr-kw:focus{border-color:var(--a);box-shadow:0 0 0 3px rgba(96,125,150,.10)}
+.gr-kw-cnt{font-size:11px;color:var(--sub);white-space:nowrap;flex-shrink:0;min-width:64px}
 .gr-total{font-size:12px;color:var(--sub);margin-top:10px;padding:6px 12px;background:var(--s2);border-radius:8px;border:1px solid var(--bd);display:inline-block}
 .gr-total.ok{color:var(--good);font-weight:700;background:var(--goodl);border-color:var(--goodb)}
 .gr-total.over{color:#dc2626;font-weight:700;background:#fee2e2;border-color:#fca5a5}
@@ -438,7 +441,10 @@ mark{background:#fef3c7;color:#92400e;border-radius:3px;padding:0 2px;font-weigh
         <div class="gr-card-head"><div class="gr-title">興趣分類 ＆ 占比設定</div></div>
         <div class="gr-card-body">
         <div id="gr-rows"></div>
-        <button class="gr-add" onclick="addGrRow()">＋ 新增分類</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+          <button class="gr-add" onclick="addGrRow()">＋ 新增分類</button>
+          <button class="gr-add" onclick="addGrKwRow()">＋ 手填興趣</button>
+        </div>
         <div class="gr-total" id="gr-total">合計：0%</div>
         </div>
       </div>
@@ -720,6 +726,23 @@ function addGrRow(){
   document.getElementById('gr-rows').appendChild(div);
   updTotal();
 }
+function previewKw(input){
+  const kw=input.value.trim().toLowerCase();
+  const cnt=input.closest('.gr-row').querySelector('.gr-kw-cnt');
+  if(!cnt)return;
+  if(!kw){cnt.textContent='';return;}
+  const n=D.filter(d=>(!d.r||savedTags.has(d.cp))&&(d.cp.toLowerCase().includes(kw)||(d.z&&d.z.includes(kw))||d.c.toLowerCase().includes(kw))).length;
+  cnt.textContent=n?'找到 '+n+' 個標籤':'無符合標籤';
+  cnt.style.color=n?'var(--good)':'#dc2626';
+}
+function addGrKwRow(){
+  const div=document.createElement('div');
+  div.className='gr-row';div.dataset.type='kw';
+  div.innerHTML='<input class="gr-kw" type="text" placeholder="輸入關鍵字，如：政治、瑜伽、咖啡" oninput="previewKw(this)"><span class="gr-kw-cnt"></span><input class="gr-pct" type="number" min="1" max="100" placeholder="0" oninput="updTotal()"><span style="font-size:12px;color:var(--sub);flex-shrink:0">%</span><button class="gr-del" onclick="this.closest(\'.gr-row\').remove();updTotal()">×</button>';
+  document.getElementById('gr-rows').appendChild(div);
+  div.querySelector('.gr-kw').focus();
+  updTotal();
+}
 function updTotal(){
   const rows=[...document.querySelectorAll('#gr-rows .gr-pct')];
   const total=rows.reduce((s,i)=>s+(parseInt(i.value)||0),0);
@@ -755,8 +778,12 @@ const hiddenSub={
 };
 var _xCatIdx={__xfin:0,__xprop:1,__xfam:2,__xhlt:3,__xtech:4,__xcar:5,__xtrip:6,__xfood:7,__xlux:8,__xbiz:9};
 function spPool(cat,used){
-  const spMap={__rich:'rich',__young:'young',__hidden:'hidden',__re:'re',__tech:'tech',__civil:'civil'};
-  if(spMap[cat])return D.filter(d=>d.sp===spMap[cat]&&!used.has(d.cp));
+  const spMap={__rich:'rich',__young:'young',__hidden:'hidden',__re:'re',__tech:'tech',__civil:'civil',__travel:'travel',__biz:'biz'};
+  if(spMap[cat])return D.filter(d=>d.sp===spMap[cat]&&!d.r&&!used.has(d.cp));
+  if(cat.startsWith('__kw:')){
+    const kw=cat.slice(5).toLowerCase();
+    return D.filter(d=>!used.has(d.cp)&&(!d.r||savedTags.has(d.cp))&&(d.cp.toLowerCase().includes(kw)||(d.z&&d.z.includes(kw))||d.c.toLowerCase().includes(kw)));
+  }
   if(cat.startsWith('__hidden_')){
     const sub=cat.replace('__hidden_','');
     const list=hiddenSub[sub]||[];
@@ -972,11 +999,17 @@ function genPkg(){
   const rows=[...document.querySelectorAll('#gr-rows .gr-row')];
   let fixedCats=[],autoPct=0;
   rows.forEach(function(r){
-    const cat=r.querySelector('.gr-cat').value;
     const pct=parseInt(r.querySelector('.gr-pct').value)||0;
-    if(!cat||!pct)return;
-    if(cat==='__auto')autoPct+=pct;
-    else fixedCats.push([cat,pct]);
+    if(!pct)return;
+    if(r.dataset.type==='kw'){
+      const kw=(r.querySelector('.gr-kw')||{}).value||'';
+      if(kw.trim())fixedCats.push(['__kw:'+kw.trim(),pct]);
+    }else{
+      const cat=(r.querySelector('.gr-cat')||{}).value||'';
+      if(!cat)return;
+      if(cat==='__auto')autoPct+=pct;
+      else fixedCats.push([cat,pct]);
+    }
   });
   const useUserCats=fixedCats.length>0||autoPct>0;
   if(useUserCats){
