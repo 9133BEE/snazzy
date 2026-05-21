@@ -75,6 +75,7 @@ select:focus{border-color:var(--a);box-shadow:0 0 0 3px rgba(96,125,150,.12)}
 .tc-tech{color:var(--tech)!important;background:var(--techl)!important;border-color:var(--techb)!important}
 .tc-civil{color:var(--sp)!important;background:var(--spl)!important;border-color:var(--spb)!important}
 .tc-hidden{color:var(--hidden)!important;background:var(--hiddenl)!important;border-color:var(--hiddenb)!important}
+.tc-saved{color:#b07000!important;background:#fff8e1!important;border-color:#f0c040!important}
 .cb{position:absolute;top:8px;right:8px;background:var(--a);border:none;color:#fff;font-size:10px;padding:3px 8px;border-radius:var(--radius-chip);opacity:0;transition:opacity .15s;cursor:pointer;white-space:nowrap;font-weight:600;box-shadow:var(--shadow-xs)}
 .card:hover .cb{opacity:1}
 
@@ -526,7 +527,7 @@ function renderSavedPool(){
   var el=document.getElementById('savedPoolSection');
   var saved=D.filter(function(d){return d.r&&savedTags.has(d.cp);});
   if(!saved.length){if(el)el.remove();return;}
-  var html='<div id="savedPoolSection" style="margin-top:20px;border-top:2px solid var(--a);padding-top:16px"><div style="font-size:13px;font-weight:700;color:var(--a);margin-bottom:10px">⭐ 已儲存標籤 ('+saved.length+')</div><div class="grid">'+saved.map(function(d){var zhCat=d.c&&d.c!=='其他'?(d.z?d.z+' / '+d.c:d.c):(d.z||'');return '<div class="card" data-cp="'+d.cp.replace(/"/g,'&quot;')+'"><span class="cb">複製</span><div class="te">'+d.cp+'</div>'+(zhCat?'<div class="tz">'+zhCat+'</div>':'')+'</div>';}).join('')+'</div></div>';
+  var html='<div id="savedPoolSection" style="margin-top:20px;border-top:2px solid var(--a);padding-top:16px"><div style="font-size:13px;font-weight:700;color:var(--a);margin-bottom:10px">⭐ 已儲存標籤 ('+saved.length+')</div><div class="grid">'+saved.map(function(d){var zhCat=d.c&&d.c!=='其他'?(d.z?d.z+' / '+d.c:d.c):(d.z||'');return '<div class="card" data-cp="'+d.cp.replace(/"/g,'&quot;')+'"><span class="cb">複製</span><div class="te">'+d.cp+'</div>'+(zhCat?'<div class="tz">'+zhCat+'</div>':'')+'<div class="tc tc-saved">最近儲存</div></div>';}).join('')+'</div></div>';
   if(el){el.outerHTML=html;}else{io.insertAdjacentHTML('beforeend',html);}
 }
 function randomTags(){
