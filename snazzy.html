@@ -143,6 +143,30 @@ mark{background:#fef3c7;color:#92400e;border-radius:3px;padding:0 2px;font-weigh
 .gr-kw:focus{border-color:var(--a);box-shadow:0 0 0 3px rgba(96,125,150,.10)}
 .gr-kw-cnt{font-size:11px;color:var(--sub);white-space:nowrap;flex-shrink:0;min-width:64px}
 .gr-total{font-size:12px;color:var(--sub);margin-top:10px;padding:6px 12px;background:var(--s2);border-radius:8px;border:1px solid var(--bd);display:inline-block}
+.p5-wrap{padding:24px 32px;max-width:1200px;margin:0 auto}
+.p5-top{display:flex;gap:10px;margin-bottom:28px;align-items:center}
+.p5-input{flex:1;padding:11px 18px;border:1.5px solid var(--bd);border-radius:12px;font-size:14px;background:var(--s2);color:var(--tx);outline:none;transition:var(--transition)}
+.p5-input:focus{border-color:var(--a);box-shadow:0 0 0 3px rgba(96,125,150,.10)}
+.p5-btn{padding:11px 28px;background:var(--a);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;transition:var(--transition)}
+.p5-btn:hover{background:var(--a-dark)}
+.mm-section{margin-bottom:56px}
+.mm-kw-label{font-size:15px;font-weight:700;color:var(--tx);margin-bottom:6px;padding:0 4px}
+.mm-canvas-wrap{overflow-x:auto;padding-bottom:8px}
+.mm-canvas{position:relative;margin:0 auto}
+.mm-center{position:absolute;transform:translate(-50%,-50%);background:var(--a);color:#fff;padding:9px 20px;border-radius:22px;font-size:14px;font-weight:700;white-space:nowrap;z-index:3;box-shadow:0 2px 8px rgba(96,125,150,.25)}
+.mm-node{position:absolute;transform:translate(-50%,-50%);padding:7px 10px;border-radius:10px;font-size:11px;cursor:pointer;z-index:2;min-width:90px;max-width:140px;text-align:center;line-height:1.4;transition:box-shadow .15s,transform .15s;box-shadow:var(--shadow-xs)}
+.mm-node:hover{transform:translate(-50%,-50%) scale(1.07);box-shadow:var(--shadow-sm)}
+.mm-node-lib{background:var(--al);border:1.5px solid var(--ab);color:var(--a-dark)}
+.mm-node-new{background:var(--travell);border:1.5px solid var(--travelb);color:var(--travel)}
+.mm-node-assoc{background:#f0ede8;border:1.5px solid #d4c8b8;color:#6b5a40}
+.mm-node-en{font-weight:600;font-size:11px;word-break:break-word}
+.mm-node-zh{font-size:10px;opacity:.8;margin-top:2px}
+.mm-badge{display:inline-block;font-size:9px;background:var(--travel);color:#fff;padding:1px 6px;border-radius:4px;margin-top:3px;font-weight:700;letter-spacing:.3px}
+.mm-badge-assoc{display:inline-block;font-size:9px;background:#9c8060;color:#fff;padding:1px 6px;border-radius:4px;margin-top:3px;font-weight:700}
+.mm-legend{display:flex;gap:20px;padding:10px 4px 0;font-size:11px;color:var(--sub);align-items:center;flex-wrap:wrap}
+.mm-leg-item{display:flex;align-items:center;gap:5px}
+.mm-leg-dot{width:12px;height:12px;border-radius:3px;display:inline-block;border:1.5px solid}
+.mm-empty{padding:40px;text-align:center;color:var(--sub);font-size:13px}
 .gr-total.ok{color:var(--good);font-weight:700;background:var(--goodl);border-color:var(--goodb)}
 .gr-total.over{color:#dc2626;font-weight:700;background:#fee2e2;border-color:#fca5a5}
 .dist-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
@@ -307,6 +331,7 @@ mark{background:#fef3c7;color:#92400e;border-radius:3px;padding:0 2px;font-weigh
   <div class="tab" onclick="sw('y',this)">優等受眾包</div>
   <div class="tab" onclick="sw('t',this)">類型分析</div>
   <div class="tab" onclick="sw('g',this)">AI智能生成</div>
+  <div class="tab" onclick="sw('5',this)">關鍵字心智圖</div>
 </div>
 <div class="bar" id="bi" style="display:none">
   <div class="sw"><input id="q_old" placeholder="搜尋標籤（英文或中文）..." oninput="ri()"></div>
@@ -453,6 +478,15 @@ mark{background:#fef3c7;color:#92400e;border-radius:3px;padding:0 2px;font-weigh
     </div>
   </div>
 </div>
+<div class="pg" id="p5">
+  <div class="p5-wrap">
+    <div class="p5-top">
+      <input id="kwInput" class="p5-input" placeholder="輸入關鍵字，用、或逗號隔開，如：戶外、金融、木屋" onkeydown="if(event.key==='Enter')genMindMap()">
+      <button class="p5-btn" onclick="genMindMap()">生成心智圖</button>
+    </div>
+    <div id="p5-out"></div>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 <button class="btt" id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到最上面">↑</button>
 <script>
@@ -478,6 +512,72 @@ let recentSaved=JSON.parse(localStorage.getItem('snazzyRecentSaved')||'{}');
 const _ONE_MONTH=30*24*3600*1000;
 function _pruneRecent(obj,max=300){const keys=Object.keys(obj);if(keys.length>max){keys.sort((a,b)=>obj[a]-obj[b]).slice(0,keys.length-max).forEach(k=>delete obj[k]);}}
 
+const KWTAGS={
+  '戶外':[{cp:'Rock climbing',z:'攀岩',c:'健康運動'},{cp:'Trail running',z:'越野跑步',c:'健康運動'},{cp:'Wild camping',z:'野外露營',c:'旅遊生活'},{cp:'Kayaking',z:'獨木舟',c:'健康運動'},{cp:'Outdoor photography',z:'戶外攝影',c:'藝術文化'},{cp:'Bouldering',z:'抱石攀岩',c:'健康運動'},{cp:'Forest bathing',z:'森林浴',c:'健康運動'},{cp:'Nature journaling',z:'自然日誌',c:'藝術文化'}],
+  '金融':[{cp:'Passive income',z:'被動收入',c:'金融'},{cp:'ETF investing',z:'ETF投資',c:'金融'},{cp:'Financial independence',z:'財務獨立',c:'金融'},{cp:'Tax planning',z:'稅務規劃',c:'金融'},{cp:'Dividend investing',z:'股息投資',c:'金融'},{cp:'Robo-advisor',z:'機器人理財',c:'科技'},{cp:'ESG investing',z:'ESG投資',c:'金融'},{cp:'Value investing',z:'價值投資',c:'金融'}],
+  '木屋':[{cp:'Log cabin',z:'原木小屋',c:'家居'},{cp:'Cabin living',z:'小屋生活',c:'旅遊生活'},{cp:'Glamping',z:'豪華露營',c:'旅遊生活'},{cp:'Tree house',z:'樹屋',c:'旅遊生活'},{cp:'Rustic decor',z:'鄉村風裝飾',c:'家居'},{cp:'Off-grid living',z:'離網生活',c:'農業自然'},{cp:'Tiny home',z:'微型住宅',c:'家居'},{cp:'Cabin rental',z:'小木屋租賃',c:'旅遊生活'}],
+  '政治':[{cp:'Civic engagement',z:'公民參與',c:'社會'},{cp:'Local government',z:'地方政府',c:'社會'},{cp:'Voting rights',z:'投票權利',c:'社會'},{cp:'Political science',z:'政治學',c:'教育'},{cp:'Public policy',z:'公共政策',c:'社會'},{cp:'Democracy',z:'民主',c:'社會'},{cp:'Grassroots organizing',z:'基層組織',c:'社會'},{cp:'Social activism',z:'社會行動主義',c:'社會'}],
+  '瑜伽':[{cp:'Mindfulness meditation',z:'正念冥想',c:'健康運動'},{cp:'Breathwork',z:'呼吸練習',c:'健康運動'},{cp:'Aerial yoga',z:'空中瑜伽',c:'健康運動'},{cp:'Yin yoga',z:'陰瑜伽',c:'健康運動'},{cp:'Yoga teacher training',z:'瑜伽師資培訓',c:'教育'},{cp:'Wellness retreat',z:'養生度假',c:'旅遊生活'},{cp:'Sound healing',z:'聲音療癒',c:'健康運動'},{cp:'Somatic therapy',z:'身體療法',c:'健康運動'}],
+  '咖啡':[{cp:'Specialty coffee',z:'精品咖啡',c:'美食'},{cp:'Barista skills',z:'咖啡師技能',c:'美食'},{cp:'Coffee roasting',z:'咖啡烘焙',c:'美食'},{cp:'Cold brew',z:'冷萃咖啡',c:'美食'},{cp:'Pour over coffee',z:'手沖咖啡',c:'美食'},{cp:'Coffee subscription',z:'咖啡訂閱',c:'購物優惠'},{cp:'Third wave coffee',z:'第三波咖啡',c:'美食'},{cp:'Coffee cupping',z:'咖啡品鑒',c:'美食'}],
+  '健康':[{cp:'Biohacking',z:'生物駭客',c:'健康運動'},{cp:'Wearable fitness',z:'穿戴式健身',c:'科技'},{cp:'Intermittent fasting',z:'間歇性禁食',c:'健康運動'},{cp:'Sleep optimization',z:'睡眠優化',c:'健康運動'},{cp:'Longevity',z:'長壽科學',c:'健康運動'},{cp:'Mental wellness',z:'心理健康',c:'健康運動'},{cp:'Functional medicine',z:'功能性醫學',c:'健康運動'},{cp:'Gut health',z:'腸道健康',c:'健康運動'}],
+  '旅遊':[{cp:'Digital nomad',z:'數位遊牧',c:'職涯工作'},{cp:'Slow travel',z:'慢旅行',c:'旅遊生活'},{cp:'Eco-tourism',z:'生態旅遊',c:'旅遊生活'},{cp:'Solo travel',z:'獨自旅行',c:'旅遊生活'},{cp:'Workation',z:'工作假期',c:'旅遊生活'},{cp:'Bleisure travel',z:'商務休閒旅遊',c:'旅遊生活'},{cp:'Travel hacking',z:'旅遊優惠攻略',c:'購物優惠'},{cp:'Van life',z:'露營車生活',c:'旅遊生活'}],
+  '科技':[{cp:'Web3',z:'Web3',c:'科技'},{cp:'Machine learning',z:'機器學習',c:'科技'},{cp:'Edge computing',z:'邊緣運算',c:'科技'},{cp:'No-code development',z:'無代碼開發',c:'科技'},{cp:'Prompt engineering',z:'提示工程',c:'科技'},{cp:'Quantum computing',z:'量子運算',c:'科技'},{cp:'Smart home automation',z:'智慧家居自動化',c:'家居'},{cp:'AR wearables',z:'擴增實境穿戴',c:'科技'}],
+  '房地產':[{cp:'House flipping',z:'房屋翻新轉售',c:'房地產興趣'},{cp:'REITs',z:'不動產投資信託',c:'金融'},{cp:'Short-term rentals',z:'短期租賃',c:'房地產興趣'},{cp:'Proptech',z:'房地產科技',c:'科技'},{cp:'Green building',z:'綠建築',c:'能源環境'},{cp:'Urban development',z:'城市開發',c:'社會'},{cp:'Vacation property',z:'度假不動產',c:'房地產興趣'},{cp:'Co-living',z:'共居',c:'家居'}],
+  '美食':[{cp:'Food photography',z:'美食攝影',c:'藝術文化'},{cp:'Farm to table',z:'農場直送餐桌',c:'美食'},{cp:'Fermentation',z:'發酵食品',c:'美食'},{cp:'Molecular gastronomy',z:'分子料理',c:'美食'},{cp:'Plant-based diet',z:'植物性飲食',c:'美食'},{cp:'Food tourism',z:'美食旅遊',c:'旅遊生活'},{cp:'Michelin dining',z:'米其林餐飲',c:'美食'},{cp:'Food science',z:'食品科學',c:'教育'}],
+  '投資':[{cp:'Passive income',z:'被動收入',c:'金融'},{cp:'Options trading',z:'期權交易',c:'金融'},{cp:'Angel investing',z:'天使投資',c:'金融'},{cp:'Index funds',z:'指數基金',c:'金融'},{cp:'Real estate crowdfunding',z:'房地產群眾募資',c:'金融'},{cp:'ESG investing',z:'ESG投資',c:'金融'},{cp:'Commodity futures',z:'商品期貨',c:'金融'},{cp:'Venture capital',z:'創業投資',c:'金融'}],
+  '親子':[{cp:'Montessori education',z:'蒙特梭利教育',c:'教育'},{cp:'Positive parenting',z:'正向教養',c:'親子家庭'},{cp:'Play-based learning',z:'遊戲式學習',c:'教育'},{cp:'Family travel',z:'親子旅遊',c:'旅遊生活'},{cp:'Baby-led weaning',z:'嬰兒主導斷奶',c:'親子家庭'},{cp:'Gentle parenting',z:'溫和教養',c:'親子家庭'},{cp:'STEM toys',z:'STEM玩具',c:'教育'},{cp:'Outdoor play',z:'戶外遊戲',c:'教育'}],
+  '時尚':[{cp:'Sustainable fashion',z:'永續時尚',c:'時尚美妝'},{cp:'Vintage clothing',z:'古著服飾',c:'時尚美妝'},{cp:'Personal styling',z:'個人造型',c:'時尚美妝'},{cp:'Capsule wardrobe',z:'膠囊衣櫥',c:'時尚美妝'},{cp:'Fashion week',z:'時裝周',c:'時尚美妝'},{cp:'Streetwear',z:'街頭服飾',c:'時尚美妝'},{cp:'Luxury resale',z:'精品二手',c:'購物優惠'},{cp:'Slow fashion',z:'慢時尚',c:'時尚美妝'}],
+  '環保':[{cp:'Zero waste lifestyle',z:'零廢棄生活',c:'能源環境'},{cp:'Regenerative agriculture',z:'再生農業',c:'農業自然'},{cp:'Carbon footprint',z:'碳足跡',c:'能源環境'},{cp:'Upcycling',z:'升級再造',c:'能源環境'},{cp:'Solar energy',z:'太陽能',c:'能源環境'},{cp:'Plant-based diet',z:'植物性飲食',c:'美食'},{cp:'Circular economy',z:'循環經濟',c:'能源環境'},{cp:'Climate action',z:'氣候行動',c:'社會'}],
+  '藝術':[{cp:'Digital art',z:'數位藝術',c:'藝術文化'},{cp:'Street art',z:'街頭藝術',c:'藝術文化'},{cp:'NFT art',z:'NFT藝術',c:'藝術文化'},{cp:'Art collecting',z:'藝術收藏',c:'藝術文化'},{cp:'Contemporary art',z:'當代藝術',c:'藝術文化'},{cp:'Generative art',z:'生成藝術',c:'藝術文化'},{cp:'Art residency',z:'藝術駐村',c:'藝術文化'},{cp:'Mural painting',z:'壁畫',c:'藝術文化'}]
+};
+function findMMTags(kw){
+  const q=kw.toLowerCase();
+  const lib=[],newPool=[],assocCats=new Set();
+  D.forEach(function(d){
+    const ok=d.cp.toLowerCase().includes(q)||(d.z&&d.z.includes(kw))||d.c.includes(kw);
+    if(!ok)return;
+    if(!d.r||savedTags.has(d.cp)){lib.push({cp:d.cp,z:d.z,c:d.c,sp:d.sp,_t:'lib'});assocCats.add(d.c);}
+    else newPool.push({cp:d.cp,z:d.z,c:d.c,_t:'new'});
+  });
+  // Association: top tags from same categories not yet matched
+  const assoc=[];
+  if(lib.length<6&&assocCats.size>0){
+    const libSet=new Set(lib.map(function(d){return d.cp;}));
+    assocCats.forEach(function(cat){
+      D.filter(function(d){return d.c===cat&&!d.r&&!libSet.has(d.cp);}).slice(0,3).forEach(function(d){assoc.push({cp:d.cp,z:d.z,c:d.c,_t:'assoc'});});
+    });
+  }
+  const extraNew=(KWTAGS[kw]||[]).filter(function(t){return !D.some(function(d){return d.cp===t.cp;});}).map(function(t){return Object.assign({},t,{_t:'new'});});
+  return [...lib.slice(0,14),...newPool.slice(0,6),...extraNew.slice(0,8),...assoc.slice(0,8)];
+}
+function buildMindMap(kw){
+  const tags=findMMTags(kw);
+  if(!tags.length)return '<div class="mm-empty">「'+kw+'」找不到相關標籤，試試其他關鍵字</div>';
+  const n=tags.length;
+  const W=Math.max(720,Math.min(1100,n*55+200)),H=Math.max(420,Math.min(640,n*38+120));
+  const cx=W/2,cy=H/2,R=Math.min(cx-110,cy-70,230);
+  let lines='',nodes='';
+  tags.forEach(function(tag,i){
+    const angle=(2*Math.PI*i/n)-Math.PI/2;
+    const nx=Math.round(cx+R*Math.cos(angle)),ny=Math.round(cy+R*Math.sin(angle));
+    const qx=Math.round(cx+(nx-cx)*0.45),qy=Math.round(cy+(ny-cy)*0.45);
+    const stroke=tag._t==='lib'?'var(--ab)':tag._t==='new'?'var(--travelb)':'#d4c8b8';
+    lines+='<path d="M'+cx+','+cy+' Q'+qx+','+qy+' '+nx+','+ny+'" stroke="'+stroke+'" stroke-width="1.5" fill="none" opacity=".7"/>';
+    const cls='mm-node mm-node-'+tag._t;
+    const badge=tag._t==='new'?'<div class="mm-badge">New</div>':tag._t==='assoc'?'<div class="mm-badge-assoc">聯想</div>':'';
+    const zh=tag.z?'<div class="mm-node-zh">'+tag.z+'</div>':'';
+    const cp=tag.cp.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    nodes+='<div class="'+cls+'" style="left:'+nx+'px;top:'+ny+'px" onclick="ct(\''+cp+'\')" title="點擊複製"><div class="mm-node-en">'+tag.cp+'</div>'+zh+badge+'</div>';
+  });
+  return '<div class="mm-section"><div class="mm-kw-label">'+kw+'</div><div class="mm-canvas-wrap"><div class="mm-canvas" style="width:'+W+'px;height:'+H+'px"><svg width="'+W+'" height="'+H+'" style="position:absolute;top:0;left:0;pointer-events:none">'+lines+'</svg><div class="mm-center" style="left:'+cx+'px;top:'+cy+'px">'+kw+'</div>'+nodes+'</div></div><div class="mm-legend"><span class="mm-leg-item"><span class="mm-leg-dot" style="background:var(--al);border-color:var(--ab)"></span>標籤庫</span><span class="mm-leg-item"><span class="mm-leg-dot" style="background:var(--travell);border-color:var(--travelb)"></span>New</span><span class="mm-leg-item"><span class="mm-leg-dot" style="background:#f0ede8;border-color:#d4c8b8"></span>聯想延伸</span></div></div>';
+}
+function genMindMap(){
+  const input=document.getElementById('kwInput').value.trim();
+  const kws=input.split(/[,，、\s]+/).map(function(k){return k.trim();}).filter(Boolean);
+  const out=document.getElementById('p5-out');
+  if(!kws.length){out.innerHTML='<div class="mm-empty">請輸入關鍵字</div>';return;}
+  out.innerHTML=kws.map(buildMindMap).join('');
+}
 function buildICats(){
   const c=document.getElementById('iCats');if(!c)return;
   const spDefs=[
