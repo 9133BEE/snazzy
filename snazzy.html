@@ -552,16 +552,12 @@ function findMMTags(kw){
 }
 function buildMindMap(kw){
   const tags=findMMTags(kw);
-  if(!tags.length)return '<div class="mm-empty">「'+kw+'」找不到相關標籤，試試其他關鍵字</div>';
+  if(!tags.length)return '<div class="mm-empty">「'+kw+'」找不到相關標籤</div>';
   const cards=tags.map(function(tag){
     const zhCat=tag.c&&tag.c!=='其他'?(tag.z?tag.z+' / '+tag.c:tag.c):(tag.z||'');
-    const badge=tag._t==='new'?'<div class="tc tc-travel">New</div>':tag._t==='assoc'?'<div class="tc" style="color:var(--sub);background:var(--s2);border-color:var(--bd)">聯想</div>':'';
-    const cp=tag.cp.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    return '<div class="card" data-cp="'+tag.cp.replace(/"/g,'&quot;')+'" onclick="ct(\''+cp+'\')"><span class="cb">複製</span><div class="te">'+tag.cp+'</div>'+(zhCat?'<div class="tz">'+zhCat+'</div>':'')+badge+'</div>';
+    return '<div class="card" data-cp="'+tag.cp.replace(/"/g,'&quot;')+'"><span class="cb">複製</span><div class="te">'+tag.cp+'</div>'+(zhCat?'<div class="tz">'+zhCat+'</div>':'')+'</div>';
   }).join('');
-  const total=tags.length,newCnt=tags.filter(function(t){return t._t==='new';}).length;
-  const info='共 '+total+' 個'+(newCnt?' ／ '+newCnt+' 個 New':'');
-  return '<div class="mm-section"><div class="sec"><div class="sh"><div class="st">'+kw+'</div><div class="sc">'+info+'</div><div class="ln"></div></div><div class="grid">'+cards+'</div></div></div>';
+  return '<div class="mm-section"><div class="sec"><div class="sh"><div class="st">'+kw+'</div><div class="sc">'+tags.length+' 個</div><div class="ln"></div></div><div class="grid">'+cards+'</div></div></div>';
 }
 function genMindMap(){
   const input=document.getElementById('kwInput').value.trim();
