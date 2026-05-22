@@ -601,7 +601,7 @@ function buildICats(){
   const visibleCount=D.filter(d=>!d.r||savedTags.has(d.cp)).length;
   const sortedCats=Object.entries(catCnt).sort((a,b)=>b[1]-a[1]);
   let h='<div class="i-cat-item active" id="iCatAll" onclick="selectCat(this,\'\')"><span>全部</span><span class="i-cat-n">'+visibleCount+'</span></div><div class="i-cat-sep"></div>';
-  spDefs.forEach(s=>{if(spCnt[s.key]>0)h+='<div class="i-cat-item" onclick="selectCat(this,\''+s.key+'\')" style="color:'+s.color+'"><span>'+s.label+'</span><span class="i-cat-n">'+spCnt[s.key]+'</span></div>';});
+  spDefs.forEach(s=>{if(spCnt[s.key]>0)h+='<div class="i-cat-item" onclick="selectCat(this,\''+s.key+'\')" style="color:var(--a)"><span>'+s.label+'</span><span class="i-cat-n">'+spCnt[s.key]+'</span></div>';});
   h+='<div class="i-cat-sep"></div>';
   sortedCats.forEach(([cat,cnt])=>{h+='<div class="i-cat-item" onclick="selectCat(this,\''+cat+'\')"><span>'+cat+'</span><span class="i-cat-n">'+cnt+'</span></div>';});
   c.innerHTML=h;
