@@ -482,7 +482,7 @@ mark{background:#fef3c7;color:#92400e;border-radius:3px;padding:0 2px;font-weigh
   <div class="p5-wrap">
     <div class="p5-top">
       <input id="kwInput" class="p5-input" placeholder="輸入關鍵字，用、或逗號隔開，如：戶外、金融、木屋" onkeydown="if(event.key==='Enter')genMindMap()">
-      <button class="p5-btn" onclick="genMindMap()">生成心智圖</button>
+      <button class="p5-btn" onclick="genMindMap()">搜尋</button>
     </div>
     <div id="p5-out"></div>
   </div>
@@ -550,21 +550,21 @@ function findMMTags(kw){
   const extraNew=(KWTAGS[kw]||[]).filter(function(t){return !D.some(function(d){return d.cp===t.cp;});}).map(function(t){return Object.assign({},t,{_t:'new'});});
   return [...lib.slice(0,14),...newPool.slice(0,6),...extraNew.slice(0,8),...assoc.slice(0,8)];
 }
-function buildMindMap(kw){
+function buildKwCol(kw){
   const tags=findMMTags(kw);
-  if(!tags.length)return '<div class="mm-empty">「'+kw+'」找不到相關標籤</div>';
-  const cards=tags.map(function(tag){
-    const zhCat=tag.c&&tag.c!=='其他'?(tag.z?tag.z+' / '+tag.c:tag.c):(tag.z||'');
-    return '<div class="card" data-cp="'+tag.cp.replace(/"/g,'&quot;')+'"><span class="cb">複製</span><div class="te">'+tag.cp+'</div>'+(zhCat?'<div class="tz">'+zhCat+'</div>':'')+'</div>';
+  if(!tags.length)return '<div class="rcol"><div class="rcol-hd">'+kw+'</div><div class="rtag" style="color:var(--sub);font-size:11px;background:none;border:none;cursor:default">無結果</div></div>';
+  const items=tags.map(function(tag){
+    const zh=tag.c&&tag.c!=='其他'?(tag.z?tag.z+' / '+tag.c:tag.c):(tag.z||'');
+    return '<div class="rtag" data-cp="'+tag.cp.replace(/"/g,'&quot;')+'">'+tag.cp+(zh?'<div class="rtz">'+zh+'</div>':'')+'</div>';
   }).join('');
-  return '<div class="mm-section"><div class="sec"><div class="sh"><div class="st">'+kw+'</div><div class="sc">'+tags.length+' 個</div><div class="ln"></div></div><div class="grid">'+cards+'</div></div></div>';
+  return '<div class="rcol"><div class="rcol-hd">'+kw+'（'+tags.length+'）</div>'+items+'</div>';
 }
 function genMindMap(){
   const input=document.getElementById('kwInput').value.trim();
-  const kws=input.split(/[,，、\s]+/).map(function(k){return k.trim();}).filter(Boolean);
+  const kws=input.split(/[,，、]+/).map(function(k){return k.trim();}).filter(Boolean);
   const out=document.getElementById('p5-out');
   if(!kws.length){out.innerHTML='<div class="mm-empty">請輸入關鍵字</div>';return;}
-  out.innerHTML=kws.map(buildMindMap).join('');
+  out.innerHTML='<div class="rcols" style="grid-template-columns:repeat('+Math.min(kws.length,6)+',1fr)">'+kws.map(buildKwCol).join('')+'</div>';
 }
 function buildICats(){
   const c=document.getElementById('iCats');if(!c)return;
