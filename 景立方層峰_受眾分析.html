@@ -250,5 +250,61 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
 <div style="text-align:center;font-size:11px;color:#b8b5b0;margin-top:8px;padding-bottom:8px">資料期間：2026-03-12 至 2026-05-28 · 浩瀚景立方-層峰區 台中北屯</div>
 
 </div>
+
+<!-- Toast -->
+<div id="toast" style="position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:#2e2c29;color:#fff;font-size:12.5px;padding:10px 20px;border-radius:24px;opacity:0;transition:all .25s;pointer-events:none;z-index:999;white-space:nowrap">
+  📋 詢問建議已複製 → 貼至 Claude 對話
+</div>
+
+<script>
+const PROJECT = '景立方層峰（台中北屯・南興路×敦富一街・制震精裝宅・260潛客・均CPL NT$457）';
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg || '📋 詢問建議已複製 → 貼至 Claude 對話';
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 2200);
+}
+
+function copyPrompt(text) {
+  navigator.clipboard.writeText(text).then(() => showToast()).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast();
+  });
+}
+
+// 核心標籤點擊
+document.querySelectorAll('.core-tag').forEach(el => {
+  el.addEventListener('click', () => {
+    const tag = el.textContent.replace('↗','').trim();
+    copyPrompt(`針對${PROJECT}的 META 廣告投放，請深入分析「${tag}」這個興趣標籤：\n1. 這個標籤在本案受眾中代表什麼輪廓的人？\n2. 搭配哪些其他標籤組合效果最好？\n3. 素材訴求應該怎麼寫才能匹配這類受眾？`);
+  });
+});
+
+// 新受眾方向卡片點擊
+document.querySelectorAll('.new-card').forEach(el => {
+  el.addEventListener('click', () => {
+    const title = el.querySelector('.new-card-title').textContent.replace('↗','').trim();
+    const desc = el.querySelector('.new-card-desc').textContent.trim();
+    copyPrompt(`針對${PROJECT}，我想測試新受眾方向：「${title}」\n方向說明：${desc}\n\n請給我：\n1. 具體的 META 興趣標籤清單（附中文，約 10–15 個）\n2. 地理設定建議\n3. 適合這組受眾的素材訴求角度`);
+  });
+});
+
+// 建議操作 tip 點擊
+document.querySelectorAll('.tip').forEach(el => {
+  el.style.cursor = 'pointer';
+  el.addEventListener('click', () => {
+    const title = el.querySelector('.tip-title').textContent.trim();
+    const desc = el.querySelector('.tip-desc').textContent.trim();
+    copyPrompt(`針對${PROJECT}，關於這項操作建議：\n「${title}」\n背景：${desc}\n\n請幫我制定具體的執行方案，包含受眾設定細節和素材方向。`);
+  });
+});
+</script>
 </body>
 </html>
