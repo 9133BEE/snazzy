@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>富宇玥和｜受眾分析報告</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft JhengHei','Segoe UI',sans-serif;background:#f5f4f1;color:#2e2c29;font-size:14px;line-height:1.6;padding:24px}
+.wrap{max-width:800px;margin:0 auto}
+
+/* Top link */
+.top-link{font-size:12px;color:#607d96;margin-bottom:20px;display:block;cursor:pointer}
+.top-link span{border-bottom:1px solid #a8bed0}
+
+/* Section headers */
+.sec-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec-title::before{content:'';display:inline-block;width:3px;height:14px;background:#607d96;border-radius:2px}
+.section{margin-bottom:28px}
+
+/* ── 三大受眾輪廓 ── */
+.profiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.profile-card{background:#fff;border:1px solid #e4e1dd;border-radius:12px;padding:16px;position:relative}
+.profile-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px}
+.profile-icon.blue{background:#eaf0f6}
+.profile-icon.green{background:#d8ead2}
+.profile-icon.pink{background:#faeaea}
+.profile-name{font-size:14px;font-weight:700;color:#2e2c29;margin-bottom:4px}
+.profile-meta{font-size:11px;color:#7d7870;margin-bottom:8px}
+.profile-tags{font-size:11.5px;color:#4a5568;margin-bottom:8px;line-height:1.6}
+.profile-behavior{font-size:11px;color:#7d7870;line-height:1.5;margin-bottom:10px}
+.profile-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;margin-top:2px}
+.badge-blue{background:#eaf0f6;color:#4d6a82;border:1px solid #a8bed0}
+.badge-green{background:#d8ead2;color:#3d6b4f;border:1px solid #96c4a8}
+.badge-pink{background:#faeaea;color:#8a3f3f;border:1px solid #c89090}
+
+/* ── 核心標籤 ── */
+.tags-row{display:flex;flex-wrap:wrap;gap:8px}
+.core-tag{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;background:#fff;border:1.5px solid #e4e1dd;border-radius:20px;font-size:12px;font-weight:600;color:#2e2c29;cursor:pointer;transition:all .15s}
+.core-tag:hover{border-color:#a8bed0;background:#eaf0f6;color:#4d6a82}
+.core-tag .arr{font-size:10px;color:#a8bed0}
+
+/* ── 五大操作建議 ── */
+.tips{display:flex;flex-direction:column;gap:10px}
+.tip{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:14px 16px;display:flex;gap:14px;align-items:flex-start}
+.tip-num{width:22px;height:22px;border-radius:6px;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.tip-num.c1{background:#fff0e0;color:#c26000}
+.tip-num.c2{background:#d8ead2;color:#3d6b4f}
+.tip-num.c3{background:#fff0e0;color:#c26000}
+.tip-num.c4{background:#e8edf8;color:#5270a0}
+.tip-num.c5{background:#faeaea;color:#8a3f3f}
+.tip-body{}
+.tip-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:3px}
+.tip-desc{font-size:12px;color:#7d7870;line-height:1.55}
+
+/* ── 建議新受眾方向 ── */
+.new-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.new-card{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:13px 15px;display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer;transition:all .15s}
+.new-card:hover{border-color:#a8bed0;box-shadow:0 2px 8px rgba(0,0,0,.08);transform:translateY(-1px)}
+.new-card-body{}
+.new-card-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:4px}
+.new-card-desc{font-size:11.5px;color:#7d7870;line-height:1.5}
+.new-card-arr{font-size:12px;color:#a8bed0;flex-shrink:0;margin-top:2px}
+
+/* ── 洞見分析 ── */
+.insight-box{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:18px 20px}
+.insight-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:12px}
+.insight-highlight{background:#fdf3dc;border-left:3px solid #d4b06a;padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:14px;font-size:12.5px;color:#7a5c20;font-weight:600;line-height:1.6}
+.insight-sub{font-size:12.5px;font-weight:700;color:#2e2c29;margin-bottom:8px;margin-top:12px}
+.insight-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+.insight-list li{font-size:12px;color:#4a5568;padding-left:14px;position:relative;line-height:1.55}
+.insight-list li::before{content:'→';position:absolute;left:0;color:#a8bed0;font-size:11px}
+.principle-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.principle-list li{font-size:12px;color:#4a5568;padding-left:20px;position:relative;line-height:1.55}
+.principle-list li::before{content:counter(item);counter-increment:item;position:absolute;left:0;width:16px;height:16px;background:#eaf0f6;border-radius:4px;color:#607d96;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;top:1px}
+.principle-list{counter-reset:item}
+
+/* ── 建案 header ── */
+.case-header{background:#fff;border:1px solid #e4e1dd;border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:14px}
+.case-logo{width:38px;height:38px;background:linear-gradient(135deg,#607d96,#4d6a82);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;flex-shrink:0}
+.case-info h2{font-size:15px;font-weight:700;color:#2e2c29}
+.case-info p{font-size:11px;color:#7d7870;margin-top:2px}
+.case-stats{margin-left:auto;display:flex;gap:20px}
+.stat{text-align:right}
+.stat-n{font-size:20px;font-weight:800;color:#607d96;line-height:1}
+.stat-l{font-size:10px;color:#a8a199;margin-top:2px;font-weight:600;letter-spacing:.3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- 建案 header -->
+<div class="case-header">
+  <div class="case-logo">玥</div>
+  <div class="case-info">
+    <h2>富宇玥和｜台中南區</h2>
+    <p>中興大學旁 · 大慶火車站周邊 · 廣告目標：名單</p>
+  </div>
+  <div class="case-stats">
+    <div class="stat"><div class="stat-n">178</div><div class="stat-l">總潛客</div></div>
+    <div class="stat"><div class="stat-n">NT$374</div><div class="stat-l">均CPL</div></div>
+    <div class="stat"><div class="stat-n">38組</div><div class="stat-l">累積受眾</div></div>
+  </div>
+</div>
+
+<span class="top-link">點選任一標籤可深入詢問建議 ↗</span>
+
+<!-- 三大核心受眾輪廓 -->
+<div class="section">
+  <div class="sec-title">三大核心受眾輪廓</div>
+  <div class="profiles">
+
+    <div class="profile-card">
+      <div class="profile-icon blue">📚</div>
+      <div class="profile-name">教育學術型</div>
+      <div class="profile-meta">年齡 28–60｜興大/大慶/國圖館圈</div>
+      <div class="profile-tags">興趣：教授教育、學術研究、文藝展覽、高知識文學</div>
+      <div class="profile-behavior">行為：重視學區資源、學術在地黏著、中興大學教職員輪廓</div>
+      <span class="profile-badge badge-blue">代表組：興大南區/教授教育</span>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-icon green">💹</div>
+      <div class="profile-name">理財置產型</div>
+      <div class="profile-meta">年齡 28–65｜南區·東區·大里</div>
+      <div class="profile-tags">興趣：房地產、投資、金融理財、銀行業、保險自營</div>
+      <div class="profile-behavior">行為：具主動置產意識、理財導向、注重資產配置</div>
+      <span class="profile-badge badge-green">代表組：南區東區大里/注重教育銀行理財顧問</span>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-icon pink">💎</div>
+      <div class="profile-name">高資產女性型</div>
+      <div class="profile-meta">年齡 28–60｜國圖館+6公里</div>
+      <div class="profile-tags">興趣：藝文時尚、精品消費、品味生活</div>
+      <div class="profile-behavior">行為：高消費力女性、換屋置產需求、注重居住品質</div>
+      <span class="profile-badge badge-pink">代表組：國圖館+6/高資產女性置產族</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- 跨受眾必保留的核心標籤 -->
+<div class="section">
+  <div class="sec-title">跨受眾必保留的核心標籤</div>
+  <div class="tags-row">
+    <span class="core-tag">房地產（產業）<span class="arr">↗</span></span>
+    <span class="core-tag">不動產（房地產）<span class="arr">↗</span></span>
+    <span class="core-tag">投資（商業與財務）<span class="arr">↗</span></span>
+    <span class="core-tag">理財（商業與財務）<span class="arr">↗</span></span>
+    <span class="core-tag">教育（教育）<span class="arr">↗</span></span>
+    <span class="core-tag">銀行（金融服務）<span class="arr">↗</span></span>
+  </div>
+</div>
+
+<!-- 五大操作建議 -->
+<div class="section">
+  <div class="sec-title">五大操作建議</div>
+  <div class="tips">
+
+    <div class="tip">
+      <div class="tip-num c1">1</div>
+      <div class="tip-body">
+        <div class="tip-title">「年輕人興趣5/21新版」是全案最低CPL，應立即加預算</div>
+        <div class="tip-desc">此組 CPL 僅 NT$185，遠低於全案均值 NT$374。建議以相同興趣標籤在「興大+6」或「大慶+5」複製一組，快速驗證地區擴展效果。</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-num c2">2</div>
+      <div class="tip-body">
+        <div class="tip-title">高資產女性兩組合計 21 潛客，應建立獨立女性素材</div>
+        <div class="tip-desc">國圖館+6 高資產女性置產族累積表現穩健（CPL NT$285–502）。建議製作女性專屬素材：「南區升級宅，品味生活不妥協」，配合精品/藝文標籤推廣。</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-num c3">3</div>
+      <div class="tip-body">
+        <div class="tip-title">用「職業興趣」區分客群訴求，分開投放</div>
+        <div class="tip-desc">教授教育（理性+學區導向）vs 理財置產（投資報酬導向）vs 高資產女性（生活品質導向）是三條截然不同的溝通路線，不建議混合在同一組，以免素材訊息模糊。</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-num c4">4</div>
+      <div class="tip-body">
+        <div class="tip-title">「五金傳產政治」12 潛客已暫停，是高優先重啟候選</div>
+        <div class="tip-desc">此組 CPL NT$400 合理、潛客量大，僅因素材疲乏暫停。建議更換切角為「南區換屋，不離開台中根」，保留五金傳產+政治標籤，搭配新稿重啟。</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-num c5">5</div>
+      <div class="tip-body">
+        <div class="tip-title">教授教育30D廣告互動組加入「行為：常閱讀學術」可提升精準度</div>
+        <div class="tip-desc">此組 23 潛客表現最穩（CPL NT$317），已鎖 FB。建議追加「學術研究者行為層」或中興大學相關地標，進一步篩選教職員輪廓，提高到訪率。</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 建議新測試受眾方向 -->
+<div class="section">
+  <div class="sec-title">建議新測試受眾方向</div>
+  <div class="new-grid">
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">30–55 / 國圖館+大慶 / 雙語教育＋文青生活 ↗</div>
+        <div class="new-card-desc">從教授教育組拆出，單獨測試文化/教育需求族群</div>
+      </div>
+    </div>
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">35–60 / 中興大學+5 / 醫護教師 ↗</div>
+        <div class="new-card-desc">共榮醫院+興大教職員，步行距離優勢明顯的高薪穩定族群</div>
+      </div>
+    </div>
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">40–60 / 南區東區 / 在地換屋＋精品消費 ↗</div>
+        <div class="new-card-desc">南屯/南區在地 40+ 換屋族，訴求「同區升級不搬遷，孩子學區不換」</div>
+      </div>
+    </div>
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">再行銷 / 互動過未詢問族群 ↗</div>
+        <div class="new-card-desc">已有互動但未留名單，搭配不同素材二次觸及，低成本回收</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 洞見分析 -->
+<div class="section">
+  <div class="insight-box">
+    <div class="insight-title">根據現有高效受眾的設定邏輯，整理出幾個關鍵洞見：</div>
+
+    <div class="insight-highlight">
+      最重要的發現：這三類受眾都在做「收入代理」而非直接鎖定收入<br>
+      Facebook 無法直接設定「月薪 10 萬以上」，所以這些受眾都是用興趣行為「間接推算」高購買力群體。
+    </div>
+
+    <div class="insight-sub">歸納出清晰的代理方式：</div>
+    <ul class="insight-list">
+      <li>職業背景代理：教授、醫護、工程師、銀行業 → 高薪穩定職業</li>
+      <li>投資行為代理：房地產、591、投資顧問 → 有資金在流動</li>
+      <li>消費能力代理：精品消費、藝文展覽、高端品牌 → 實際消費力驗證</li>
+    </ul>
+
+    <div class="insight-sub">未來新開受眾的設定原則：</div>
+    <ol class="principle-list">
+      <li>首先確定「地理錨點」：中興大學、大慶火車站、國立公共資訊圖書館周邊 3–8km 是基礎，別開太廣</li>
+      <li>再加「底層三標籤」：房地產（產業）＋不動產（房地產）＋投資，這是購屋意願的基本篩網</li>
+      <li>最後依訴求加「職業/消費層」：理性訴求（教師/醫療）配學區資源相關標籤；感性訴求（精品/生活風格）配精品消費標籤</li>
+      <li>高端族群記得加「行為層」：商業決策者＋常旅行，能有效拉高人群質量</li>
+    </ol>
+  </div>
+</div>
+
+<div style="text-align:center;font-size:11px;color:#b8b5b0;margin-top:8px;padding-bottom:8px">資料期間：2026-03-20 至 2026-05-28 · 富宇玥和 台中南區</div>
+
+</div>
+</body>
+</html>
