@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>中祐雅苑｜受眾分析報告</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft JhengHei','Segoe UI',sans-serif;background:#f5f4f1;color:#2e2c29;font-size:14px;line-height:1.6;padding:24px}
+.wrap{max-width:800px;margin:0 auto}
+.sec-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec-title::before{content:'';display:inline-block;width:3px;height:14px;background:#5a7a60;border-radius:2px}
+.section{margin-bottom:28px}
+.profiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.profile-card{background:#fff;border:1px solid #e4e1dd;border-radius:12px;padding:16px;position:relative}
+.profile-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px}
+.profile-icon.green{background:#d8ead2}
+.profile-icon.earth{background:#f0e8d8}
+.profile-icon.blue{background:#eaf0f6}
+.profile-name{font-size:14px;font-weight:700;color:#2e2c29;margin-bottom:4px}
+.profile-meta{font-size:11px;color:#7d7870;margin-bottom:8px}
+.profile-tags{font-size:11.5px;color:#4a5568;margin-bottom:8px;line-height:1.6}
+.profile-behavior{font-size:11px;color:#7d7870;line-height:1.5;margin-bottom:10px}
+.profile-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;margin-top:2px}
+.badge-green{background:#d8ead2;color:#3d6b4f;border:1px solid #96c4a8}
+.badge-earth{background:#f0e8d8;color:#7a5020;border:1px solid #d4a870}
+.badge-blue{background:#eaf0f6;color:#4d6a82;border:1px solid #a8bed0}
+.tags-row{display:flex;flex-wrap:wrap;gap:8px}
+.core-tag{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;background:#fff;border:1.5px solid #e4e1dd;border-radius:20px;font-size:12px;font-weight:600;color:#2e2c29;cursor:pointer;transition:all .15s}
+.core-tag:hover{border-color:#8faa96;background:#edf5ee;color:#3d6b4f}
+.core-tag .arr{font-size:10px;color:#a8bed0}
+.tips{display:flex;flex-direction:column;gap:10px}
+.tip{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:14px 16px;display:flex;gap:14px;align-items:flex-start}
+.tip-num{width:22px;height:22px;border-radius:6px;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.tip-num.c1{background:#d8ead2;color:#3d6b4f}
+.tip-num.c2{background:#d8ead2;color:#3d6b4f}
+.tip-num.c3{background:#fff0e0;color:#c26000}
+.tip-num.c4{background:#e8edf8;color:#5270a0}
+.tip-num.c5{background:#faeaea;color:#8a3f3f}
+.tip-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:3px}
+.tip-desc{font-size:12px;color:#7d7870;line-height:1.55}
+.new-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.new-card{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:13px 15px;display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer;transition:all .15s}
+.new-card:hover{border-color:#8faa96;box-shadow:0 2px 8px rgba(0,0,0,.08);transform:translateY(-1px)}
+.new-card-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:4px}
+.new-card-desc{font-size:11.5px;color:#7d7870;line-height:1.5}
+.new-card-arr{font-size:12px;color:#a8bed0;flex-shrink:0;margin-top:2px}
+.insight-box{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:18px 20px}
+.insight-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:12px}
+.insight-highlight{background:#eaf3ec;border-left:3px solid #6aaa7a;padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:14px;font-size:12.5px;color:#2d5e3a;font-weight:600;line-height:1.6}
+.insight-sub{font-size:12.5px;font-weight:700;color:#2e2c29;margin-bottom:8px;margin-top:12px}
+.insight-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+.insight-list li{font-size:12px;color:#4a5568;padding-left:14px;position:relative;line-height:1.55}
+.insight-list li::before{content:'→';position:absolute;left:0;color:#8faa96;font-size:11px}
+.principle-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:6px;counter-reset:item}
+.principle-list li{font-size:12px;color:#4a5568;padding-left:20px;position:relative;line-height:1.55}
+.principle-list li::before{content:counter(item);counter-increment:item;position:absolute;left:0;width:16px;height:16px;background:#eaf3ec;border-radius:4px;color:#5a7a60;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;top:1px}
+.case-header{background:#fff;border:1px solid #e4e1dd;border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:14px}
+.case-logo{width:38px;height:38px;background:linear-gradient(135deg,#5a7a60,#3d5e42);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;flex-shrink:0}
+.case-info h2{font-size:15px;font-weight:700;color:#2e2c29}
+.case-info p{font-size:11px;color:#7d7870;margin-top:2px}
+.case-stats{margin-left:auto;display:flex;gap:20px}
+.stat{text-align:right}
+.stat-n{font-size:20px;font-weight:800;color:#5a7a60;line-height:1}
+.stat-l{font-size:10px;color:#a8a199;margin-top:2px;font-weight:600;letter-spacing:.3px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#5a7a60;text-decoration:none;margin-bottom:16px;padding:5px 12px;background:#eaf3ec;border-radius:20px;border:1px solid #8faa96;transition:all .15s}
+.back-link:hover{background:#d4e8d8;color:#3d5e42}
+.top-link{font-size:12px;color:#5a7a60;margin-bottom:16px;display:block;cursor:pointer}
+.top-link span{border-bottom:1px solid #8faa96}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back-link" href="hub.html">← 返回案件總覽</a>
+
+<div class="case-header">
+  <div class="case-logo">雅</div>
+  <div class="case-info">
+    <h2>中祐雅苑｜嘉義大林</h2>
+    <p>大智三街口・近大林火車站・國道3號・零公設4房透天・2027下半年交屋</p>
+  </div>
+  <div class="case-stats">
+    <div class="stat"><div class="stat-n">508</div><div class="stat-l">總訊息</div></div>
+    <div class="stat"><div class="stat-n">NT$241</div><div class="stat-l">均CPL</div></div>
+    <div class="stat"><div class="stat-n">34組</div><div class="stat-l">累積受眾</div></div>
+  </div>
+</div>
+
+<span class="top-link"><span>點選任一標籤可深入詢問建議 ↗</span></span>
+
+<!-- 三大核心受眾輪廓 -->
+<div class="section">
+  <div class="sec-title">三大核心受眾輪廓</div>
+  <div class="profiles">
+
+    <div class="profile-card">
+      <div class="profile-icon green">👩‍👧</div>
+      <div class="profile-name">家庭主婦在地型</div>
+      <div class="profile-meta">年齡 28–55｜大林/新港/嘉北圈</div>
+      <div class="profile-tags">興趣：家庭、育兒、傳統美食、戶外、生活</div>
+      <div class="profile-behavior">行為：在地傳統家庭主婦，熟悉大林生活圈，對學區（三和國小/大林國中）有需求，首購換屋動機明確</div>
+      <span class="profile-badge badge-green">代表組：大林新港/家庭主婦 (153訊息 CPL175)</span>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-icon earth">🏭</div>
+      <div class="profile-name">農工業在地型</div>
+      <div class="profile-meta">年齡 28–55｜大林/台3沿線/大埤</div>
+      <div class="profile-tags">興趣：農業、工廠、飲食加工、代工、傳統產業</div>
+      <div class="profile-behavior">行為：大林及台3沿線農工業就業者，在地工作、在地居住需求強，對「零公設、前院停車」等實用訴求反應佳</div>
+      <span class="profile-badge badge-earth">代表組：大林新港美食/農工業 (62訊息 CPL206)</span>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-icon blue">🚌</div>
+      <div class="profile-name">觀光遊覽業型</div>
+      <div class="profile-meta">年齡 28–60｜大林大崎頂/新港</div>
+      <div class="profile-tags">興趣：旅遊、遊覽車、導遊、觀光、傳統文化</div>
+      <div class="profile-behavior">行為：大林周邊觀光旅遊業從業者，在地換屋需求真實，對透天格局＋停車空間有強烈偏好</div>
+      <span class="profile-badge badge-blue">代表組：大林大崎頂/遊覽業車 (20訊息 CPL194)</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- 核心標籤 -->
+<div class="section">
+  <div class="sec-title">跨受眾必保留的核心標籤</div>
+  <div class="tags-row">
+    <span class="core-tag">房地產（產業）<span class="arr">↗</span></span>
+    <span class="core-tag">不動產（房地產）<span class="arr">↗</span></span>
+    <span class="core-tag">家庭主婦（身份）<span class="arr">↗</span></span>
+    <span class="core-tag">農業（產業）<span class="arr">↗</span></span>
+    <span class="core-tag">傳統美食（飲食）<span class="arr">↗</span></span>
+    <span class="core-tag">首次購屋（行為）<span class="arr">↗</span></span>
+  </div>
+</div>
+
+<!-- 五大操作建議 -->
+<div class="section">
+  <div class="sec-title">五大操作建議</div>
+  <div class="tips">
+
+    <div class="tip">
+      <div class="tip-num c1">1</div>
+      <div class="tip-body">
+        <div class="tip-title">「大林新港/家庭主婦」CPL NT$175 全案最強，立即擴預算</div>
+        <div class="tip-desc">此組單月累積 153 則訊息、7 筆潛客，目前仍進行中。日預算 NT$200 已跑出穩定效果，建議提升至 NT$350–400 觀察是否等比例成長，並同步測試同類標籤在「大林嘉北+5」圈的複製版本。</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-num c2">2</div>
+      <div class="tip-body">
+        <div class="tip-title">「戶外傳統美食」CPL NT$165 已停用，應立即重啟</div>
+        <div class="tip-desc">此組（大林嘉北嘉北/戶外傳統美食）CPL 全案最低 NT$165，41 則訊息。已停用但邏輯未失效——建議以相同標籤組合（戶外活動+傳統美食+在地興趣）在「大林新港+5」重新啟動，素材訴求「前院停車+透天生活感」。</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-num c3">3</div>
+      <div class="tip-body">
+        <div class="tip-title">農工業進行中兩組（CPL NT$206–299）維持，加細分農業標籤</div>
+        <div class="tip-desc">「大林新港美食/農工業」和「台3沿線/工廠認知」共 77 訊息、6 潛客，目前進行中。建議在農工業組內加測「稻作農業、農機具、養殖業、傳統農產加工」等細分標籤，找出農業背景反應最強的子族群。</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-num c4">4</div>
+      <div class="tip-body">
+        <div class="tip-title">「傳統首購」CPL NT$247、33 訊息，是量最穩的有效組</div>
+        <div class="tip-desc">30-50/大林新港/傳統首購 是量較大且 CPL 合理的穩定組。建議維持並測試素材角度：「嘉義縣唯一零公設透天」＋「大林國中步行學區」雙重訴求，鎖定首購有孩族群。</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-num c5">5</div>
+      <div class="tip-body">
+        <div class="tip-title">立即停止投資/置產/政治（CPL NT$1,095）和科技業系列</div>
+        <div class="tip-desc">「嘉北大林新港/投資置產政治」CPL NT$1,095、「中嘉嘉北/科技置產及工程師」CPL NT$333–350。嘉義大林投資客比例低、科技業就業人口少，這類興趣標籤在本案受眾中轉換率極差，預算應全部轉至家庭主婦型和農工業型組別。</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 建議新受眾方向 -->
+<div class="section">
+  <div class="sec-title">建議新測試受眾方向</div>
+  <div class="new-grid">
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">28–55 / 大林新港+5 / 三和國小/大林國中家長 ↗</div>
+        <div class="new-card-desc">4房格局+大林學區，鎖定有小孩的換屋族群，訴求「大林學區透天，前院讓孩子騎單車」</div>
+      </div>
+    </div>
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">30–60 / 大林台3沿線 / 傳統農業主・換屋 ↗</div>
+        <div class="new-card-desc">農業背景+換屋改善需求，訴求「零公設、無管理費、前院可停農機或貨車」實用性</div>
+      </div>
+    </div>
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">30–55 / 大林新港 / 在地自營商・頂讓換居 ↗</div>
+        <div class="new-card-desc">傳統小生意頂讓後換屋，對「無管理費+前院停車+大林生活圈」認同感強</div>
+      </div>
+    </div>
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">28–50 / 大林溪口+8 / 國道3通勤族・首購 ↗</div>
+        <div class="new-card-desc">在嘉義市區或斗六上班的通勤族，訴求「大林交流道3分鐘、火車站步行可達」</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 洞見分析 -->
+<div class="section">
+  <div class="insight-box">
+    <div class="insight-title">根據高效受眾設定邏輯，整理關鍵洞見：</div>
+
+    <div class="insight-highlight">
+      最重要的發現：「在地家庭主婦」是本案轉換率最高的代理維度<br>
+      大林新港/家庭主婦（CPL NT$175）與嘉北嘉北/戶外傳統美食（CPL NT$165）兩組合計 194 則訊息，佔全案 38%。這說明本案買家輪廓是「在地生活深度嵌入者」而非外來投資客。
+    </div>
+
+    <div class="insight-sub">歸納出清晰的代理方式：</div>
+    <ul class="insight-list">
+      <li>生活型態代理：家庭主婦、傳統美食、戶外活動 → 在地生活圈深、換屋而非搬離意願</li>
+      <li>職業背景代理：農工業、飲食代工、遊覽業、工廠 → 嘉義大林在地就業，居住穩定性高</li>
+      <li>地理範圍代理：大林+新港+嘉北 是有效圈（半徑 8–10km），太保、溪口已稍遠且效益下降</li>
+    </ul>
+
+    <div class="insight-sub">未來新開受眾的設定原則：</div>
+    <ol class="principle-list">
+      <li>地理錨點優先：大林大智街口為核心，大林+新港+嘉北 8km 是有效範圍，勿擴至彰化或台南</li>
+      <li>底層標籤：房地產（產業）＋不動產（房地產）＋首次購屋 是購屋意願基本篩網</li>
+      <li>在地生活層：家庭主婦+傳統美食+戶外活動 是本案最有效的「非房產」標籤組合</li>
+      <li>本案核心賣點「零公設+前院停車+無管理費」對農工業族群吸引力強，可加「農業、工廠、卡車」等行為標籤</li>
+    </ol>
+  </div>
+</div>
+
+<div style="text-align:center;font-size:11px;color:#b8b5b0;margin-top:8px;padding-bottom:8px">資料期間：2025-10-03 至 2026-05-28 · 中祐雅苑 嘉義大林 · 廣告目標：訊息</div>
+
+</div>
+
+<!-- Toast -->
+<div id="toast" style="position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:#2e2c29;color:#fff;font-size:12.5px;padding:10px 20px;border-radius:24px;opacity:0;transition:all .25s;pointer-events:none;z-index:999;white-space:nowrap">
+  📋 詢問建議已複製 → 貼至 Claude 對話
+</div>
+
+<script>
+const PROJECT = '中祐雅苑（嘉義大林・大智三街口・零公設4房透天・508訊息・均CPL NT$241）';
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg || '📋 詢問建議已複製 → 貼至 Claude 對話';
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 2200);
+}
+
+function copyPrompt(text) {
+  navigator.clipboard.writeText(text).then(() => showToast()).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast();
+  });
+}
+
+document.querySelectorAll('.core-tag').forEach(el => {
+  el.addEventListener('click', () => {
+    const tag = el.textContent.replace('↗','').trim();
+    copyPrompt(`針對${PROJECT}的 META 廣告投放，請深入分析「${tag}」這個興趣標籤：\n1. 這個標籤在本案受眾中代表什麼輪廓的人？\n2. 搭配哪些其他標籤組合效果最好？\n3. 素材訴求應該怎麼寫才能匹配這類受眾？`);
+  });
+});
+
+document.querySelectorAll('.new-card').forEach(el => {
+  el.addEventListener('click', () => {
+    const title = el.querySelector('.new-card-title').textContent.replace('↗','').trim();
+    const desc = el.querySelector('.new-card-desc').textContent.trim();
+    copyPrompt(`針對${PROJECT}，我想測試新受眾方向：「${title}」\n方向說明：${desc}\n\n請給我：\n1. 具體的 META 興趣標籤清單（附中文，約 10–15 個）\n2. 地理設定建議\n3. 適合這組受眾的素材訴求角度`);
+  });
+});
+
+document.querySelectorAll('.tip').forEach(el => {
+  el.style.cursor = 'pointer';
+  el.addEventListener('click', () => {
+    const title = el.querySelector('.tip-title').textContent.trim();
+    const desc = el.querySelector('.tip-desc').textContent.trim();
+    copyPrompt(`針對${PROJECT}，關於這項操作建議：\n「${title}」\n背景：${desc}\n\n請幫我制定具體的執行方案，包含受眾設定細節和素材方向。`);
+  });
+});
+</script>
+</body>
+</html>
