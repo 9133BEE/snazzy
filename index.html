@@ -414,10 +414,6 @@ mark{background:#fef3c7;color:#92400e;border-radius:3px;padding:0 2px;font-weigh
         </div>
         <div id="gr-map" style="height:240px;border-radius:8px;overflow:hidden;border:1px solid var(--bd);margin-bottom:10px"></div>
         <div id="map-info" style="font-size:11px;color:var(--sub);margin-bottom:10px;padding:8px 12px;background:var(--al);border:1px solid var(--ab);border-radius:8px;display:none;line-height:1.5"></div>
-        <div id="leju-panel-anchor"></div>
-        <div id="leju-bldg-panel"></div>
-        <div id="bldg-analysis-anchor"></div>
-        <div id="real-price-anchor"></div>
         <select id="gr-city" onchange="updCity()" style="padding:8px 12px;background:var(--s2);border:1.5px solid var(--bd);border-radius:8px;font-size:12px;color:var(--tx);outline:none;width:100%;margin-bottom:12px;transition:var(--transition)">
           <option value="">選擇縣市</option>
           <option>台北市</option><option>新北市</option><option>桃園市</option>
@@ -444,7 +440,6 @@ mark{background:#fef3c7;color:#92400e;border-radius:3px;padding:0 2px;font-weigh
         <div id="gr-rows"></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
           <button class="gr-add" onclick="addGrRow()">＋ 新增分類</button>
-          <button class="gr-add" onclick="addGrKwRow()">＋ 手填興趣</button>
         </div>
         <div class="gr-total" id="gr-total">合計：0%</div>
         </div>
@@ -735,14 +730,6 @@ function previewKw(input){
   const n=D.filter(d=>(!d.r||savedTags.has(d.cp))&&(d.cp.toLowerCase().includes(kw)||(d.z&&d.z.includes(kw))||d.c.toLowerCase().includes(kw))).length;
   cnt.textContent=n?'找到 '+n+' 個標籤':'無符合標籤';
   cnt.style.color=n?'var(--good)':'#dc2626';
-}
-function addGrKwRow(){
-  const div=document.createElement('div');
-  div.className='gr-row';div.dataset.type='kw';
-  div.innerHTML='<input class="gr-kw" type="text" placeholder="輸入關鍵字，如：政治、瑜伽、咖啡" oninput="previewKw(this)"><span class="gr-kw-cnt"></span><input class="gr-pct" type="number" min="1" max="100" placeholder="0" oninput="updTotal()"><span style="font-size:12px;color:var(--sub);flex-shrink:0">%</span><button class="gr-del" onclick="this.closest(\'.gr-row\').remove();updTotal()">×</button>';
-  document.getElementById('gr-rows').appendChild(div);
-  div.querySelector('.gr-kw').focus();
-  updTotal();
 }
 function updTotal(){
   const rows=[...document.querySelectorAll('#gr-rows .gr-pct')];
