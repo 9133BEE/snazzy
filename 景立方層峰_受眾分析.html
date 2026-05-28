@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>景立方層峰｜受眾分析報告</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft JhengHei','Segoe UI',sans-serif;background:#f5f4f1;color:#2e2c29;font-size:14px;line-height:1.6;padding:24px}
+.wrap{max-width:800px;margin:0 auto}
+.top-link{font-size:12px;color:#607d96;margin-bottom:20px;display:block;cursor:pointer}
+.top-link span{border-bottom:1px solid #a8bed0}
+.sec-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec-title::before{content:'';display:inline-block;width:3px;height:14px;background:#607d96;border-radius:2px}
+.section{margin-bottom:28px}
+.profiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.profile-card{background:#fff;border:1px solid #e4e1dd;border-radius:12px;padding:16px;position:relative}
+.profile-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px}
+.profile-icon.blue{background:#eaf0f6}
+.profile-icon.green{background:#d8ead2}
+.profile-icon.warm{background:#fff0e0}
+.profile-name{font-size:14px;font-weight:700;color:#2e2c29;margin-bottom:4px}
+.profile-meta{font-size:11px;color:#7d7870;margin-bottom:8px}
+.profile-tags{font-size:11.5px;color:#4a5568;margin-bottom:8px;line-height:1.6}
+.profile-behavior{font-size:11px;color:#7d7870;line-height:1.5;margin-bottom:10px}
+.profile-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;margin-top:2px}
+.badge-blue{background:#eaf0f6;color:#4d6a82;border:1px solid #a8bed0}
+.badge-green{background:#d8ead2;color:#3d6b4f;border:1px solid #96c4a8}
+.badge-warm{background:#fff0e0;color:#c26000;border:1px solid #f0b060}
+.tags-row{display:flex;flex-wrap:wrap;gap:8px}
+.core-tag{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;background:#fff;border:1.5px solid #e4e1dd;border-radius:20px;font-size:12px;font-weight:600;color:#2e2c29;cursor:pointer;transition:all .15s}
+.core-tag:hover{border-color:#a8bed0;background:#eaf0f6;color:#4d6a82}
+.core-tag .arr{font-size:10px;color:#a8bed0}
+.tips{display:flex;flex-direction:column;gap:10px}
+.tip{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:14px 16px;display:flex;gap:14px;align-items:flex-start}
+.tip-num{width:22px;height:22px;border-radius:6px;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.tip-num.c1{background:#fff0e0;color:#c26000}
+.tip-num.c2{background:#d8ead2;color:#3d6b4f}
+.tip-num.c3{background:#fff0e0;color:#c26000}
+.tip-num.c4{background:#e8edf8;color:#5270a0}
+.tip-num.c5{background:#faeaea;color:#8a3f3f}
+.tip-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:3px}
+.tip-desc{font-size:12px;color:#7d7870;line-height:1.55}
+.new-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.new-card{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:13px 15px;display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer;transition:all .15s}
+.new-card:hover{border-color:#a8bed0;box-shadow:0 2px 8px rgba(0,0,0,.08);transform:translateY(-1px)}
+.new-card-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:4px}
+.new-card-desc{font-size:11.5px;color:#7d7870;line-height:1.5}
+.new-card-arr{font-size:12px;color:#a8bed0;flex-shrink:0;margin-top:2px}
+.insight-box{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:18px 20px}
+.insight-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:12px}
+.insight-highlight{background:#fdf3dc;border-left:3px solid #d4b06a;padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:14px;font-size:12.5px;color:#7a5c20;font-weight:600;line-height:1.6}
+.insight-sub{font-size:12.5px;font-weight:700;color:#2e2c29;margin-bottom:8px;margin-top:12px}
+.insight-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+.insight-list li{font-size:12px;color:#4a5568;padding-left:14px;position:relative;line-height:1.55}
+.insight-list li::before{content:'→';position:absolute;left:0;color:#a8bed0;font-size:11px}
+.principle-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:6px;counter-reset:item}
+.principle-list li{font-size:12px;color:#4a5568;padding-left:20px;position:relative;line-height:1.55}
+.principle-list li::before{content:counter(item);counter-increment:item;position:absolute;left:0;width:16px;height:16px;background:#eaf0f6;border-radius:4px;color:#607d96;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;top:1px}
+.case-header{background:#fff;border:1px solid #e4e1dd;border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:14px}
+.case-logo{width:38px;height:38px;background:linear-gradient(135deg,#4a6e8a,#2d4f6a);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;flex-shrink:0}
+.case-info h2{font-size:15px;font-weight:700;color:#2e2c29}
+.case-info p{font-size:11px;color:#7d7870;margin-top:2px}
+.case-stats{margin-left:auto;display:flex;gap:20px}
+.stat{text-align:right}
+.stat-n{font-size:20px;font-weight:800;color:#607d96;line-height:1}
+.stat-l{font-size:10px;color:#a8a199;margin-top:2px;font-weight:600;letter-spacing:.3px}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#607d96;text-decoration:none;margin-bottom:16px;padding:5px 12px;background:#eaf0f6;border-radius:20px;border:1px solid #a8bed0;transition:all .15s}
+.back-link:hover{background:#d4e4f0;color:#4d6a82}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back-link" href="hub.html">← 返回案件總覽</a>
+
+<div class="case-header">
+  <div class="case-logo">層</div>
+  <div class="case-info">
+    <h2>浩瀚景立方-層峰區｜台中北屯</h2>
+    <p>南興路 × 敦富一街・近好市多・漢神洲際・慈濟醫院・松竹捷運站</p>
+  </div>
+  <div class="case-stats">
+    <div class="stat"><div class="stat-n">260</div><div class="stat-l">總潛客</div></div>
+    <div class="stat"><div class="stat-n">NT$457</div><div class="stat-l">均CPL</div></div>
+    <div class="stat"><div class="stat-n">65組</div><div class="stat-l">累積受眾</div></div>
+  </div>
+</div>
+
+<span class="top-link"><span>點選任一標籤可深入詢問建議 ↗</span></span>
+
+<!-- 三大核心受眾輪廓 -->
+<div class="section">
+  <div class="sec-title">三大核心受眾輪廓</div>
+  <div class="profiles">
+
+    <div class="profile-card">
+      <div class="profile-icon blue">👨‍👩‍👧</div>
+      <div class="profile-name">父母換屋型</div>
+      <div class="profile-meta">年齡 30–65｜南興公園/洲際/好市多圈</div>
+      <div class="profile-tags">興趣：成家、育兒、豪車、旅遊、父母興趣</div>
+      <div class="profile-behavior">行為：有子女換屋族，重視南興學區（國小/國中）資源，慈濟醫院周邊生活圈認同強</div>
+      <span class="profile-badge badge-blue">代表組：南興+6/父母成家 (43潛客 CPL167)</span>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-icon green">💹</div>
+      <div class="profile-name">科技金融置產型</div>
+      <div class="profile-meta">年齡 28–60｜南興公園/洲際/中科</div>
+      <div class="profile-tags">興趣：科技、金融投資、置產、股票、政治</div>
+      <div class="profile-behavior">行為：高薪科技或金融職，具投資意識，置換需求強，對74快速道路通勤接受度高</div>
+      <span class="profile-badge badge-green">代表組：南興+6/科技新貴旅遊 (43潛客 CPL187)</span>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-icon warm">🏡</div>
+      <div class="profile-name">在地菁英置產型</div>
+      <div class="profile-meta">年齡 30–65｜北屯/洲際/十期</div>
+      <div class="profile-tags">興趣：置產、醫師/高管、精品、雙語教育、國際學校</div>
+      <div class="profile-behavior">行為：台中北屯在地換屋或投資置產，看重精裝修品質＋低建蔽率社區感</div>
+      <span class="profile-badge badge-warm">代表組：南興+6/置產醫師高管 (16潛客 CPL202)</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- 核心標籤 -->
+<div class="section">
+  <div class="sec-title">跨受眾必保留的核心標籤</div>
+  <div class="tags-row">
+    <span class="core-tag">房地產（產業）<span class="arr">↗</span></span>
+    <span class="core-tag">不動產（房地產）<span class="arr">↗</span></span>
+    <span class="core-tag">投資（商業與財務）<span class="arr">↗</span></span>
+    <span class="core-tag">股票（投資）<span class="arr">↗</span></span>
+    <span class="core-tag">父母（家庭與關係）<span class="arr">↗</span></span>
+    <span class="core-tag">子女教育（教育）<span class="arr">↗</span></span>
+  </div>
+</div>
+
+<!-- 五大操作建議 -->
+<div class="section">
+  <div class="sec-title">五大操作建議</div>
+  <div class="tips">
+
+    <div class="tip">
+      <div class="tip-num c1">1</div>
+      <div class="tip-body">
+        <div class="tip-title">「南興+6/父母成家」是全案最強組，應立即在洲際圈複製</div>
+        <div class="tip-desc">此組 CPL NT$167 是全案最低，父母換屋標籤組合 43 潛客。原始廣告組已結束（5/22），建議以相同興趣標籤在「洲際+6」或「好市多+8」複製，驗證是否仍有效。素材可主打「南興國小學區步行 5 分鐘」。</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-num c2">2</div>
+      <div class="tip-body">
+        <div class="tip-title">「十期/新婚成家教育」兩版本 CPL NT$154–410，保留低 CPL 版加預算</div>
+        <div class="tip-desc">5/18 版 CPL NT$154（5 潛客），5/20 版 CPL NT$410（6 潛客），同一受眾邏輯兩版本差異大。建議保留 5/18 版（CPL 更低），縮小5/20版預算，觀察素材是否是關鍵因素。</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-num c3">3</div>
+      <div class="tip-body">
+        <div class="tip-title">用「職業興趣」區分父母型、科技型、置產型，分開素材投放</div>
+        <div class="tip-desc">三種輪廓訴求截然不同：父母型訴求「學區+制震安全」、科技型訴求「精裝修納貸+74快速道路通勤」、置產型訴求「低建蔽率社區感+保值」。混合素材會模糊訴求，轉換率下降。</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-num c4">4</div>
+      <div class="tip-body">
+        <div class="tip-title">「洲際+8K/雙語·國際學校」是隱性高資產信號</div>
+        <div class="tip-desc">此組 CPL NT$256、4 潛客，5/25 才上線。雙語教育+國際學校標籤反映有子女教育需求的中高資產家庭，與本案制震精裝宅定位吻合。建議維持並觀察至少 2 週再判斷。</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-num c5">5</div>
+      <div class="tip-body">
+        <div class="tip-title">停止「竹科/科技業·股票」等高 CPL 受眾，集中預算到南興/洲際核心圈</div>
+        <div class="tip-desc">竹科（CPL NT$1,501）、洲際旅遊露營（NT$1,404）、水湳工程師（NT$1,486）等均超過均 CPL 的 3 倍，轉換極差。外縣市受眾（彰化系列）同樣偏高。這些預算應集中到父母換屋型和科技金融型受眾。</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 建議新受眾方向 -->
+<div class="section">
+  <div class="sec-title">建議新測試受眾方向</div>
+  <div class="new-grid">
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">30–60 / 洲際好市多+6 / 父母換屋首購 ↗</div>
+        <div class="new-card-desc">複製南興公園/父母成家成功邏輯，換地理錨點至洲際漢神+好市多5km圈</div>
+      </div>
+    </div>
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">28–55 / 松竹站+3 / 通勤族·首購·成家 ↗</div>
+        <div class="new-card-desc">每天搭台鐵/捷運松竹站上班族，訴求「松竹站步行到家，制震精裝宅」</div>
+      </div>
+    </div>
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">35–65 / 北屯 / 再行銷·互動過未詢問族群 ↗</div>
+        <div class="new-card-desc">已互動未留名單，改用「全室精裝修可納貸款」或「50米棟距社區感」素材二次觸及</div>
+      </div>
+    </div>
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">33–60 / 慈濟醫院+5 / 醫護·護理·行政 ↗</div>
+        <div class="new-card-desc">慈濟醫院周邊員工，步行或騎車即達，成家換屋需求與學區需求雙重契合</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 洞見分析 -->
+<div class="section">
+  <div class="insight-box">
+    <div class="insight-title">根據高效受眾設定邏輯，整理關鍵洞見：</div>
+
+    <div class="insight-highlight">
+      最重要的發現：「父母身份」是本案轉換率最高的代理維度<br>
+      南興公園+6/父母成家（CPL NT$167）與父母名車（CPL NT$316）兩組合計 50 潛客，比科技職業組多出近 30%。父母換屋 = 有固定生活圈 + 學區需求 + 換屋時機明確。
+    </div>
+
+    <div class="insight-sub">歸納出清晰的代理方式：</div>
+    <ul class="insight-list">
+      <li>父母身份代理：父母興趣、育兒用品、子女教育 → 有換屋動機且時機明確</li>
+      <li>職業背景代理：科技新貴、醫師高管、工程師主管 → 高薪穩定有置產能力</li>
+      <li>消費能力代理：名車、旅遊、豪車、精品 → 實際消費力驗證</li>
+    </ul>
+
+    <div class="insight-sub">未來新開受眾的設定原則：</div>
+    <ol class="principle-list">
+      <li>首先確定「地理錨點」：南興公園、好市多、漢神洲際、松竹站為核心，半徑 5–8km，別開大台中</li>
+      <li>再加「底層三標籤」：房地產（產業）＋不動產（房地產）＋投資，這是購屋意願基本篩網</li>
+      <li>最後加「父母/職業層」：父母換屋型配父母+育兒標籤；科技置產型配科技+金融標籤</li>
+      <li>制震宅+精裝修是差異化賣點，適合加「裝修、設計、建築品質」等行為層標籤做進一步篩選</li>
+    </ol>
+  </div>
+</div>
+
+<div style="text-align:center;font-size:11px;color:#b8b5b0;margin-top:8px;padding-bottom:8px">資料期間：2026-03-12 至 2026-05-28 · 浩瀚景立方-層峰區 台中北屯</div>
+
+</div>
+</body>
+</html>
