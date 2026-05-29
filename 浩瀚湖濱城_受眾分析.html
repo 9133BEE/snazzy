@@ -55,6 +55,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
 .new-card-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:4px}
 .new-card-desc{font-size:11.5px;color:#7d7870;line-height:1.5}
 .new-card-arr{font-size:12px;color:#87b5be;flex-shrink:0;margin-top:2px}
+.sub-label{font-size:11px;font-weight:700;color:#4a7a8a;letter-spacing:.4px;margin-bottom:10px;margin-top:4px;display:flex;align-items:center;gap:8px;text-transform:uppercase}
+.sub-label::after{content:'';flex:1;height:1px;background:#d6eff3}
 
 /* ── 素材分析 ── */
 .creative-bar-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
@@ -92,6 +94,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
 .stat{text-align:right}
 .stat-n{font-size:20px;font-weight:800;color:#4a7a8a;line-height:1}
 .stat-l{font-size:10px;color:#a8a199;margin-top:2px;font-weight:600;letter-spacing:.3px}
+/* ── 成果排行 ── */
+.rk-row{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
+.rk-row.gold{border-color:#d4b06a;background:#fdfaf2}
+.rk-row.silver{border-color:#b8c0cc;background:#f9f9fb}
+.rk-row.bronze{border-color:#c4a87a;background:#fdf7f0}
+.rk-medal{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;margin-top:2px}
+.rk-rank{width:28px;height:28px;border-radius:50%;background:#e6f0f2;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#4a7a8a;flex-shrink:0;margin-top:2px}
+.rk-body{flex:1;min-width:0}
+.rk-name{font-size:12.5px;font-weight:700;color:#2e2c29;margin-bottom:2px;line-height:1.3}
+.rk-loc{font-size:10.5px;color:#9d9590;line-height:1.5;margin-bottom:6px}
+.rk-tags{display:flex;flex-wrap:wrap;gap:4px}
+.rk-tag{font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:8px;line-height:1.4}
+.t-biz{background:#fff3e0;color:#bf5600;border:1px solid #ffd0a0}
+.t-fin{background:#e8f0fe;color:#1a56b0;border:1px solid #93b4e8}
+.t-prop{background:#e6f4ea;color:#1e6e3f;border:1px solid #8ecba3}
+.t-lux{background:#f0e8f8;color:#6620a0;border:1px solid #c8a0e0}
+.t-beh{background:#fffde7;color:#c57a00;border:1px solid #ffe082}
+.t-edu{background:#e0f7f4;color:#00695c;border:1px solid #7cd6cc}
+.t-ind{background:#eceff1;color:#37474f;border:1px solid #b0bec5}
+.t-sim{background:#fce4ec;color:#880e4f;border:1px solid #f48fb1}
+.rk-stats{display:flex;flex-direction:column;gap:0;flex-shrink:0;text-align:right;min-width:68px}
+.rk-result{font-size:22px;font-weight:900;color:#2e2c29;line-height:1}
+.rk-result-l{font-size:9px;color:#a8a199;font-weight:600;margin-bottom:6px}
+.rk-cpl{font-size:15px;font-weight:800;color:#c05c00;line-height:1}
+.rk-cpl-l{font-size:9px;color:#a8a199;font-weight:600;margin-bottom:4px}
+.rk-spend{font-size:12px;font-weight:700;color:#6d6560;line-height:1}
+.rk-spend-l{font-size:9px;color:#a8a199;font-weight:600}
 </style>
 </head>
 <body>
@@ -207,6 +236,41 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
 
 <div class="section">
   <div class="sec-title">建議新測試受眾方向</div>
+
+  <div class="sub-label">🏢 商辦受眾</div>
+  <div class="new-grid" style="margin-bottom:16px">
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">35–55 / 東區水湳 / 辦公室自用+SOHO ↗</div>
+        <div class="new-card-desc">記帳士、地政士、顧問師等自雇族，訴求「19坪辦公室，早上下樓上班，晚上上樓回家」</div>
+      </div>
+    </div>
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">30–55 / 台中市區+6km / 自雇記帳士+地政士 ↗</div>
+        <div class="new-card-desc">延伸 CPL NT$562 法律執業者成功方向，加入地政士、會計師、專業顧問職稱行為層，主打「自辦公室」</div>
+      </div>
+    </div>
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">30–55 / 台中市區+8km / 小型企業主+商業決策者 ↗</div>
+        <div class="new-card-desc">行為標籤：小型企業主＋商業決策者，搭配「接台中站19坪辦公室，員工通勤方便」訴求切商務族群</div>
+      </div>
+    </div>
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">商辦投資 / 591辦公室+房地產投資 ↗</div>
+        <div class="new-card-desc">以 591 辦公室＋商業不動產投資標籤篩出商辦買方，切入「每坪最低、台中最核心地段、租金保值」純投資邏輯</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="sub-label" style="margin-top:18px">🏠 住宅受眾</div>
   <div class="new-grid">
 
     <div class="new-card">
@@ -218,8 +282,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
 
     <div class="new-card">
       <div class="new-card-body">
-        <div class="new-card-title">35–55 / 東區水湳 / 辦公室自用+SOHO ↗</div>
-        <div class="new-card-desc">記帳士、地政士、顧問師等自雇族，訴求「19坪辦公室，早上下樓上班，晚上上樓回家」</div>
+        <div class="new-card-title">30–50 / 東區北屯大里 / 在地換屋升級 ↗</div>
+        <div class="new-card-desc">延伸 CPL NT$423 換屋首購成功方向，強調「不用換生活圈，住進 LALAPORT 旁二/三/四房新成屋」</div>
       </div>
     </div>
 
@@ -345,6 +409,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
       <li>辦公室受眾單獨開：加入「Commercial property、Office space、Business decision makers」職業行為層</li>
       <li>投資受眾加「六百億」論述：切入台灣基建話題興趣者，強化「捷運藍線+車站計畫」地段增值感知</li>
     </ol>
+  </div>
+</div>
+
+<!-- 成果排行（待補充） -->
+<div class="section">
+  <div class="sec-title">成果前 N 名受眾（待補充）</div>
+  <div style="background:#fff;border:1.5px dashed #d4d0cc;border-radius:10px;padding:28px;text-align:center;color:#b8b5b0;font-size:13px">
+    資料待補充 — 請提供受眾排行截圖
   </div>
 </div>
 

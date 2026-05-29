@@ -95,6 +95,34 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
 .stat{text-align:right}
 .stat-n{font-size:20px;font-weight:800;color:#7a5a8a;line-height:1}
 .stat-l{font-size:10px;color:#a8a199;margin-top:2px;font-weight:600;letter-spacing:.3px}
+
+/* ── 成果排行 ── */
+.rk-row{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
+.rk-row.gold{border-color:#d4b06a;background:#fdfaf2}
+.rk-row.silver{border-color:#b8c0cc;background:#f9f9fb}
+.rk-row.bronze{border-color:#c4a87a;background:#fdf7f0}
+.rk-medal{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;margin-top:2px}
+.rk-rank{width:28px;height:28px;border-radius:50%;background:#f0edf5;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#8a7a96;flex-shrink:0;margin-top:2px}
+.rk-body{flex:1;min-width:0}
+.rk-name{font-size:12.5px;font-weight:700;color:#2e2c29;margin-bottom:2px;line-height:1.3}
+.rk-loc{font-size:10.5px;color:#9d9590;line-height:1.5;margin-bottom:6px}
+.rk-tags{display:flex;flex-wrap:wrap;gap:4px}
+.rk-tag{font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:8px;line-height:1.4}
+.t-biz{background:#fff3e0;color:#bf5600;border:1px solid #ffd0a0}
+.t-fin{background:#e8f0fe;color:#1a56b0;border:1px solid #93b4e8}
+.t-prop{background:#e6f4ea;color:#1e6e3f;border:1px solid #8ecba3}
+.t-lux{background:#f0e8f8;color:#6620a0;border:1px solid #c8a0e0}
+.t-beh{background:#fffde7;color:#c57a00;border:1px solid #ffe082}
+.t-edu{background:#e0f7f4;color:#00695c;border:1px solid #7cd6cc}
+.t-ind{background:#eceff1;color:#37474f;border:1px solid #b0bec5}
+.t-sim{background:#fce4ec;color:#880e4f;border:1px solid #f48fb1}
+.rk-stats{display:flex;flex-direction:column;gap:0;flex-shrink:0;text-align:right;min-width:68px}
+.rk-result{font-size:22px;font-weight:900;color:#2e2c29;line-height:1}
+.rk-result-l{font-size:9px;color:#a8a199;font-weight:600;margin-bottom:6px}
+.rk-cpl{font-size:15px;font-weight:800;color:#c05c00;line-height:1}
+.rk-cpl-l{font-size:9px;color:#a8a199;font-weight:600;margin-bottom:4px}
+.rk-spend{font-size:12px;font-weight:700;color:#6d6560;line-height:1}
+.rk-spend-l{font-size:9px;color:#a8a199;font-weight:600}
 </style>
 </head>
 <body>
@@ -427,6 +455,211 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
     </div>
 
   </div>
+</div>
+
+<!-- 成果前 12 名受眾排行 -->
+<div class="section">
+  <div class="sec-title">成果前 12 名受眾（2026/01–05）</div>
+
+  <div class="rk-row gold">
+    <div class="rk-medal">🥇</div>
+    <div class="rk-body">
+      <div class="rk-name">28-55 / 西屯西區 / 保險業務直銷（0111換區域）</div>
+      <div class="rk-loc">文心崇德 +2km · 逢甲大學 +2km</div>
+      <div class="rk-tags">
+        <span class="rk-tag t-biz">業務/直銷</span>
+        <span class="rk-tag t-fin">保險/人壽保險</span>
+        <span class="rk-tag t-prop">房地產投資</span>
+        <span class="rk-tag t-fin">個人理財/財經</span>
+        <span class="rk-tag t-biz">行業：業務</span>
+      </div>
+    </div>
+    <div class="rk-stats">
+      <div class="rk-result">19</div><div class="rk-result-l">成果</div>
+      <div class="rk-cpl">$473</div><div class="rk-cpl-l">CPL</div>
+      <div class="rk-spend">$8,983</div><div class="rk-spend-l">花費</div>
+    </div>
+  </div>
+
+  <div class="rk-row silver">
+    <div class="rk-medal">🥈</div>
+    <div class="rk-body">
+      <div class="rk-name">28-55 / 台中市市區 / 投資客2</div>
+      <div class="rk-loc">中國醫藥大學 +4km · 昌平路 +6km（北屯）</div>
+      <div class="rk-tags">
+        <span class="rk-tag t-fin">金融市場/股票</span>
+        <span class="rk-tag t-prop">591房屋交易網</span>
+        <span class="rk-tag t-prop">房地產投資</span>
+        <span class="rk-tag t-lux">長榮/中華/日本航空</span>
+        <span class="rk-tag t-ind">程式語言/數位貨幣</span>
+      </div>
+    </div>
+    <div class="rk-stats">
+      <div class="rk-result">15</div><div class="rk-result-l">成果</div>
+      <div class="rk-cpl">$570</div><div class="rk-cpl-l">CPL</div>
+      <div class="rk-spend">$8,547</div><div class="rk-spend-l">花費</div>
+    </div>
+  </div>
+
+  <div class="rk-row bronze">
+    <div class="rk-medal">🥉</div>
+    <div class="rk-body">
+      <div class="rk-name">30-55 / 豐原中清逢甲 / 自營商/二代（0204調區域）</div>
+      <div class="rk-loc">逢甲大學 +2km · 中清交流道 +2km · 豐州工業區 +2km</div>
+      <div class="rk-tags">
+        <span class="rk-tag t-lux">精品名錶/豪華轎車</span>
+        <span class="rk-tag t-biz">批發/經銷</span>
+        <span class="rk-tag t-ind">中小型企業</span>
+        <span class="rk-tag t-ind">自傭/管理</span>
+        <span class="rk-tag t-beh">行為：小型企業主</span>
+      </div>
+    </div>
+    <div class="rk-stats">
+      <div class="rk-result">10</div><div class="rk-result-l">成果</div>
+      <div class="rk-cpl">$672</div><div class="rk-cpl-l">CPL</div>
+      <div class="rk-spend">$6,721</div><div class="rk-spend-l">花費</div>
+    </div>
+  </div>
+
+  <div class="rk-row">
+    <div class="rk-rank">4</div>
+    <div class="rk-body">
+      <div class="rk-name">30-60 / 中科中清 / 傳產製造食品加工</div>
+      <div class="rk-loc">中清交流道 +3km · 中科路 +3km</div>
+      <div class="rk-tags">
+        <span class="rk-tag t-ind">製造業/食品加工</span>
+        <span class="rk-tag t-ind">倉儲業/運輸</span>
+        <span class="rk-tag t-prop">591房屋交易網</span>
+        <span class="rk-tag t-prop">房地產</span>
+        <span class="rk-tag t-ind">汽車業/汽車保養</span>
+      </div>
+    </div>
+    <div class="rk-stats">
+      <div class="rk-result">10</div><div class="rk-result-l">成果</div>
+      <div class="rk-cpl">$609</div><div class="rk-cpl-l">CPL</div>
+      <div class="rk-spend">$6,085</div><div class="rk-spend-l">花費</div>
+    </div>
+  </div>
+
+  <div class="rk-row">
+    <div class="rk-rank">5</div>
+    <div class="rk-body">
+      <div class="rk-name">35-60 / 烏日南屯 / 創業徵才（+逢甲）</div>
+      <div class="rk-loc">烏日火車站 +3km · 逢甲大學 +2km</div>
+      <div class="rk-tags">
+        <span class="rk-tag t-ind">新創公司</span>
+        <span class="rk-tag t-prop">591房屋交易網</span>
+        <span class="rk-tag t-biz">社群媒體行銷</span>
+        <span class="rk-tag t-prop">房屋/租賃</span>
+        <span class="rk-tag t-beh">行為：小型企業主/粉專管理員</span>
+      </div>
+    </div>
+    <div class="rk-stats">
+      <div class="rk-result">10</div><div class="rk-result-l">成果</div>
+      <div class="rk-cpl">$614</div><div class="rk-cpl-l">CPL</div>
+      <div class="rk-spend">$6,139</div><div class="rk-spend-l">花費</div>
+    </div>
+  </div>
+
+  <div class="rk-row">
+    <div class="rk-rank">6</div>
+    <div class="rk-body">
+      <div class="rk-name">中部2000+小艾北部1%（0504調整）</div>
+      <div class="rk-loc">彰化車站 +5km · 沙鹿車站 +5km · 竹科 +3km</div>
+      <div class="rk-tags">
+        <span class="rk-tag t-fin">金融市場/股票市場</span>
+        <span class="rk-tag t-fin">財經/商業</span>
+        <span class="rk-tag t-prop">房地產</span>
+        <span class="rk-tag t-sim">1%類似受眾</span>
+      </div>
+    </div>
+    <div class="rk-stats">
+      <div class="rk-result">9</div><div class="rk-result-l">成果</div>
+      <div class="rk-cpl">$424</div><div class="rk-cpl-l">CPL</div>
+      <div class="rk-spend">$3,812</div><div class="rk-spend-l">花費</div>
+    </div>
+  </div>
+
+  <div class="rk-row">
+    <div class="rk-rank">7</div>
+    <div class="rk-body">
+      <div class="rk-name">30-55 / 太平大雅 / 教職員+理財（0306調整）</div>
+      <div class="rk-loc">大雅區公所 +4km · 太平區公所 +4km</div>
+      <div class="rk-tags">
+        <span class="rk-tag t-fin">金融市場/ETF/股票</span>
+        <span class="rk-tag t-prop">591房屋交易網</span>
+        <span class="rk-tag t-prop">房屋/公寓</span>
+        <span class="rk-tag t-edu">教育/閱讀/書籍</span>
+        <span class="rk-tag t-edu">行業：教育和圖書館</span>
+      </div>
+    </div>
+    <div class="rk-stats">
+      <div class="rk-result">8</div><div class="rk-result-l">成果</div>
+      <div class="rk-cpl">$590</div><div class="rk-cpl-l">CPL</div>
+      <div class="rk-spend">$4,719</div><div class="rk-spend-l">花費</div>
+    </div>
+  </div>
+
+  <div class="rk-row">
+    <div class="rk-rank">8</div>
+    <div class="rk-body">
+      <div class="rk-name">33-60 / 西屯北屯 / 投資置產+雙語教育+高收興趣（0204）</div>
+      <div class="rk-loc">文心崇德 +4km · 逢甲商圈 +4km</div>
+      <div class="rk-tags">
+        <span class="rk-tag t-lux">保時捷/BMW i</span>
+        <span class="rk-tag t-prop">591房屋交易網</span>
+        <span class="rk-tag t-fin">股票/投資</span>
+        <span class="rk-tag t-edu">國際學校/英語</span>
+        <span class="rk-tag t-prop">房地產/不動產</span>
+      </div>
+    </div>
+    <div class="rk-stats">
+      <div class="rk-result">8</div><div class="rk-result-l">成果</div>
+      <div class="rk-cpl">$673</div><div class="rk-cpl-l">CPL</div>
+      <div class="rk-spend">$5,385</div><div class="rk-spend-l">花費</div>
+    </div>
+  </div>
+
+  <div class="rk-row">
+    <div class="rk-rank">9</div>
+    <div class="rk-body">
+      <div class="rk-name">33-60 / 中科大雅東海 / 傳產自營商（0326調整）</div>
+      <div class="rk-loc">東海藝術商圈 +3km · 中清交流道 +4km · 大雅上楓園小 +3km</div>
+      <div class="rk-tags">
+        <span class="rk-tag t-ind">製造業/食品加工</span>
+        <span class="rk-tag t-ind">批發/農業</span>
+        <span class="rk-tag t-lux">機械工程/豪華轎車</span>
+        <span class="rk-tag t-prop">房地產/不動產</span>
+        <span class="rk-tag t-edu">家長：父母（全部）</span>
+      </div>
+    </div>
+    <div class="rk-stats">
+      <div class="rk-result">8</div><div class="rk-result-l">成果</div>
+      <div class="rk-cpl">$776</div><div class="rk-cpl-l">CPL</div>
+      <div class="rk-spend">$6,210</div><div class="rk-spend-l">花費</div>
+    </div>
+  </div>
+
+  <div class="rk-row">
+    <div class="rk-rank">10</div>
+    <div class="rk-body">
+      <div class="rk-name">28-55 / 北屯水湳 / 電商直銷吸金客</div>
+      <div class="rk-loc">水湳中央公園 +3km · 洲際棒球場 +3km</div>
+      <div class="rk-tags">
+        <span class="rk-tag t-lux">古馳/愛馬仕/香奈兒</span>
+        <span class="rk-tag t-lux">鑽石/黃金</span>
+        <span class="rk-tag t-fin">被動收入</span>
+        <span class="rk-tag t-biz">直銷/圈購</span>
+        <span class="rk-tag t-edu">親子教育</span>
+      </div>
+    </div>
+    <div class="rk-stats">
+      <div class="rk-result">8</div><div class="rk-result-l">成果</div>
+      <div class="rk-cpl">$697</div><div class="rk-cpl-l">CPL</div>
+      <div class="rk-spend">$5,578</div><div class="rk-spend-l">花費</div>
+    </div>
+  </div>
+
 </div>
 
 <div style="text-align:center;font-size:11px;color:#b8b5b0;margin-top:8px;padding-bottom:8px">資料期間：2025-10-28 至 2026-05-29 · 原潮APT 台中北屯 · 最後更新 2026-05-29</div>
