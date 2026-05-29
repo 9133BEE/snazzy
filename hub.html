@@ -24,28 +24,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
 /* ── Header ── */
 header{
   background:linear-gradient(180deg,#131e2a 0%,#0f1923 100%);
-  padding:0 32px;
-  height:58px;
+  padding:0 40px;
+  height:56px;
   display:flex;align-items:center;gap:14px;
   position:sticky;top:0;z-index:100;
   box-shadow:0 1px 0 rgba(255,255,255,.04),0 4px 20px rgba(0,0,0,.35);
   border-bottom:1px solid rgba(255,255,255,.05);
 }
 .hlogo{
-  width:32px;height:32px;
+  width:30px;height:30px;
   background:linear-gradient(135deg,#7ba3be,#4d6a82);
-  border-radius:9px;
+  border-radius:8px;
   display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:900;color:#fff;flex-shrink:0;
+  font-size:12px;font-weight:900;color:#fff;flex-shrink:0;
   box-shadow:0 2px 8px rgba(96,125,150,.4),inset 0 1px 0 rgba(255,255,255,.15);
 }
-.htitle{font-size:15px;font-weight:700;color:#f1f5f9;letter-spacing:-.2px}
+.htitle{font-size:14px;font-weight:700;color:#f1f5f9;letter-spacing:-.2px}
 .hsubt{font-size:11px;color:#475569;margin-left:2px;letter-spacing:.2px}
-.hdivider{width:1px;height:20px;background:rgba(255,255,255,.08);margin:0 4px}
+.hdivider{width:1px;height:18px;background:rgba(255,255,255,.08);margin:0 4px}
 .hnav{margin-left:auto;display:flex;gap:2px}
 .hnav a{
   font-size:12px;color:#94a3b8;text-decoration:none;
-  padding:6px 14px;border-radius:7px;
+  padding:5px 13px;border-radius:6px;
   transition:all .15s;font-weight:500;letter-spacing:-.1px;
 }
 .hnav a:hover{background:rgba(255,255,255,.08);color:#e2e8f0}
@@ -55,11 +55,11 @@ header{
 .toolbar{
   background:var(--s);
   border-bottom:1px solid var(--bd);
-  padding:10px 32px;
+  padding:9px 40px;
   display:flex;gap:10px;flex-wrap:wrap;align-items:center;
   box-shadow:var(--shadow-xs);
 }
-.search-wrap{position:relative;flex:1;min-width:180px;max-width:280px}
+.search-wrap{position:relative;flex:1;min-width:180px;max-width:260px}
 .search-wrap input{
   width:100%;padding:7px 14px 7px 34px;
   background:var(--s2);border:1.5px solid var(--bd);
@@ -73,11 +73,11 @@ header{
   width:14px;height:14px;pointer-events:none;
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") center/contain no-repeat;
 }
-.toolbar-sep{width:1px;height:24px;background:var(--bd);flex-shrink:0}
-.filters{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.filter-label{font-size:11px;color:var(--sub2);font-weight:600;letter-spacing:.3px;text-transform:uppercase;white-space:nowrap}
+.toolbar-sep{width:1px;height:22px;background:var(--bd);flex-shrink:0}
+.filters{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.filter-label{font-size:10px;color:var(--sub2);font-weight:700;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap}
 .filter-btn{
-  padding:5px 12px;
+  padding:4px 11px;
   background:transparent;border:1.5px solid var(--bd);
   border-radius:var(--radius-pill);font-size:12px;color:var(--sub);
   cursor:pointer;transition:all .15s;font-family:inherit;font-weight:500;
@@ -93,7 +93,7 @@ header{
   font-weight:600;white-space:nowrap;letter-spacing:.1px;
 }
 .sort-select{
-  padding:6px 10px;background:var(--s2);
+  padding:5px 10px;background:var(--s2);
   border:1.5px solid var(--bd);border-radius:var(--radius-pill);
   font-size:12px;color:var(--tx);cursor:pointer;outline:none;
   font-family:inherit;font-weight:500;transition:all .15s;
@@ -101,32 +101,32 @@ header{
 .sort-select:focus{border-color:var(--a);box-shadow:0 0 0 3px rgba(96,125,150,.1)}
 
 /* ── Main content ── */
-main{padding:28px 32px;max-width:1200px;margin:0 auto}
+main{padding:28px 40px;max-width:1400px;margin:0 auto}
 
 /* ── Stats row ── */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
 .stat-card{
   background:var(--s);border:1px solid var(--bd);
-  border-radius:var(--radius);padding:20px 22px;
+  border-radius:var(--radius);padding:22px 24px;
   box-shadow:var(--shadow-card);
   position:relative;overflow:hidden;
-  transition:box-shadow .2s;
+  transition:box-shadow .2s,transform .2s;
 }
 .stat-card::before{
   content:'';position:absolute;top:0;left:0;right:0;height:3px;
   background:linear-gradient(90deg,var(--a),var(--a-dark));
 }
-.stat-card:hover{box-shadow:var(--shadow-sm)}
+.stat-card:hover{box-shadow:var(--shadow-sm);transform:translateY(-1px)}
 .stat-card .sc-icon{
-  font-size:18px;margin-bottom:10px;opacity:.6;
+  font-size:20px;margin-bottom:12px;opacity:.55;
 }
 .stat-card .sn{
-  font-size:32px;font-weight:800;color:var(--tx);
-  line-height:1;letter-spacing:-1px;
+  font-size:36px;font-weight:800;color:var(--tx);
+  line-height:1;letter-spacing:-1.5px;
   font-variant-numeric:tabular-nums;
 }
 .stat-card .sl{
-  font-size:11px;color:var(--sub);margin-top:6px;
+  font-size:11px;color:var(--sub);margin-top:8px;
   font-weight:600;letter-spacing:.3px;text-transform:uppercase;
 }
 
@@ -134,16 +134,16 @@ main{padding:28px 32px;max-width:1200px;margin:0 auto}
 .section-label{
   font-size:11px;font-weight:700;color:var(--sub2);
   letter-spacing:.5px;text-transform:uppercase;
-  margin-bottom:14px;
+  margin-bottom:16px;
   display:flex;align-items:center;gap:10px;
 }
 .section-label::after{content:'';flex:1;height:1px;background:var(--bd)}
 
 /* ── Project grid ── */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
 .project-card{
   background:var(--s);border:1px solid var(--bd);
-  border-radius:var(--radius);padding:20px;
+  border-radius:var(--radius);padding:22px;
   cursor:pointer;transition:all .2s cubic-bezier(.2,.8,.3,1);
   box-shadow:var(--shadow-card);
   display:flex;flex-direction:column;gap:0;
@@ -158,29 +158,29 @@ main{padding:28px 32px;max-width:1200px;margin:0 auto}
 }
 .project-card:hover{
   border-color:rgba(96,125,150,.35);
-  box-shadow:0 10px 32px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.05);
+  box-shadow:0 12px 36px rgba(0,0,0,.11),0 2px 8px rgba(0,0,0,.05);
   transform:translateY(-3px);
 }
 .project-card:hover::before{transform:scaleX(1)}
 .project-card.hidden{display:none}
 
 /* Card header */
-.card-head{display:flex;align-items:flex-start;gap:13px;margin-bottom:14px}
+.card-head{display:flex;align-items:flex-start;gap:13px;margin-bottom:16px}
 .card-icon{
-  width:40px;height:40px;border-radius:10px;
+  width:42px;height:42px;border-radius:11px;
   background:linear-gradient(135deg,var(--a),var(--a-dark));
   display:flex;align-items:center;justify-content:center;
-  font-size:15px;font-weight:900;color:#fff;flex-shrink:0;
+  font-size:16px;font-weight:900;color:#fff;flex-shrink:0;
   box-shadow:0 3px 8px rgba(96,125,150,.3),inset 0 1px 0 rgba(255,255,255,.15);
 }
 .card-meta{flex:1;min-width:0}
 .card-name{
   font-size:16px;font-weight:700;color:var(--tx);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  letter-spacing:-.2px;line-height:1.2;
+  letter-spacing:-.3px;line-height:1.2;
 }
 .card-loc{
-  font-size:11px;color:var(--sub);margin-top:4px;
+  font-size:11px;color:var(--sub);margin-top:5px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .card-status{flex-shrink:0;padding-top:2px}
@@ -192,15 +192,15 @@ main{padding:28px 32px;max-width:1200px;margin:0 auto}
 .status-active{background:var(--goodl);color:var(--good);border-color:var(--goodb)}
 .status-done{background:var(--s2);color:var(--sub);border-color:var(--bd2)}
 
-/* Card stats */
+/* Card stats — larger, more impactful numbers */
 .card-stats{
   display:grid;grid-template-columns:repeat(3,1fr);
-  gap:0;margin-bottom:14px;
-  background:var(--s2);border-radius:9px;
+  gap:0;margin-bottom:16px;
+  background:var(--s2);border-radius:10px;
   border:1px solid var(--bd);overflow:hidden;
 }
 .card-stat{
-  padding:11px 12px;
+  padding:13px 14px;
   position:relative;
 }
 .card-stat+.card-stat::before{
@@ -208,19 +208,19 @@ main{padding:28px 32px;max-width:1200px;margin:0 auto}
   width:1px;background:var(--bd);
 }
 .card-stat .csn{
-  font-size:20px;font-weight:800;color:var(--tx);
+  font-size:22px;font-weight:800;color:var(--tx);
   line-height:1;letter-spacing:-.5px;
   font-variant-numeric:tabular-nums;
 }
 .card-stat .csn.cpl-good{color:var(--good)}
 .card-stat .csn.cpl-warn{color:var(--warn)}
 .card-stat .csl{
-  font-size:10px;color:var(--sub2);margin-top:3px;
+  font-size:10px;color:var(--sub2);margin-top:4px;
   font-weight:600;letter-spacing:.2px;
 }
 
 /* Card tags */
-.card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px}
 .card-tag{
   font-size:10px;font-weight:600;padding:3px 9px;
   border-radius:5px;
@@ -238,21 +238,21 @@ main{padding:28px 32px;max-width:1200px;margin:0 auto}
   margin-top:auto;padding-top:12px;
   border-top:1px solid var(--bd);
 }
-.card-date{font-size:10px;color:var(--sub2);font-weight:500;letter-spacing:.1px}
+.card-date{font-size:11px;color:var(--sub2);font-weight:500;letter-spacing:.05px}
 .card-arrow{
-  width:26px;height:26px;border-radius:50%;
+  width:28px;height:28px;border-radius:50%;
   background:var(--s2);border:1px solid var(--bd);
   display:flex;align-items:center;justify-content:center;
-  font-size:12px;color:var(--sub);
+  font-size:13px;color:var(--sub);
   transition:all .2s;flex-shrink:0;
 }
 .project-card:hover .card-arrow{
   background:var(--a);border-color:var(--a);color:#fff;
-  transform:translateX(2px);
+  transform:translateX(3px);
 }
 
 /* ── Empty state ── */
-.empty{text-align:center;padding:72px 20px;color:var(--sub)}
+.empty{text-align:center;padding:80px 20px;color:var(--sub)}
 .empty-icon{font-size:40px;margin-bottom:14px;opacity:.5}
 .empty-title{font-size:16px;font-weight:700;margin-bottom:6px;color:var(--tx)}
 .empty-sub{font-size:13px;color:var(--sub)}
@@ -262,7 +262,7 @@ main{padding:28px 32px;max-width:1200px;margin:0 auto}
 
 <header>
   <div class="hlogo">M</div>
-  <span class="htitle">META 受眾分析報告集</span>
+  <span class="htitle">META 受眾分析</span>
   <span class="hsubt">· 9133BEE</span>
   <div class="hdivider"></div>
   <nav class="hnav">

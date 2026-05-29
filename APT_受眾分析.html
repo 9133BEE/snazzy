@@ -6,108 +6,249 @@
 <title>原潮APT｜受眾分析報告</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft JhengHei','Segoe UI',sans-serif;background:#f5f4f1;color:#2e2c29;font-size:14px;line-height:1.6;padding:24px}
-.wrap{max-width:800px;margin:0 auto}
 
-.top-link{font-size:12px;color:#7a5a8a;margin-bottom:20px;display:block;cursor:pointer}
-.top-link span{border-bottom:1px solid #b89fcc}
+/* ── Design tokens ── */
+:root{
+  --accent:#7a5a8a;
+  --accent-dark:#5a3a6a;
+  --accent-light:#ede8f4;
+  --accent-border:#b89fcc;
+  --bg:#f5f4f1;
+  --s:#ffffff;
+  --bd:#e4e1dd;
+  --tx:#2e2c29;
+  --sub:#7d7870;
+  --sub2:#a8a199;
+  --good:#1e6e3f;
+  --goodl:#e6f4ea;
+  --warn:#c05c00;
+  --radius:12px;
+  --shadow-xs:0 1px 3px rgba(0,0,0,.05);
+  --shadow-sm:0 2px 8px rgba(0,0,0,.07);
+  --shadow-card:0 2px 10px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.04);
+}
 
-.sec-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.sec-title::before{content:'';display:inline-block;width:3px;height:14px;background:#7a5a8a;border-radius:2px}
-.section{margin-bottom:28px}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft JhengHei','Segoe UI',sans-serif;
+  background:var(--bg);color:var(--tx);font-size:14px;line-height:1.6;
+  min-height:100vh;
+}
 
-.profiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.profile-card{background:#fff;border:1px solid #e4e1dd;border-radius:12px;padding:16px;position:relative}
-.profile-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px}
-.profile-icon.purple{background:#ede8f4}
+/* ── Sticky page header ── */
+.page-header{
+  background:linear-gradient(180deg,#1a1018 0%,#160d14 100%);
+  padding:0 40px;height:56px;
+  display:flex;align-items:center;gap:14px;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 1px 0 rgba(255,255,255,.04),0 4px 20px rgba(0,0,0,.35);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.ph-logo{
+  width:30px;height:30px;
+  background:linear-gradient(135deg,#9a7aaa,var(--accent-dark));
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:900;color:#fff;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(122,90,138,.45),inset 0 1px 0 rgba(255,255,255,.15);
+}
+.ph-title{font-size:14px;font-weight:700;color:#f1eaf6;letter-spacing:-.2px}
+.ph-sub{font-size:11px;color:#6b5a78;margin-left:2px}
+.ph-nav{margin-left:auto}
+.ph-nav a{
+  font-size:12px;color:#9d8aae;text-decoration:none;
+  padding:5px 13px;border-radius:6px;border:1px solid rgba(122,90,138,.25);
+  background:rgba(122,90,138,.12);
+  transition:all .15s;font-weight:500;
+}
+.ph-nav a:hover{background:rgba(122,90,138,.22);color:#c8a8e0;border-color:rgba(122,90,138,.4)}
+
+/* ── Wrap ── */
+.wrap{max-width:1200px;margin:0 auto;padding:32px 40px 48px}
+
+/* ── Case header card ── */
+.case-header{
+  background:var(--s);border:1px solid var(--bd);border-radius:var(--radius);
+  padding:20px 24px;margin-bottom:10px;
+  display:flex;align-items:center;gap:18px;
+  box-shadow:var(--shadow-card);
+}
+.case-logo{
+  width:44px;height:44px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+  border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:900;color:#fff;flex-shrink:0;
+  box-shadow:0 3px 10px rgba(122,90,138,.35),inset 0 1px 0 rgba(255,255,255,.15);
+}
+.case-info h2{font-size:17px;font-weight:700;color:var(--tx);letter-spacing:-.3px}
+.case-info p{font-size:12px;color:var(--sub);margin-top:3px;line-height:1.5}
+.case-stats{margin-left:auto;display:flex;gap:28px;flex-shrink:0}
+.stat{text-align:right}
+.stat-n{font-size:24px;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.stat-l{font-size:10px;color:var(--sub2);margin-top:3px;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+
+/* ── Back link ── */
+.top-link{
+  font-size:12px;color:var(--accent);
+  margin-bottom:28px;display:inline-block;cursor:pointer;
+  text-decoration:none;font-weight:500;
+}
+.top-link span{border-bottom:1px solid var(--accent-border)}
+.top-link:hover span{color:var(--accent-dark)}
+
+/* ── Section headings ── */
+.sec-title{
+  font-size:12px;font-weight:700;color:var(--sub);
+  margin-bottom:14px;
+  display:flex;align-items:center;gap:10px;
+  letter-spacing:.4px;text-transform:uppercase;
+}
+.sec-title::before{content:'';display:inline-block;width:3px;height:14px;background:var(--accent);border-radius:2px;flex-shrink:0}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--bd)}
+.section{margin-bottom:32px}
+
+/* ── Audience profiles ── */
+.profiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.profile-card{
+  background:var(--s);border:1px solid var(--bd);border-radius:var(--radius);
+  padding:18px;position:relative;
+  box-shadow:var(--shadow-xs);
+  transition:box-shadow .2s,transform .2s;
+}
+.profile-card:hover{box-shadow:var(--shadow-sm);transform:translateY(-2px)}
+.profile-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:12px}
+.profile-icon.purple{background:var(--accent-light)}
 .profile-icon.teal{background:#e0eff2}
 .profile-icon.amber{background:#fdf0dc}
-.profile-name{font-size:14px;font-weight:700;color:#2e2c29;margin-bottom:4px}
-.profile-meta{font-size:11px;color:#7d7870;margin-bottom:8px}
-.profile-tags{font-size:11.5px;color:#4a5568;margin-bottom:8px;line-height:1.6}
-.profile-behavior{font-size:11px;color:#7d7870;line-height:1.5;margin-bottom:10px}
-.profile-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;margin-top:2px}
-.badge-purple{background:#ede8f4;color:#5a3a7a;border:1px solid #b89fcc}
+.profile-name{font-size:15px;font-weight:700;color:var(--tx);margin-bottom:4px}
+.profile-meta{font-size:12px;color:var(--sub);margin-bottom:10px}
+.profile-tags{font-size:12px;color:#4a5568;margin-bottom:10px;line-height:1.6}
+.profile-behavior{font-size:12px;color:var(--sub);line-height:1.55;margin-bottom:12px}
+.profile-badge{display:inline-block;font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;margin-top:2px}
+.badge-purple{background:var(--accent-light);color:#5a3a7a;border:1px solid var(--accent-border)}
 .badge-teal{background:#e0eff2;color:#2f6672;border:1px solid #87b5be}
 .badge-amber{background:#fdf0dc;color:#7a5c20;border:1px solid #d4b06a}
 
+/* ── Core tags ── */
 .tags-row{display:flex;flex-wrap:wrap;gap:8px}
-.core-tag{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;background:#fff;border:1.5px solid #e4e1dd;border-radius:20px;font-size:12px;font-weight:600;color:#2e2c29;cursor:pointer;transition:all .15s}
-.core-tag:hover{border-color:#b89fcc;background:#ede8f4;color:#5a3a7a}
-.core-tag .arr{font-size:10px;color:#b89fcc}
+.core-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:7px 14px;background:var(--s);
+  border:1.5px solid var(--bd);border-radius:20px;
+  font-size:13px;font-weight:600;color:var(--tx);
+  cursor:pointer;transition:all .15s;
+}
+.core-tag:hover{border-color:var(--accent-border);background:var(--accent-light);color:#5a3a7a}
+.core-tag .arr{font-size:11px;color:var(--accent-border)}
 
+/* ── Tips / recommendations ── */
 .tips{display:flex;flex-direction:column;gap:10px}
-.tip{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:14px 16px;display:flex;gap:14px;align-items:flex-start}
-.tip-num{width:22px;height:22px;border-radius:6px;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.tip-num.c1{background:#ede8f4;color:#5a3a7a}
+.tip{
+  background:var(--s);border:1px solid var(--bd);border-radius:var(--radius);
+  padding:16px 18px;display:flex;gap:16px;align-items:flex-start;
+  cursor:pointer;transition:border-color .15s,box-shadow .15s;
+  box-shadow:var(--shadow-xs);
+}
+.tip:hover{border-color:var(--accent-border);box-shadow:0 3px 12px rgba(122,90,138,.12)}
+.tip-num{width:26px;height:26px;border-radius:7px;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.tip-num.c1{background:var(--accent-light);color:#5a3a7a}
 .tip-num.c2{background:#d8ead2;color:#3d6b4f}
 .tip-num.c3{background:#fdf0dc;color:#7a5c20}
 .tip-num.c4{background:#e0eff2;color:#2f6672}
 .tip-num.c5{background:#faeaea;color:#8a3f3f}
-.tip-body{}
-.tip-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:3px}
-.tip-desc{font-size:12px;color:#7d7870;line-height:1.55}
+.tip-title{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:5px;line-height:1.3}
+.tip-desc{font-size:13px;color:var(--sub);line-height:1.6}
 
-.new-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.new-card{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:13px 15px;display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer;transition:all .15s}
-.new-card:hover{border-color:#b89fcc;box-shadow:0 2px 8px rgba(0,0,0,.08);transform:translateY(-1px)}
-.new-card-body{}
-.new-card-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:4px}
-.new-card-desc{font-size:11.5px;color:#7d7870;line-height:1.5}
+/* ── New audience cards ── */
+.new-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.new-card{
+  background:var(--s);border:1px solid var(--bd);border-radius:var(--radius);
+  padding:16px 18px;
+  cursor:pointer;transition:all .15s;
+  box-shadow:var(--shadow-xs);
+}
+.new-card:hover{border-color:var(--accent-border);box-shadow:0 3px 12px rgba(122,90,138,.12);transform:translateY(-1px)}
+.new-card-title{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:6px;line-height:1.35}
+.new-card-desc{font-size:12px;color:var(--sub);line-height:1.55}
 
-/* ── 素材分析區 ── */
-.creative-section{margin-bottom:28px}
-.creative-timeline{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
-.phase-row{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:14px}
-.phase-label{font-size:10px;font-weight:700;color:#7d7870;background:#f0edf5;padding:3px 8px;border-radius:10px;white-space:nowrap;flex-shrink:0;width:56px;text-align:center}
-.phase-body{flex:1}
-.phase-title{font-size:12.5px;font-weight:700;color:#2e2c29;margin-bottom:2px}
-.phase-desc{font-size:11.5px;color:#7d7870;line-height:1.5}
-.phase-stat{text-align:right;flex-shrink:0}
-.phase-cpl{font-size:13px;font-weight:800;color:#7a5a8a;line-height:1}
-.phase-cpl-l{font-size:9px;color:#a8a199;margin-top:2px;font-weight:600}
+/* ── Creative / material section ── */
+.creative-section{margin-bottom:32px}
+.creative-timeline{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.phase-row{
+  background:var(--s);border:1px solid var(--bd);border-radius:var(--radius);
+  padding:14px 18px;display:flex;align-items:center;gap:16px;
+  cursor:pointer;transition:border-color .15s;
+  box-shadow:var(--shadow-xs);
+}
+.phase-row:hover{border-color:var(--accent-border)}
+.phase-label{
+  font-size:11px;font-weight:700;color:var(--sub);
+  background:#f0edf5;padding:4px 10px;border-radius:10px;
+  white-space:nowrap;flex-shrink:0;width:62px;text-align:center;
+  line-height:1.4;
+}
+.phase-body{flex:1;min-width:0}
+.phase-title{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:3px}
+.phase-desc{font-size:12px;color:var(--sub);line-height:1.5}
+.phase-stat{text-align:right;flex-shrink:0;min-width:90px}
+.phase-cpl{font-size:15px;font-weight:800;color:var(--accent);line-height:1}
+.phase-cpl-l{font-size:10px;color:var(--sub2);margin-top:3px;font-weight:600}
 
-.creative-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
-.creative-card{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:12px 14px}
-.creative-card.best{border-color:#b89fcc;background:#faf8fc}
-.creative-name{font-size:12px;font-weight:700;color:#2e2c29;margin-bottom:4px}
-.creative-badge{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;margin-bottom:6px}
-.cb-top{background:#ede8f4;color:#5a3a7a;border:1px solid #b89fcc}
+.creative-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+.creative-card{
+  background:var(--s);border:1px solid var(--bd);border-radius:var(--radius);
+  padding:14px 16px;cursor:pointer;
+  transition:border-color .15s,box-shadow .15s;
+  box-shadow:var(--shadow-xs);
+}
+.creative-card:hover{border-color:var(--accent-border);box-shadow:0 3px 10px rgba(122,90,138,.1)}
+.creative-card.best{border-color:var(--accent-border);background:#faf8fc}
+.creative-name{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:6px}
+.creative-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;margin-bottom:8px}
+.cb-top{background:var(--accent-light);color:#5a3a7a;border:1px solid var(--accent-border)}
 .cb-active{background:#d8ead2;color:#3d6b4f;border:1px solid #96c4a8}
 .cb-new{background:#fdf0dc;color:#7a5c20;border:1px solid #d4b06a}
 .cb-retired{background:#f0f0f0;color:#888;border:1px solid #ccc}
-.creative-stats{font-size:11px;color:#7d7870;line-height:1.7}
-.creative-stats b{color:#2e2c29}
+.creative-stats{font-size:12px;color:var(--sub);line-height:1.75}
+.creative-stats b{color:var(--tx)}
 
-.insight-box{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:18px 20px}
-.insight-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:12px}
-.insight-highlight{background:#f2ecf8;border-left:3px solid #7a5a8a;padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:14px;font-size:12.5px;color:#4a2a6a;font-weight:600;line-height:1.6}
-.insight-sub{font-size:12.5px;font-weight:700;color:#2e2c29;margin-bottom:8px;margin-top:12px}
-.insight-list{list-style:none;display:flex;flex-direction:column;gap:5px}
-.insight-list li{font-size:12px;color:#4a5568;padding-left:14px;position:relative;line-height:1.55}
-.insight-list li::before{content:'→';position:absolute;left:0;color:#b89fcc;font-size:11px}
+.insight-box{
+  background:var(--s);border:1px solid var(--bd);border-radius:var(--radius);
+  padding:20px 24px;box-shadow:var(--shadow-xs);
+}
+.insight-title{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:14px}
+.insight-highlight{
+  background:#f2ecf8;border-left:3px solid var(--accent);
+  padding:12px 16px;border-radius:0 8px 8px 0;
+  margin-bottom:16px;font-size:13px;color:#4a2a6a;font-weight:600;line-height:1.65;
+}
+.insight-sub{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:10px;margin-top:14px}
+.insight-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.insight-list li{font-size:13px;color:#4a5568;padding-left:18px;position:relative;line-height:1.6}
+.insight-list li::before{content:'→';position:absolute;left:0;color:var(--accent-border);font-size:12px;top:1px}
 
-.case-header{background:#fff;border:1px solid #e4e1dd;border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:14px}
-.case-logo{width:38px;height:38px;background:linear-gradient(135deg,#7a5a8a,#5a3a6a);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;flex-shrink:0}
-.case-info h2{font-size:15px;font-weight:700;color:#2e2c29}
-.case-info p{font-size:11px;color:#7d7870;margin-top:2px}
-.case-stats{margin-left:auto;display:flex;gap:20px}
-.stat{text-align:right}
-.stat-n{font-size:20px;font-weight:800;color:#7a5a8a;line-height:1}
-.stat-l{font-size:10px;color:#a8a199;margin-top:2px;font-weight:600;letter-spacing:.3px}
-
-/* ── 成果排行 ── */
-.rk-row{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
+/* ── Ranking rows ── */
+.rk-row{
+  background:var(--s);border:1px solid var(--bd);border-radius:var(--radius);
+  padding:14px 18px;margin-bottom:8px;
+  display:flex;gap:14px;align-items:center;
+  box-shadow:var(--shadow-xs);
+  transition:box-shadow .15s;
+}
+.rk-row:hover{box-shadow:var(--shadow-sm)}
 .rk-row.gold{border-color:#d4b06a;background:#fdfaf2}
 .rk-row.silver{border-color:#b8c0cc;background:#f9f9fb}
 .rk-row.bronze{border-color:#c4a87a;background:#fdf7f0}
-.rk-medal{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;margin-top:2px}
-.rk-rank{width:28px;height:28px;border-radius:50%;background:#f0edf5;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#8a7a96;flex-shrink:0;margin-top:2px}
+.rk-medal{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.rk-rank{
+  width:32px;height:32px;border-radius:50%;
+  background:#f0edf5;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;color:#8a7a96;flex-shrink:0;
+}
 .rk-body{flex:1;min-width:0}
-.rk-name{font-size:12.5px;font-weight:700;color:#2e2c29;margin-bottom:2px;line-height:1.3}
-.rk-loc{font-size:10.5px;color:#9d9590;line-height:1.5;margin-bottom:6px}
+.rk-name{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:4px;line-height:1.35}
+.rk-loc{font-size:11px;color:var(--sub2);line-height:1.4;margin-bottom:7px}
 .rk-tags{display:flex;flex-wrap:wrap;gap:4px}
-.rk-tag{font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:8px;line-height:1.4}
+.rk-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;line-height:1.5}
 .t-biz{background:#fff3e0;color:#bf5600;border:1px solid #ffd0a0}
 .t-fin{background:#e8f0fe;color:#1a56b0;border:1px solid #93b4e8}
 .t-prop{background:#e6f4ea;color:#1e6e3f;border:1px solid #8ecba3}
@@ -116,16 +257,35 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
 .t-edu{background:#e0f7f4;color:#00695c;border:1px solid #7cd6cc}
 .t-ind{background:#eceff1;color:#37474f;border:1px solid #b0bec5}
 .t-sim{background:#fce4ec;color:#880e4f;border:1px solid #f48fb1}
-.rk-stats{display:flex;flex-direction:column;gap:0;flex-shrink:0;text-align:right;min-width:68px}
-.rk-result{font-size:22px;font-weight:900;color:#2e2c29;line-height:1}
-.rk-result-l{font-size:9px;color:#a8a199;font-weight:600;margin-bottom:6px}
-.rk-cpl{font-size:15px;font-weight:800;color:#c05c00;line-height:1}
-.rk-cpl-l{font-size:9px;color:#a8a199;font-weight:600;margin-bottom:4px}
-.rk-spend{font-size:12px;font-weight:700;color:#6d6560;line-height:1}
-.rk-spend-l{font-size:9px;color:#a8a199;font-weight:600}
+
+/* Stats column — numbers that stand out */
+.rk-stats{display:flex;gap:24px;flex-shrink:0;align-items:center}
+.rk-stat-block{text-align:right}
+.rk-result{font-size:28px;font-weight:900;color:var(--tx);line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.rk-result-l{font-size:10px;color:var(--sub2);font-weight:600;text-transform:uppercase;letter-spacing:.2px;margin-top:2px}
+.rk-cpl{font-size:18px;font-weight:800;color:var(--warn);line-height:1;font-variant-numeric:tabular-nums}
+.rk-cpl-l{font-size:10px;color:var(--sub2);font-weight:600;text-transform:uppercase;letter-spacing:.2px;margin-top:2px}
+.rk-spend{font-size:13px;font-weight:700;color:#6d6560;line-height:1;font-variant-numeric:tabular-nums}
+.rk-spend-l{font-size:10px;color:var(--sub2);font-weight:600;text-transform:uppercase;letter-spacing:.2px;margin-top:2px}
+
+/* ── Footer ── */
+.page-footer{
+  text-align:center;font-size:11px;color:var(--sub2);
+  margin-top:12px;padding-bottom:8px;
+}
 </style>
 </head>
 <body>
+
+<header class="page-header">
+  <div class="ph-logo">潮</div>
+  <span class="ph-title">原潮APT｜受眾分析</span>
+  <span class="ph-sub">· 台中北屯</span>
+  <nav class="ph-nav">
+    <a href="hub.html">← 返回總覽</a>
+  </nav>
+</header>
+
 <div class="wrap">
 
 <div class="case-header">
@@ -137,7 +297,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
   <div class="case-stats">
     <div class="stat"><div class="stat-n">450</div><div class="stat-l">總潛客</div></div>
     <div class="stat"><div class="stat-n">NT$1,093</div><div class="stat-l">均CPL</div></div>
-    <div class="stat"><div class="stat-n">175+組</div><div class="stat-l">累積受眾</div></div>
+    <div class="stat"><div class="stat-n">175+</div><div class="stat-l">累積受眾組</div></div>
   </div>
 </div>
 
@@ -293,14 +453,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
       </div>
     </div>
 
-    <div class="phase-row" style="border-color:#b89fcc;background:#faf8fc">
-      <div class="phase-label" style="background:#ede8f4;color:#5a3a7a">Phase 5<br>4月~現在</div>
+    <div class="phase-row" style="border-color:var(--accent-border);background:#faf8fc">
+      <div class="phase-label" style="background:var(--accent-light);color:#5a3a7a">Phase 5<br>4月~現在</div>
       <div class="phase-body">
         <div class="phase-title">看見公設第二集（✅ 現役最強素材）</div>
         <div class="phase-desc">0416_看見公設第二集：直接展示游泳池、健身房、KTV 等公設，真實訴求贏過故事性內容，多組 CPL 低至 NT$259–309。</div>
       </div>
       <div class="phase-stat">
-        <div class="phase-cpl" style="color:#5a3a7a">NT$259–515</div>
+        <div class="phase-cpl">NT$259–515</div>
         <div class="phase-cpl-l">全案最低區間</div>
       </div>
     </div>
@@ -475,9 +635,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
       </div>
     </div>
     <div class="rk-stats">
-      <div class="rk-result">19</div><div class="rk-result-l">成果</div>
-      <div class="rk-cpl">$473</div><div class="rk-cpl-l">CPL</div>
-      <div class="rk-spend">$8,983</div><div class="rk-spend-l">花費</div>
+      <div class="rk-stat-block"><div class="rk-result">19</div><div class="rk-result-l">成果</div></div>
+      <div class="rk-stat-block"><div class="rk-cpl">$473</div><div class="rk-cpl-l">CPL</div></div>
+      <div class="rk-stat-block"><div class="rk-spend">$8,983</div><div class="rk-spend-l">花費</div></div>
     </div>
   </div>
 
@@ -495,9 +655,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
       </div>
     </div>
     <div class="rk-stats">
-      <div class="rk-result">15</div><div class="rk-result-l">成果</div>
-      <div class="rk-cpl">$570</div><div class="rk-cpl-l">CPL</div>
-      <div class="rk-spend">$8,547</div><div class="rk-spend-l">花費</div>
+      <div class="rk-stat-block"><div class="rk-result">15</div><div class="rk-result-l">成果</div></div>
+      <div class="rk-stat-block"><div class="rk-cpl">$570</div><div class="rk-cpl-l">CPL</div></div>
+      <div class="rk-stat-block"><div class="rk-spend">$8,547</div><div class="rk-spend-l">花費</div></div>
     </div>
   </div>
 
@@ -515,9 +675,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
       </div>
     </div>
     <div class="rk-stats">
-      <div class="rk-result">10</div><div class="rk-result-l">成果</div>
-      <div class="rk-cpl">$672</div><div class="rk-cpl-l">CPL</div>
-      <div class="rk-spend">$6,721</div><div class="rk-spend-l">花費</div>
+      <div class="rk-stat-block"><div class="rk-result">10</div><div class="rk-result-l">成果</div></div>
+      <div class="rk-stat-block"><div class="rk-cpl">$672</div><div class="rk-cpl-l">CPL</div></div>
+      <div class="rk-stat-block"><div class="rk-spend">$6,721</div><div class="rk-spend-l">花費</div></div>
     </div>
   </div>
 
@@ -535,9 +695,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
       </div>
     </div>
     <div class="rk-stats">
-      <div class="rk-result">10</div><div class="rk-result-l">成果</div>
-      <div class="rk-cpl">$609</div><div class="rk-cpl-l">CPL</div>
-      <div class="rk-spend">$6,085</div><div class="rk-spend-l">花費</div>
+      <div class="rk-stat-block"><div class="rk-result">10</div><div class="rk-result-l">成果</div></div>
+      <div class="rk-stat-block"><div class="rk-cpl">$609</div><div class="rk-cpl-l">CPL</div></div>
+      <div class="rk-stat-block"><div class="rk-spend">$6,085</div><div class="rk-spend-l">花費</div></div>
     </div>
   </div>
 
@@ -555,9 +715,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
       </div>
     </div>
     <div class="rk-stats">
-      <div class="rk-result">10</div><div class="rk-result-l">成果</div>
-      <div class="rk-cpl">$614</div><div class="rk-cpl-l">CPL</div>
-      <div class="rk-spend">$6,139</div><div class="rk-spend-l">花費</div>
+      <div class="rk-stat-block"><div class="rk-result">10</div><div class="rk-result-l">成果</div></div>
+      <div class="rk-stat-block"><div class="rk-cpl">$614</div><div class="rk-cpl-l">CPL</div></div>
+      <div class="rk-stat-block"><div class="rk-spend">$6,139</div><div class="rk-spend-l">花費</div></div>
     </div>
   </div>
 
@@ -574,9 +734,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
       </div>
     </div>
     <div class="rk-stats">
-      <div class="rk-result">9</div><div class="rk-result-l">成果</div>
-      <div class="rk-cpl">$424</div><div class="rk-cpl-l">CPL</div>
-      <div class="rk-spend">$3,812</div><div class="rk-spend-l">花費</div>
+      <div class="rk-stat-block"><div class="rk-result">9</div><div class="rk-result-l">成果</div></div>
+      <div class="rk-stat-block"><div class="rk-cpl">$424</div><div class="rk-cpl-l">CPL</div></div>
+      <div class="rk-stat-block"><div class="rk-spend">$3,812</div><div class="rk-spend-l">花費</div></div>
     </div>
   </div>
 
@@ -594,9 +754,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
       </div>
     </div>
     <div class="rk-stats">
-      <div class="rk-result">8</div><div class="rk-result-l">成果</div>
-      <div class="rk-cpl">$590</div><div class="rk-cpl-l">CPL</div>
-      <div class="rk-spend">$4,719</div><div class="rk-spend-l">花費</div>
+      <div class="rk-stat-block"><div class="rk-result">8</div><div class="rk-result-l">成果</div></div>
+      <div class="rk-stat-block"><div class="rk-cpl">$590</div><div class="rk-cpl-l">CPL</div></div>
+      <div class="rk-stat-block"><div class="rk-spend">$4,719</div><div class="rk-spend-l">花費</div></div>
     </div>
   </div>
 
@@ -614,9 +774,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
       </div>
     </div>
     <div class="rk-stats">
-      <div class="rk-result">8</div><div class="rk-result-l">成果</div>
-      <div class="rk-cpl">$673</div><div class="rk-cpl-l">CPL</div>
-      <div class="rk-spend">$5,385</div><div class="rk-spend-l">花費</div>
+      <div class="rk-stat-block"><div class="rk-result">8</div><div class="rk-result-l">成果</div></div>
+      <div class="rk-stat-block"><div class="rk-cpl">$673</div><div class="rk-cpl-l">CPL</div></div>
+      <div class="rk-stat-block"><div class="rk-spend">$5,385</div><div class="rk-spend-l">花費</div></div>
     </div>
   </div>
 
@@ -634,9 +794,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
       </div>
     </div>
     <div class="rk-stats">
-      <div class="rk-result">8</div><div class="rk-result-l">成果</div>
-      <div class="rk-cpl">$776</div><div class="rk-cpl-l">CPL</div>
-      <div class="rk-spend">$6,210</div><div class="rk-spend-l">花費</div>
+      <div class="rk-stat-block"><div class="rk-result">8</div><div class="rk-result-l">成果</div></div>
+      <div class="rk-stat-block"><div class="rk-cpl">$776</div><div class="rk-cpl-l">CPL</div></div>
+      <div class="rk-stat-block"><div class="rk-spend">$6,210</div><div class="rk-spend-l">花費</div></div>
     </div>
   </div>
 
@@ -654,15 +814,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
       </div>
     </div>
     <div class="rk-stats">
-      <div class="rk-result">8</div><div class="rk-result-l">成果</div>
-      <div class="rk-cpl">$697</div><div class="rk-cpl-l">CPL</div>
-      <div class="rk-spend">$5,578</div><div class="rk-spend-l">花費</div>
+      <div class="rk-stat-block"><div class="rk-result">8</div><div class="rk-result-l">成果</div></div>
+      <div class="rk-stat-block"><div class="rk-cpl">$697</div><div class="rk-cpl-l">CPL</div></div>
+      <div class="rk-stat-block"><div class="rk-spend">$5,578</div><div class="rk-spend-l">花費</div></div>
     </div>
   </div>
 
 </div>
 
-<div style="text-align:center;font-size:11px;color:#b8b5b0;margin-top:8px;padding-bottom:8px">資料期間：2025-10-28 至 2026-05-29 · 原潮APT 台中北屯 · 最後更新 2026-05-29</div>
+<div class="page-footer">資料期間：2025-10-28 至 2026-05-29 · 原潮APT 台中北屯 · 最後更新 2026-05-29</div>
 
 </div>
 
