@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>浩瀚湖濱城｜受眾分析報告</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft JhengHei','Segoe UI',sans-serif;background:#f5f4f1;color:#2e2c29;font-size:14px;line-height:1.6;padding:24px}
+.wrap{max-width:800px;margin:0 auto}
+
+.top-link{font-size:12px;color:#4a7a8a;margin-bottom:20px;display:block;cursor:pointer}
+.top-link span{border-bottom:1px solid #87b5be}
+
+.sec-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec-title::before{content:'';display:inline-block;width:3px;height:14px;background:#4a7a8a;border-radius:2px}
+.section{margin-bottom:28px}
+
+.profiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.profile-card{background:#fff;border:1px solid #e4e1dd;border-radius:12px;padding:16px;position:relative}
+.profile-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px}
+.profile-icon.teal{background:#e0eff2}
+.profile-icon.green{background:#d8ead2}
+.profile-icon.amber{background:#fdf0dc}
+.profile-name{font-size:14px;font-weight:700;color:#2e2c29;margin-bottom:4px}
+.profile-meta{font-size:11px;color:#7d7870;margin-bottom:8px}
+.profile-tags{font-size:11.5px;color:#4a5568;margin-bottom:8px;line-height:1.6}
+.profile-behavior{font-size:11px;color:#7d7870;line-height:1.5;margin-bottom:10px}
+.profile-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;margin-top:2px}
+.badge-teal{background:#e0eff2;color:#2f6672;border:1px solid #87b5be}
+.badge-green{background:#d8ead2;color:#3d6b4f;border:1px solid #96c4a8}
+.badge-amber{background:#fdf0dc;color:#7a5c20;border:1px solid #d4b06a}
+
+.tags-row{display:flex;flex-wrap:wrap;gap:8px}
+.core-tag{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;background:#fff;border:1.5px solid #e4e1dd;border-radius:20px;font-size:12px;font-weight:600;color:#2e2c29;cursor:pointer;transition:all .15s}
+.core-tag:hover{border-color:#87b5be;background:#e0eff2;color:#2f6672}
+.core-tag .arr{font-size:10px;color:#87b5be}
+
+.tips{display:flex;flex-direction:column;gap:10px}
+.tip{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:14px 16px;display:flex;gap:14px;align-items:flex-start}
+.tip-num{width:22px;height:22px;border-radius:6px;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.tip-num.c1{background:#e0eff2;color:#2f6672}
+.tip-num.c2{background:#d8ead2;color:#3d6b4f}
+.tip-num.c3{background:#fdf0dc;color:#7a5c20}
+.tip-num.c4{background:#e8edf8;color:#5270a0}
+.tip-num.c5{background:#faeaea;color:#8a3f3f}
+.tip-body{}
+.tip-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:3px}
+.tip-desc{font-size:12px;color:#7d7870;line-height:1.55}
+
+.new-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.new-card{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:13px 15px;display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer;transition:all .15s}
+.new-card:hover{border-color:#87b5be;box-shadow:0 2px 8px rgba(0,0,0,.08);transform:translateY(-1px)}
+.new-card-body{}
+.new-card-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:4px}
+.new-card-desc{font-size:11.5px;color:#7d7870;line-height:1.5}
+.new-card-arr{font-size:12px;color:#87b5be;flex-shrink:0;margin-top:2px}
+
+.insight-box{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:18px 20px}
+.insight-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:12px}
+.insight-highlight{background:#e5f3f7;border-left:3px solid #4a7a8a;padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:14px;font-size:12.5px;color:#1e4f5c;font-weight:600;line-height:1.6}
+.insight-sub{font-size:12.5px;font-weight:700;color:#2e2c29;margin-bottom:8px;margin-top:12px}
+.insight-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+.insight-list li{font-size:12px;color:#4a5568;padding-left:14px;position:relative;line-height:1.55}
+.insight-list li::before{content:'→';position:absolute;left:0;color:#87b5be;font-size:11px}
+.principle-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.principle-list li{font-size:12px;color:#4a5568;padding-left:20px;position:relative;line-height:1.55}
+.principle-list li::before{content:counter(item);counter-increment:item;position:absolute;left:0;width:16px;height:16px;background:#e0eff2;border-radius:4px;color:#2f6672;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;top:1px}
+.principle-list{counter-reset:item}
+
+.case-header{background:#fff;border:1px solid #e4e1dd;border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:14px}
+.case-logo{width:38px;height:38px;background:linear-gradient(135deg,#4a7a8a,#2f6672);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;flex-shrink:0}
+.case-info h2{font-size:15px;font-weight:700;color:#2e2c29}
+.case-info p{font-size:11px;color:#7d7870;margin-top:2px}
+.case-stats{margin-left:auto;display:flex;gap:20px}
+.stat{text-align:right}
+.stat-n{font-size:20px;font-weight:800;color:#4a7a8a;line-height:1}
+.stat-l{font-size:10px;color:#a8a199;margin-top:2px;font-weight:600;letter-spacing:.3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="case-header">
+  <div class="case-logo">湖</div>
+  <div class="case-info">
+    <h2>浩瀚湖濱城｜台中東區</h2>
+    <p>進德路×樂業二路口 · LALAPORT對面 · 二/三/四房＋辦公室 · 廣告目標：名單</p>
+  </div>
+  <div class="case-stats">
+    <div class="stat"><div class="stat-n">168</div><div class="stat-l">總潛客</div></div>
+    <div class="stat"><div class="stat-n">NT$860</div><div class="stat-l">均CPL</div></div>
+    <div class="stat"><div class="stat-n">63+組</div><div class="stat-l">累積受眾</div></div>
+  </div>
+</div>
+
+<a class="top-link" href="hub.html"><span>← 返回報告集</span></a>
+
+<div class="section">
+  <div class="sec-title">三大核心受眾輪廓</div>
+  <div class="profiles">
+
+    <div class="profile-card">
+      <div class="profile-icon teal">⚖️</div>
+      <div class="profile-name">自雇專業人士型</div>
+      <div class="profile-meta">年齡 30–55｜東區北區中區</div>
+      <div class="profile-tags">興趣：法律執業、記帳士、顧問、商辦空間、投資理財</div>
+      <div class="profile-behavior">行為：自雇/自營，工作生活同區需求強烈，對「同棟辦公+居住」高度共鳴</div>
+      <span class="profile-badge badge-teal">代表組：東區北區/法律執業者+運動 CPL NT$562</span>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-icon green">🏠</div>
+      <div class="profile-name">在地換屋首購型</div>
+      <div class="profile-meta">年齡 30–50｜東區北屯大里</div>
+      <div class="profile-tags">興趣：室內設計、傢俱、居家裝修、社區議題、高階主管</div>
+      <div class="profile-behavior">行為：台中東北屯在地居民，換屋升級不遷移，重視生活品質提升</div>
+      <span class="profile-badge badge-green">代表組：北屯在地換屋首購菁英 CPL NT$423</span>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-icon amber">📈</div>
+      <div class="profile-name">投資增值型</div>
+      <div class="profile-meta">年齡 35–65｜逢甲水湳北屯</div>
+      <div class="profile-tags">興趣：房地產投資、591、ISO認證、財稅管理、金融業</div>
+      <div class="profile-behavior">行為：具主動置產習慣，對六百億台中大車站計畫＋捷運藍線增值論述高度感興趣</div>
+      <span class="profile-badge badge-amber">代表組：逢甲水湳北屯/投資 CPL NT$665</span>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-title">跨受眾必保留的核心標籤</div>
+  <div class="tags-row">
+    <span class="core-tag">房地產（產業）<span class="arr">↗</span></span>
+    <span class="core-tag">辦公室空間（房地產）<span class="arr">↗</span></span>
+    <span class="core-tag">投資（商業與財務）<span class="arr">↗</span></span>
+    <span class="core-tag">法律（法律和法律服務）<span class="arr">↗</span></span>
+    <span class="core-tag">記帳士（財務）<span class="arr">↗</span></span>
+    <span class="core-tag">591（不動產平台）<span class="arr">↗</span></span>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-title">五大操作建議</div>
+  <div class="tips">
+
+    <div class="tip">
+      <div class="tip-num c1">1</div>
+      <div class="tip-body">
+        <div class="tip-title">北屯在地換屋首購（CPL NT$423）是全案最低CPL，應立即加預算</div>
+        <div class="tip-desc">30-50/東區北屯大里/北屯在地換屋首購菁英，CPL NT$423 遠低於均值 NT$860，8 潛客。建議複製至「北區西屯大里+6km」擴大覆蓋，測試是否維持低CPL。</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-num c2">2</div>
+      <div class="tip-body">
+        <div class="tip-title">法律執業者+運動（11潛客，CPL NT$562）已確認有效，複製擴展</div>
+        <div class="tip-desc">此組在 5/28 確認有效，法律/記帳/顧問職業背景自雇族群對「工作生活同棟」訴求響應高。建議以相同標籤組合開「東區+5km」新組，同時加入 Patent Attorney、Accountant 職稱層。</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-num c3">3</div>
+      <div class="tip-body">
+        <div class="tip-title">物流倉儲（11潛客）、ISO財稅顧問（10潛客）暫停前有量，換素材重啟</div>
+        <div class="tip-desc">這兩組 CPL NT$784/NT$705，潛客量大但效益稍高。建議更換素材切角為「台中車站10分鐘，六百億增值」投資論述，重新啟動，降低 CPL 至 NT$600 以內。</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-num c4">4</div>
+      <div class="tip-body">
+        <div class="tip-title">辦公室產品（19~21坪）應有獨立受眾與素材</div>
+        <div class="tip-desc">浩瀚湖濱城的辦公室是此案特有產品（450戶辦公室），但目前所有受眾都是混搭住家+辦公需求。建議獨立開「30-55/自雇/記帳士/地政士/顧問」受眾，素材改為「台中最核心的辦公室，步行10分鐘到台中車站」。</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-num c5">5</div>
+      <div class="tip-body">
+        <div class="tip-title">電商網拍（11潛客，CPL NT$622）和百貨年輕族（11潛客，CPL NT$734）可合併後再測</div>
+        <div class="tip-desc">兩組受眾輪廓相近（年輕消費力、台中市區），CPL 合理。建議合併興趣標籤（電商+百貨+年輕消費）開一個更大規模的受眾組，預算提高至 NT$400/日，縮小CPL差距。</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-title">建議新測試受眾方向</div>
+  <div class="new-grid">
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">30–55 / 台中車站+3km / 通勤族 ↗</div>
+        <div class="new-card-desc">每天進出台中車站的上班族，訴求「步行10分鐘到家，六百億大車站計畫受惠者」</div>
+      </div>
+    </div>
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">35–55 / 東區水湳 / 辦公室自用+SOHO ↗</div>
+        <div class="new-card-desc">記帳士、地政士、顧問師等自雇族，訴求「19坪辦公室，早上下樓上班，晚上上樓回家」</div>
+      </div>
+    </div>
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">35–60 / 逢甲北屯 / 六百億增值投資 ↗</div>
+        <div class="new-card-desc">有置產習慣的投資人，切入「台中車站計畫＋捷運藍線＋喜來登物業三重增值保障」</div>
+      </div>
+    </div>
+
+    <div class="new-card">
+      <div class="new-card-body">
+        <div class="new-card-title">再行銷 / 互動過未留名單 ↗</div>
+        <div class="new-card-desc">已曝光互動但未填名單族群，搭配「現在入住，不用等交屋」稀缺感素材二次觸及</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <div class="insight-box">
+    <div class="insight-title">根據現有高效受眾的設定邏輯，整理出幾個關鍵洞見：</div>
+
+    <div class="insight-highlight">
+      最重要的發現：浩瀚湖濱城的購屋動機有兩條主線，必須分開溝通<br>
+      ① 自住換屋（工作生活同區便利）② 投資增值（六百億大車站+捷運藍線），混合素材會稀釋轉換效果。
+    </div>
+
+    <div class="insight-sub">有效受眾的共同特徵：</div>
+    <ul class="insight-list">
+      <li>職業自主性高：自雇、自營、自由工作者 → 對「辦公+居住同棟」訴求高度共鳴</li>
+      <li>台中在地性：東區北屯大里在地居民換屋需求 > 外來移居需求，不宜開太廣</li>
+      <li>資金流動意識：有投資/置產行為標籤的族群 CPL 明顯低於生活消費型受眾</li>
+    </ul>
+
+    <div class="insight-sub">未來新開受眾的設定原則：</div>
+    <ol class="principle-list">
+      <li>地理錨點：東區+3km 是住家主力；水湳/逢甲+5km 適合投資受眾；西屯/北屯適合換屋族群</li>
+      <li>底層三標籤：房地產（產業）＋辦公室空間（房地產）＋投資（商業與財務）是基礎篩網</li>
+      <li>辦公室受眾單獨開：加入「Commercial property、Office space、Business decision makers」職業行為層</li>
+      <li>投資受眾加「六百億」論述：切入台灣基建話題興趣者，強化「捷運藍線+車站計畫」地段增值感知</li>
+    </ol>
+  </div>
+</div>
+
+<div style="text-align:center;font-size:11px;color:#b8b5b0;margin-top:8px;padding-bottom:8px">資料期間：2026-02-23 至 2026-05-29 · 浩瀚湖濱城 台中東區 · 最後更新 2026-05-29</div>
+
+</div>
+
+<div id="toast" style="position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:#2e2c29;color:#fff;font-size:12.5px;padding:10px 20px;border-radius:24px;opacity:0;transition:all .25s;pointer-events:none;z-index:999;white-space:nowrap">
+  📋 詢問建議已複製 → 貼至 Claude 對話
+</div>
+
+<script>
+const PROJECT = '浩瀚湖濱城（台中東區・LALAPORT對面・進德路×樂業二路口・168潛客・均CPL NT$860）';
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg || '📋 詢問建議已複製 → 貼至 Claude 對話';
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 2200);
+}
+
+function copyPrompt(text) {
+  navigator.clipboard.writeText(text).then(() => showToast()).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast();
+  });
+}
+
+document.querySelectorAll('.core-tag').forEach(el => {
+  el.addEventListener('click', () => {
+    const tag = el.textContent.replace('↗','').trim();
+    copyPrompt(`針對${PROJECT}的 META 廣告投放，請深入分析「${tag}」這個興趣標籤：\n1. 這個標籤在本案受眾中代表什麼輪廓的人？\n2. 搭配哪些其他標籤組合效果最好？\n3. 素材訴求應該怎麼寫才能匹配這類受眾？`);
+  });
+});
+
+document.querySelectorAll('.new-card').forEach(el => {
+  el.addEventListener('click', () => {
+    const title = el.querySelector('.new-card-title').textContent.replace('↗','').trim();
+    const desc = el.querySelector('.new-card-desc').textContent.trim();
+    copyPrompt(`針對${PROJECT}，我想測試新受眾方向：「${title}」\n方向說明：${desc}\n\n請給我：\n1. 具體的 META 興趣標籤清單（附中文，約 10–15 個）\n2. 地理設定建議\n3. 適合這組受眾的素材訴求角度`);
+  });
+});
+
+document.querySelectorAll('.tip').forEach(el => {
+  el.style.cursor = 'pointer';
+  el.addEventListener('click', () => {
+    const title = el.querySelector('.tip-title').textContent.trim();
+    const desc = el.querySelector('.tip-desc').textContent.trim();
+    copyPrompt(`針對${PROJECT}，關於這項操作建議：\n「${title}」\n背景：${desc}\n\n請幫我制定具體的執行方案，包含受眾設定細節和素材方向。`);
+  });
+});
+</script>
+</body>
+</html>
