@@ -47,6 +47,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
 .new-card-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:4px}
 .new-card-desc{font-size:11.5px;color:#7d7870;line-height:1.5}
 .new-card-arr{font-size:12px;color:#a8bed0;flex-shrink:0;margin-top:2px}
+/* ── 素材分析 ── */
+.creative-bar-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.creative-bar-row{background:#fff;border:1px solid #e4e1dd;border-radius:9px;padding:11px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s}
+.creative-bar-row:hover{border-color:#a8bed0;box-shadow:0 2px 6px rgba(0,0,0,.07)}
+.creative-bar-row.king{border-color:#d4b06a;background:#fffcf5}
+.cb-rank{width:22px;height:22px;border-radius:6px;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#eaf0f6;color:#607d96}
+.cb-rank.r1{background:#fdf3dc;color:#c26000;font-size:12px}
+.cb-info{flex:1}
+.cb-name{font-size:12.5px;font-weight:700;color:#2e2c29;margin-bottom:2px}
+.cb-meta{font-size:11px;color:#7d7870;line-height:1.4}
+.cb-leads{text-align:right;flex-shrink:0}
+.cb-leads-n{font-size:15px;font-weight:800;color:#607d96;line-height:1}
+.cb-leads-l{font-size:9px;color:#a8a199;font-weight:600}
+.cb-leads-n.king{color:#c26000}
+.cb-cpl{font-size:10px;color:#8a7a6a;text-align:right;margin-top:2px}
+.creative-bar-fill{height:3px;background:#eaf0f6;border-radius:2px;margin-top:6px;overflow:hidden}
+.creative-bar-fill-inner{height:100%;background:linear-gradient(90deg,#607d96,#4a6e8a);border-radius:2px;transition:width .4s}
+.creative-bar-fill-inner.king{background:linear-gradient(90deg,#d4b06a,#c26000)}
 .insight-box{background:#fff;border:1px solid #e4e1dd;border-radius:10px;padding:18px 20px}
 .insight-title{font-size:13px;font-weight:700;color:#2e2c29;margin-bottom:12px}
 .insight-highlight{background:#fdf3dc;border-left:3px solid #d4b06a;padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:14px;font-size:12.5px;color:#7a5c20;font-weight:600;line-height:1.6}
@@ -220,6 +238,88 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
   </div>
 </div>
 
+<!-- 素材分析 -->
+<div class="section">
+  <div class="sec-title">素材績效分析（2026-04-09 至 2026-05-29）</div>
+  <div class="creative-bar-wrap">
+
+    <div class="creative-bar-row king" data-name="0410_簽約68層" data-leads="116" data-cpl="226" data-spend="26215">
+      <div class="cb-rank r1">👑</div>
+      <div class="cb-info">
+        <div class="cb-name">0410_簽約68層</div>
+        <div class="cb-meta">以「68層高度＋簽約現場」訴求高度稀缺感，CTR 高達 5.47–5.94%，是全案核心轉換引擎</div>
+        <div class="creative-bar-fill"><div class="creative-bar-fill-inner king" style="width:100%"></div></div>
+      </div>
+      <div class="cb-leads"><div class="cb-leads-n king">116</div><div class="cb-leads-l">潛客</div><div class="cb-cpl">CPL NT$226</div></div>
+    </div>
+
+    <div class="creative-bar-row" data-name="0424_前景視角V2" data-leads="37" data-cpl="402" data-spend="14890">
+      <div class="cb-rank">2</div>
+      <div class="cb-info">
+        <div class="cb-name">0424_前景視角V2（更新版）</div>
+        <div class="cb-meta">V2 版相較 V1 大幅提升，從 5 潛客增至 37 潛客，不同取景角度創造更强的視覺吸引力</div>
+        <div class="creative-bar-fill"><div class="creative-bar-fill-inner" style="width:32%"></div></div>
+      </div>
+      <div class="cb-leads"><div class="cb-leads-n">37</div><div class="cb-leads-l">潛客</div><div class="cb-cpl">CPL NT$402</div></div>
+    </div>
+
+    <div class="creative-bar-row" data-name="0508_黑馬B版" data-leads="22" data-cpl="564" data-spend="12408">
+      <div class="cb-rank">3</div>
+      <div class="cb-info">
+        <div class="cb-name">0508_黑馬B版 ✅ 進行中</div>
+        <div class="cb-meta">目前唯一仍在投放的主力，22 潛客 CPL NT$564，黑馬切角強調逆勢突破，配合高資產父母受眾表現佳</div>
+        <div class="creative-bar-fill"><div class="creative-bar-fill-inner" style="width:19%"></div></div>
+      </div>
+      <div class="cb-leads"><div class="cb-leads-n">22</div><div class="cb-leads-l">潛客</div><div class="cb-cpl">CPL NT$564</div></div>
+    </div>
+
+    <div class="creative-bar-row" data-name="0522_西屯表演B版" data-leads="6" data-cpl="807" data-spend="4844">
+      <div class="cb-rank">4</div>
+      <div class="cb-info">
+        <div class="cb-name">0522_西屯表演B版（新）</div>
+        <div class="cb-meta">5/22 上線最新素材，B版優於A版（6 vs 0 潛客），西屯活動現場感素材，持續觀察中</div>
+        <div class="creative-bar-fill"><div class="creative-bar-fill-inner" style="width:5%"></div></div>
+      </div>
+      <div class="cb-leads"><div class="cb-leads-n">6</div><div class="cb-leads-l">潛客</div><div class="cb-cpl">CPL NT$807</div></div>
+    </div>
+
+    <div class="creative-bar-row" data-name="0507_黑馬B版" data-leads="3" data-cpl="420" data-spend="1260">
+      <div class="cb-rank">5</div>
+      <div class="cb-info">
+        <div class="cb-name">0507_黑馬B版（初版）</div>
+        <div class="cb-meta">黑馬系列初版，CPL NT$420 優於A版（NT$603），整體黑馬系列合計 29 潛客</div>
+        <div class="creative-bar-fill"><div class="creative-bar-fill-inner" style="width:3%"></div></div>
+      </div>
+      <div class="cb-leads"><div class="cb-leads-n">3</div><div class="cb-leads-l">潛客</div><div class="cb-cpl">CPL NT$420</div></div>
+    </div>
+
+    <div class="creative-bar-row" data-name="0515_AI影片V2" data-leads="3" data-cpl="792" data-spend="2377">
+      <div class="cb-rank">6</div>
+      <div class="cb-info">
+        <div class="cb-name">0515_AI影片V2／V3</div>
+        <div class="cb-meta">AI生成影片測試，V2 3潛客 CPL NT$792、V3 1潛客 CPL NT$549；AI影片效果普通，後期未繼續放大</div>
+        <div class="creative-bar-fill"><div class="creative-bar-fill-inner" style="width:3%"></div></div>
+      </div>
+      <div class="cb-leads"><div class="cb-leads-n">3+1</div><div class="cb-leads-l">潛客</div><div class="cb-cpl">CPL NT$549–792</div></div>
+    </div>
+
+  </div>
+
+  <div class="insight-box" style="background:#fffcf5;border-color:#f0d080">
+    <div class="insight-title">素材策略洞見</div>
+    <div class="insight-highlight">
+      核心發現：「68層高度」是本案最強素材訴求，CPL 僅 NT$226，比其他素材低 1.8–8.4 倍<br>
+      0410_簽約68層 貢獻了全案 45%（116/260）的潛客，且至今仍有活躍廣告組持續投放。「稀缺高度」比「生活場景」更直接轉換。
+    </div>
+    <ul class="insight-list">
+      <li>升級建議：拍攝「高空窗景版」「68層俯瞰北屯版」，延伸 68層 訴求視角</li>
+      <li>V1→V2 升級值得複製：0424 V2 有 37 潛客 vs V1 僅 5 潛客，同邏輯但不同取景可放大效果</li>
+      <li>黑馬系列 B版 CPL 優於 A版，新素材應優先製作 B版風格</li>
+      <li>好市多森活節（1 潛客 CPL NT$1898）效果極差，地標生活節素材對此受眾說服力弱</li>
+    </ul>
+  </div>
+</div>
+
 <!-- 洞見分析 -->
 <div class="section">
   <div class="insight-box">
@@ -293,6 +393,17 @@ document.querySelectorAll('.new-card').forEach(el => {
     const title = el.querySelector('.new-card-title').textContent.replace('↗','').trim();
     const desc = el.querySelector('.new-card-desc').textContent.trim();
     copyPrompt(`針對${PROJECT}，我想測試新受眾方向：「${title}」\n方向說明：${desc}\n\n請給我：\n1. 具體的 META 興趣標籤清單（附中文，約 10–15 個）\n2. 地理設定建議\n3. 適合這組受眾的素材訴求角度`);
+  });
+});
+
+// 素材卡點擊
+document.querySelectorAll('.creative-bar-row').forEach(el => {
+  el.addEventListener('click', () => {
+    const name = el.dataset.name || el.querySelector('.cb-name').textContent.trim();
+    const leads = el.dataset.leads || '?';
+    const cpl = el.dataset.cpl || '?';
+    const meta = el.querySelector('.cb-meta') ? el.querySelector('.cb-meta').textContent.trim() : '';
+    copyPrompt(`針對${PROJECT}，關於素材「${name}」：\n目前績效：${leads} 潛客，CPL NT$${cpl}\n說明：${meta}\n\n請分析：\n1. 這支素材表現好/差的原因？\n2. 如何延伸或改進這個素材方向？\n3. 最適合搭配這個素材的受眾設定？`);
   });
 });
 
