@@ -550,10 +550,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft Jheng
   </div>
 </div>
 
-<!-- 20組新建議受眾 -->
+<!-- 20組新建議受眾（第3批） -->
 <div class="section">
-  <div class="sec-title">新建議受眾（20組）· 更新 2026-07-24</div>
-  <div class="note-bar">📌 策略依據：依實測成效標籤組回饋重新校準——有效方向為 Outdoor Living／露營／生態旅遊／退休度假／長輩休閒／戶外家具，無效方向為土地主／投資／房地產開發／有機農業／私校教育／飛行常客／古典樂／農場。本批已移除土地、投資、不動產開發、有機農業等已證實拖累成本的標籤，聚焦露營裝備、賞鳥、水族、自然攝影、庭院園藝、日式旅宿等全新未測利基，並深化露營興趣（CPL113最佳）與退休度假（CPL129.6次佳）兩大黃金方向。</div>
+  <div class="sec-title">新建議受眾（20組·第3批）· 更新 2026-09-09</div>
+  <div class="note-bar">📌 策略依據：延續實測有效方向（Outdoor Living／露營／生態旅遊／退休度假／長輩休閒／戶外家具），並排除已證實無效方向（土地主／投資／房地產開發／有機農業／私校教育／飛行常客／古典樂／農場）。本批為第3輪全新利基，主題與前兩批（已測33組＋前批20組suggestion）完全不重複，聚焦客家在地文化、木工DIY、極簡生活、商業攝影場地租借、工藝市集、公路車、瑜伽靜修、精品咖啡、森林療癒、戶外證婚、藝術收藏、深度閱讀、桌遊社交、寫作營、森林共學、客家食農、暗空觀星、多代同堂家族置產、香氛手作、露天電影等20個未曾觸及的全新客群角度。</div>
   <div id="new-aud-grid" class="aud-grid-2"></div>
 </div>
 
@@ -798,18 +798,110 @@ function switchTab(name){
 }
 window.addEventListener('scroll',()=>{document.getElementById('btt').classList.toggle('show',window.scrollY>300)});
 
-// ── 20組新建議受眾 ──
+// ── 20組新建議受眾（第3批）──
 const NEW_G=[
-  {n:'28-50 / 全台露營社群 / RV休旅車重度露營玩家',sub:'延伸全案最佳CPL113露營興趣・聚焦已投入裝備的重度玩家',
-   logic:'露營興趣組已創下111潛客CPL113全案最佳成績。本組進一步聚焦「有休旅車/露營拖車」的重度玩家——這群人已投入數十萬在裝備上，木屋是他們露營生涯的「終極升級版」：不用再搭帳篷，直接擁有一間永久基地。',
-   lm:['武陵農場露營區(+15km)','阿里山露營區(+15km)','清境露營區(+15km)','東豐自行車道(+5km)'],
-   tags:[['RV','休旅車'],['RV camping','休旅車露營'],['Camping','露營'],['Glamping','豪華露營'],['Camping gear','露營裝備'],['Outdoor apparel','戶外服飾'],['Road trip','自駕旅行'],['Hiking','健行'],['National park','國家公園'],['Mountain','山岳'],['Nature','大自然'],['Nature photography','自然攝影'],['Photography','攝影'],['Tent','帳篷'],['Outdoor cooking','野外炊煮'],['Stargazing','觀星'],['Fishing','釣魚'],['Pet','寵物'],['Dog','狗'],['Weekend getaway','週末小旅行'],['Vacation home','度假小屋'],['Slow living','慢活'],['Wellness','養生'],['Woodworking','木工'],['DIY','手作'],['Interior design','室內設計']]},
+  {n:'35-65 / 台中石岡東勢新社 / 客家文化在地探索族',sub:'全新在地限定利基・石岡本身即客家庄，地緣真實性最高',
+   logic:'石岡、東勢一帶是台中知名客家庄，對客家文化、擂茶、桐花有興趣的族群本身就常往來這個生活圈，不是外來硬導入的客群。這組訴求可以直接連結在地文化體驗，木屋作為深度旅遊或長住的落腳點，地緣說服力最強。',
+   lm:['石岡土牛客家文化館(+8km)','東勢客家文化園區(+8km)','FAMWOOD自然紅屋(+8km)','卓蘭客家聚落(+10km)'],
+   tags:[['Hakka culture','客家文化'],['Hakka food','客家美食'],['Traditional culture','傳統文化'],['Local history','地方文史'],['Cultural heritage','文化資產'],['Folk festival','民俗節慶'],['Tea ceremony','茶道'],['Farmers market','農夫市集'],['Slow living','慢活'],['Nature','大自然'],['Hiking','健行'],['Camping','露營'],['Photography','攝影'],['Gardening','園藝'],['Cooking','烹飪'],['Weekend getaway','週末小旅行'],['Vacation home','度假小屋'],['Road trip','自駕旅行'],['Scenic area','風景區'],['Reading','閱讀'],['Wellness','養生'],['Retirement','退休'],['Senior lifestyle','樂齡生活'],['Woodworking','木工'],['DIY','手作'],['Interior design','室內設計'],['Bird watching','賞鳥'],['National park','國家公園'],['Coffee','咖啡'],['Family time','家庭時光']]},
 
-  {n:'30-55 / 全台都會區 / 假日輕旅行×週末逃離都市族',sub:'官網核心客群「上班族療癒都市壓力」・低決策門檻導流組',
-   logic:'比起已下定決心退休移居的族群，這群人只是單純「常安排週末小旅行逃離都市」，決策壓力低、觸及面更廣。透過旅遊/生活風格標籤觸及對「有個放鬆去處」有渴望的都市上班族，是官網明確定義的核心客群之一。',
-   lm:['台北信義區(+5km)','台中七期(+5km)','高雄巨蛋商圈(+5km)','新竹巨城(+5km)'],
-   tags:[['Weekend getaway','週末小旅行'],['Lifestyle travel','生活風格旅遊'],['Independent travel','自助旅行'],['Road trip','自駕旅行'],['Staycation','國內小旅行'],['Boutique hotel','精品旅宿'],['Vacation rental','度假屋出租'],['Vacation home','度假小屋'],['Nature','大自然'],['Camping','露營'],['Glamping','豪華露營'],['Hiking','健行'],['Coffee','咖啡'],['Photography','攝影'],['Slow living','慢活'],['Wellness','養生'],['Work-life balance','工作生活平衡'],['Stress relief','紓壓'],['Mindfulness','正念'],['Yoga','瑜珈'],['Meditation','冥想'],['Reading','閱讀'],['Picnic','野餐'],['Farmers market','農夫市集'],['Scenic area','風景區'],['National park','國家公園'],['Travel photography','旅遊攝影']]},
+  {n:'30-58 / 全台 / 木工DIY自建工作坊愛好者',sub:'全新未測利基・鎖定親手做的成就感族群，跟木屋工法直接呼應',
+   logic:'習慣自己動手做木工、參加DIY工作坊的族群，對「材質、工法、手感」有天生的鑑賞力與偏好。自然紅屋的鋼構+木質工法本身就是他們會欣賞、甚至想深入了解的建造方式，訴求可以強調工法細節與職人精神，而非單純住宿放鬆。',
+   lm:['台中文化創意產業園區(+10km)','台北松山文創園區(+10km)','高雄駁二藝術特區(+10km)','新竹青草湖(+8km)'],
+   tags:[['Woodworking','木工'],['DIY','手作'],['Carpentry','木作工藝'],['Handicraft','手工藝'],['Craftsmanship','職人精神'],['Home improvement','居家修繕'],['Tools','工具'],['Interior design','室內設計'],['Architecture','建築設計'],['Design','設計美學'],['Furniture design','家具設計'],['Workshop','工作坊'],['Sustainable living','永續生活'],['Nature','大自然'],['Slow living','慢活'],['Minimalism','極簡美學'],['Photography','攝影'],['Gardening','園藝'],['Camping','露營'],['Vacation home','度假小屋'],['Weekend getaway','週末小旅行'],['Coffee','咖啡'],['Reading','閱讀'],['Road trip','自駕旅行'],['Home decor','居家佈置'],['Pottery','陶藝'],['Art','藝術'],['Wellness','養生'],['Patio furniture','庭院家具'],['Hiking','健行']]},
 
+  {n:'35-65 / 全台 / 極簡生活斷捨離實踐者',sub:'全新未測利基・訴求「少即是多」的空間與人生哲學',
+   logic:'實踐極簡生活、斷捨離的族群，對「空間精簡但品質不打折」有明確追求，容易對「小坪數卻機能完整」的木屋產品產生共鳴。這群人已經在生活方式上做出取捨，比一般大眾更容易接受「換一個更小但更用心的家」這個提案。',
+   lm:['台北都會區(+10km)','台中都會區(+10km)','高雄都會區(+10km)','新竹都會區(+10km)'],
+   tags:[['Minimalism','極簡美學'],['Decluttering','斷捨離'],['Simple living','簡約生活'],['Slow living','慢活'],['Sustainable living','永續生活'],['Interior design','室內設計'],['Home decor','居家佈置'],['Zen','禪意生活'],['Mindfulness','正念'],['Meditation','冥想'],['Wellness','養生'],['Reading','閱讀'],['Nature','大自然'],['Camping','露營'],['Hiking','健行'],['Vacation home','度假小屋'],['Weekend getaway','週末小旅行'],['Work-life balance','工作生活平衡'],['Digital detox','數位排毒'],['Coffee','咖啡'],['Tea ceremony','茶道'],['Gardening','園藝'],['Photography','攝影'],['Architecture','建築設計'],['Design','設計美學'],['Woodworking','木工'],['DIY','手作'],['Road trip','自駕旅行'],['Retirement','退休'],['Senior lifestyle','樂齡生活']]},
+
+  {n:'28-50 / 全台商業攝影接案圈 / 網紅攝影師接案探店族',sub:'全新B2B取向利基・場地租借需求，非個人住宿需求',
+   logic:'內容創作者、婚攝、商業攝影師長期需要「有特色、上鏡的場地」拍攝作品或帶客戶取景。自然紅屋的建築美學本身就是現成的高質感場景，這組訴求應該主打「場地租借／取景合作」而非單純住宿，是全新的B2B型態客源。',
+   lm:['台北文創園區(+8km)','台中審計新村(+8km)','高雄駁二特區(+8km)','新竹眷村博物館(+8km)'],
+   tags:[['Photography','攝影'],['Commercial photography','商業攝影'],['Wedding photography','婚紗攝影'],['Content creator','內容創作者'],['Videography','影像創作'],['Social media','社群媒體'],['Instagram','IG社群'],['Influencer','網紅'],['Architecture','建築設計'],['Interior design','室內設計'],['Design','設計美學'],['Nature photography','自然攝影'],['Landscape photography','風景攝影'],['Camera','相機'],['Location scouting','場地探勘'],['Small business','中小企業經營'],['Freelancer','自由工作者'],['Nature','大自然'],['Camping','露營'],['Vacation home','度假小屋'],['Slow living','慢活'],['Coffee','咖啡'],['Fashion','時尚'],['Art','藝術'],['Woodworking','木工'],['Photography equipment','攝影器材'],['Weekend getaway','週末小旅行'],['Road trip','自駕旅行'],['Reading','閱讀'],['Home decor','居家佈置']]},
+
+  {n:'35-65 / 全台 / 陶藝工藝市集愛好者',sub:'全新未測利基・重視手感溫度與職人美學的消費族群',
+   logic:'喜歡逛工藝市集、收藏陶藝手作品的族群，重視「有溫度、非量產」的物件與空間。木屋的木質手感與非制式格局，正是這群人在居住空間上會欣賞的調性，訴求可以強調工藝感與獨一無二的居住體驗。',
+   lm:['鶯歌陶瓷老街(+15km)','台中文化創意產業園區(+8km)','台南文創園區(+15km)','新竹關西(+15km)'],
+   tags:[['Pottery','陶藝'],['Ceramics','陶瓷工藝'],['Handicraft','手工藝'],['Craft market','工藝市集'],['Art','藝術'],['Design','設計美學'],['Interior design','室內設計'],['Home decor','居家佈置'],['Woodworking','木工'],['DIY','手作'],['Slow living','慢活'],['Tea ceremony','茶道'],['Coffee','咖啡'],['Nature','大自然'],['Gardening','園藝'],['Photography','攝影'],['Reading','閱讀'],['Weekend getaway','週末小旅行'],['Vacation home','度假小屋'],['Camping','露營'],['Minimalism','極簡美學'],['Sustainable living','永續生活'],['Wellness','養生'],['Farmers market','農夫市集'],['Local culture','地方文化'],['Collecting','收藏嗜好'],['Road trip','自駕旅行'],['Architecture','建築設計'],['Retirement','退休'],['Senior lifestyle','樂齡生活']]},
+
+  {n:'30-58 / 中北部山區周邊 / 公路車越野騎行族',sub:'全新未測利基・區隔於RV/健行組，聚焦自行車專項運動族群',
+   logic:'公路車與越野自行車愛好者常規劃山區長途騎乘路線，中途落腳休息、補給是實際需求。木屋周邊山區路線正好是熱門單車路段，訴求可強調「騎完車有個舒服的地方沖澡休息」，是明確且未被觸及的專項運動客群。',
+   lm:['東豐自行車綠廊(+5km)','大甲溪自行車道(+8km)','武嶺(+20km)','日月潭自行車道(+15km)'],
+   tags:[['Road cycling','公路車'],['Mountain biking','越野自行車'],['Cycling','自行車運動'],['Bike touring','單車旅行'],['Cycling gear','自行車裝備'],['Fitness','健身'],['Endurance sports','耐力運動'],['Outdoor apparel','戶外服飾'],['Hiking','健行'],['Mountain','山岳'],['Nature','大自然'],['National park','國家公園'],['Scenic area','風景區'],['Camping','露營'],['Photography','攝影'],['Road trip','自駕旅行'],['Weekend getaway','週末小旅行'],['Vacation home','度假小屋'],['Health and wellness','健康養生'],['Wellness','養生'],['Coffee','咖啡'],['Slow living','慢活'],['Stargazing','觀星'],['Bird watching','賞鳥'],['Pet','寵物'],['Reading','閱讀'],['Sports nutrition','運動營養'],['Trail running','越野跑'],['Fishing','釣魚'],['Woodworking','木工']]},
+
+  {n:'30-60 / 全台 / 戶外瑜伽靜修營愛好者',sub:'全新未測利基・訴求身心靈修復體驗，跳脫一般旅遊放鬆框架',
+   logic:'固定練習瑜伽、參加靜修營的族群，重視「在自然環境中修復身心」的完整體驗，願意為此付出時間與金錢成本。木屋周邊的自然田園環境可以直接規劃為靜修營場地，訴求應強調身心靈修復而非單純度假。',
+   lm:['南投魚池(+15km)','日月潭(+15km)','谷關(+12km)','東勢林場(+10km)'],
+   tags:[['Yoga','瑜珈'],['Meditation','冥想'],['Mindfulness','正念'],['Wellness retreat','身心靈靜修'],['Wellness','養生'],['Health and wellness','健康養生'],['Mental health','心理健康'],['Stress relief','紓壓'],['Breathing exercise','呼吸練習'],['Spa','水療'],['Aromatherapy','芳香療法'],['Nature','大自然'],['Slow living','慢活'],['Vegetarian','蔬食'],['Tea ceremony','茶道'],['Reading','閱讀'],['Hiking','健行'],['Camping','露營'],['Weekend getaway','週末小旅行'],['Vacation home','度假小屋'],['Photography','攝影'],['Digital detox','數位排毒'],['Gardening','園藝'],['Sunrise','日出'],['Stargazing','觀星'],['Forest','森林'],['Work-life balance','工作生活平衡'],['Road trip','自駕旅行'],['Coffee','咖啡'],['Retirement','退休']]},
+
+  {n:'30-55 / 全台 / 精品咖啡自家烘豆愛好者',sub:'全新未測利基・生活品味族群，願意為手沖與烘豆投資設備',
+   logic:'自己烘豆、鑽研手沖沖煮的咖啡愛好者，對「慢下來品味生活細節」有高度認同，消費行為顯示願意為興趣投入設備與時間成本。這類生活品味族群，是「一小屋一小田」慢活訴求相當吻合的潛在客群。',
+   lm:['台北大稻埕(+8km)','台中審計新村(+8km)','嘉義中埔咖啡產區(+15km)','南投國姓咖啡莊園(+15km)'],
+   tags:[['Coffee','咖啡'],['Specialty coffee','精品咖啡'],['Coffee roasting','咖啡烘焙'],['Pour over coffee','手沖咖啡'],['Barista','咖啡職人'],['Cafe culture','咖啡館文化'],['Slow living','慢活'],['Tea ceremony','茶道'],['Reading','閱讀'],['Nature','大自然'],['Gardening','園藝'],['Farmers market','農夫市集'],['Cooking','烹飪'],['Interior design','室內設計'],['Home decor','居家佈置'],['Minimalism','極簡美學'],['Photography','攝影'],['Weekend getaway','週末小旅行'],['Vacation home','度假小屋'],['Camping','露營'],['Road trip','自駕旅行'],['Work-life balance','工作生活平衡'],['Small business','中小企業經營'],['Woodworking','木工'],['DIY','手作'],['Wellness','養生'],['Design','設計美學'],['Art','藝術'],['Local culture','地方文化'],['Retirement','退休']]},
+
+  {n:'35-65 / 全台山林周邊 / 森林療癒芳香療法愛好者',sub:'全新未測利基・結合森林浴與芳療，訴求身心修復非單純旅遊',
+   logic:'對森林浴、芳香療法有興趣的族群，相信自然環境對身心健康有具體療癒效果，願意專程安排時間沉浸山林。木屋座落山區、周邊林相豐富，天然具備森林療癒場域的條件，訴求可強調健康效益而非觀光體驗。',
+   lm:['八仙山國家森林遊樂區(+10km)','大雪山(+15km)','溪頭自然教育園區(+15km)','奧萬大(+15km)'],
+   tags:[['Forest bathing','森林浴'],['Aromatherapy','芳香療法'],['Wellness','養生'],['Health and wellness','健康養生'],['Mental health','心理健康'],['Meditation','冥想'],['Mindfulness','正念'],['Nature','大自然'],['Forest','森林'],['Hiking','健行'],['National park','國家公園'],['Essential oil','精油'],['Spa','水療'],['Slow living','慢活'],['Stress relief','紓壓'],['Yoga','瑜珈'],['Herbal medicine','草本養生'],['Tea ceremony','茶道'],['Gardening','園藝'],['Photography','攝影'],['Nature photography','自然攝影'],['Camping','露營'],['Weekend getaway','週末小旅行'],['Vacation home','度假小屋'],['Retirement','退休'],['Senior lifestyle','樂齡生活'],['Bird watching','賞鳥'],['Reading','閱讀'],['Road trip','自駕旅行'],['Wildlife','野生動物']]},
+
+  {n:'28-48 / 全台 / 戶外證婚婚紗外拍場地尋覓者',sub:'全新未測利基・鎖定籌備婚禮階段的高決策力客群',
+   logic:'正在籌備婚禮、尋找戶外證婚或婚紗外拍場地的準新人，決策時間短但單次消費金額高，且會主動搜尋特色場地。自然紅屋的自然景觀與建築美學是現成的浪漫場景，可規劃為場地租借或住宿+外拍套裝方案。',
+   lm:['台北都會區(+10km)','台中都會區(+10km)','高雄都會區(+10km)','新竹都會區(+10km)'],
+   tags:[['Wedding','婚禮'],['Outdoor wedding','戶外婚禮'],['Wedding photography','婚紗攝影'],['Wedding planning','婚禮企劃'],['Prewedding','婚紗外拍'],['Engagement','訂婚'],['Bridal','新娘造型'],['Romantic getaway','浪漫小旅行'],['Boutique hotel','精品旅宿'],['Vacation rental','度假屋出租'],['Nature','大自然'],['Photography','攝影'],['Flower','花卉'],['Garden design','花園設計'],['Interior design','室內設計'],['Architecture','建築設計'],['Fashion','時尚'],['Fine dining','精緻餐飲'],['Wine','葡萄酒'],['Slow living','慢活'],['Weekend getaway','週末小旅行'],['Vacation home','度假小屋'],['Social media','社群媒體'],['Instagram','IG社群'],['Coffee','咖啡'],['Camping','露營'],['Family time','家庭時光'],['Road trip','自駕旅行'],['Reading','閱讀'],['Gardening','園藝']]},
+
+  {n:'40-68 / 全台 / 當代藝術收藏畫廊愛好者',sub:'全新未測利基・高消費力鑑賞型客群，訴求空間美學而非放鬆',
+   logic:'長期收藏當代藝術、逛畫廊的族群消費力高，對居住空間的美學要求也相對嚴格。自然紅屋強調的建築工法與設計語彙，對這群鑑賞型消費者是明確的差異化賣點，訴求應強調空間設計本身的藝術價值。',
+   lm:['台北市立美術館(+10km)','亞洲大學現代美術館(+10km)','高雄市立美術館(+10km)','台南市美術館(+10km)'],
+   tags:[['Contemporary art','當代藝術'],['Art gallery','藝廊'],['Art collecting','藝術收藏'],['Sculpture','雕塑藝術'],['Art exhibition','藝術展覽'],['Painting','油畫'],['Architecture','建築設計'],['Interior design','室內設計'],['Design','設計美學'],['Minimalism','極簡美學'],['Modern design','現代設計'],['Home decor','居家佈置'],['Fine dining','精緻餐飲'],['Wine','葡萄酒'],['Photography','攝影'],['Reading','閱讀'],['Investor','投資理財'],['Luxury lifestyle','奢華生活風格'],['Slow living','慢活'],['Nature','大自然'],['Vacation home','度假小屋'],['Weekend getaway','週末小旅行'],['Coffee','咖啡'],['Tea ceremony','茶道'],['Gardening','園藝'],['Woodworking','木工'],['Retirement','退休'],['Camping','露營'],['Road trip','自駕旅行'],['Fashion','時尚']]},
+
+  {n:'30-58 / 全台 / 有聲書播客深度閱讀族',sub:'全新未測利基・訴求安靜獨處的深度思考時光',
+   logic:'習慣聽有聲書、深度型播客的族群，重視「不被打擾的獨處時光」，木屋遠離塵囂的環境正好提供這種沉浸式閱讀與思考空間。訴求可以強調「一個人靜靜待著也很好」，區隔於一般強調社交熱鬧的旅遊訴求。',
+   lm:['台北都會區(+10km)','台中都會區(+10km)','高雄都會區(+10km)','新竹都會區(+10km)'],
+   tags:[['Podcast','podcast節目'],['Audiobook','有聲書'],['Reading','閱讀'],['Book club','讀書會'],['Writing','寫作'],['Journaling','手寫日記'],['Solitude','獨處時光'],['Mindfulness','正念'],['Slow living','慢活'],['Nature','大自然'],['Coffee','咖啡'],['Tea ceremony','茶道'],['Digital detox','數位排毒'],['Work-life balance','工作生活平衡'],['Wellness','養生'],['Meditation','冥想'],['Camping','露營'],['Hiking','健行'],['Weekend getaway','週末小旅行'],['Vacation home','度假小屋'],['Stargazing','觀星'],['Bird watching','賞鳥'],['Photography','攝影'],['Interior design','室內設計'],['Minimalism','極簡美學'],['Gardening','園藝'],['Road trip','自駕旅行'],['Retirement','退休'],['Senior lifestyle','樂齡生活'],['Philosophy','哲學思考']]},
+
+  {n:'30-58 / 全台 / 桌遊密室逃脫社交聚會族',sub:'全新未測利基・鎖定重視朋友聚會體驗的社交型客群',
+   logic:'常揪團玩桌遊、密室逃脫的族群重視「一群朋友一起體驗新鮮事」的社交聚會，木屋合掌屋型產品本身就適合朋友包棟聚會、規劃主題活動，訴求可以強調「換個地方跟朋友玩一整天」，是全新的社交聚會利基。',
+   lm:['台北都會區(+10km)','台中都會區(+10km)','高雄都會區(+10km)','新竹都會區(+10km)'],
+   tags:[['Board games','桌遊'],['Escape room','密室逃脫'],['Party games','派對遊戲'],['Social club','社交俱樂部'],['Friendship','交友社交'],['Group travel','團體旅遊'],['Camping','露營'],['Glamping','豪華露營'],['BBQ','烤肉'],['Picnic','野餐'],['Outdoor cooking','野外炊煮'],['Nature','大自然'],['Photography','攝影'],['Social media','社群媒體'],['Weekend getaway','週末小旅行'],['Vacation home','度假小屋'],['Vacation rental','度假屋出租'],['Road trip','自駕旅行'],['Coffee','咖啡'],['Reading','閱讀'],['Gaming','電玩遊戲'],['Family time','家庭時光'],['Slow living','慢活'],['Fitness','健身'],['Hiking','健行'],['Stargazing','觀星'],['Pet','寵物'],['Interior design','室內設計'],['Wellness','養生'],['Farmers market','農夫市集']]},
+
+  {n:'28-50 / 全台自由工作者聚落 / 創作型作家寫作營需求者',sub:'全新未測利基・鎖定需要離開日常環境專心創作的族群',
+   logic:'作家、編劇、內容創作者常需要離開日常環境才能專心產出作品，願意短期租借安靜空間進行「寫作營」或創作靜修。木屋的獨立、安靜、自然環境正符合這種創作需求，訴求可規劃短期包棟創作方案。',
+   lm:['台北都會區(+10km)','台中都會區(+10km)','高雄都會區(+10km)','新竹都會區(+10km)'],
+   tags:[['Writing','寫作'],['Creative writing','創意寫作'],['Freelancer','自由工作者'],['Author','作家'],['Journaling','手寫日記'],['Reading','閱讀'],['Book club','讀書會'],['Podcast','podcast節目'],['Solitude','獨處時光'],['Digital detox','數位排毒'],['Work-life balance','工作生活平衡'],['Mindfulness','正念'],['Nature','大自然'],['Slow living','慢活'],['Coffee','咖啡'],['Tea ceremony','茶道'],['Interior design','室內設計'],['Minimalism','極簡美學'],['Camping','露營'],['Hiking','健行'],['Weekend getaway','週末小旅行'],['Vacation home','度假小屋'],['Photography','攝影'],['Art','藝術'],['Wellness','養生'],['Gardening','園藝'],['Road trip','自駕旅行'],['Stargazing','觀星'],['Bird watching','賞鳥'],['Philosophy','哲學思考']]},
+
+  {n:'30-55 / 全台家庭客群 / 森林共學自然教育家庭',sub:'全新未測利基・鎖定重視自然教育理念的家長客群',
+   logic:'選擇森林小學、共學團體或重視自然探索教育的家長，育兒理念強調「讓孩子在大自然中學習」，木屋周邊的田園自然環境正是這類家庭週末或長假會主動安排的場域，訴求可強調親子自然教育體驗。',
+   lm:['台中新社(+8km)','南投埔里(+15km)','宜蘭員山(+20km)','花蓮壽豐(+20km)'],
+   tags:[['Homeschooling','自學教育'],['Nature education','自然教育'],['Family time','家庭時光'],['Parenting','親子教養'],['Outdoor education','戶外教育'],['Farmers market','農夫市集'],['Gardening','園藝'],['Nature','大自然'],['Hiking','健行'],['Camping','露營'],['Bird watching','賞鳥'],['Wildlife','野生動物'],['Ecology','生態學'],['DIY','手作'],['Woodworking','木工'],['Cooking','烹飪'],['Pet','寵物'],['Photography','攝影'],['Reading','閱讀'],['Weekend getaway','週末小旅行'],['Vacation home','度假小屋'],['Vacation rental','度假屋出租'],['Road trip','自駕旅行'],['Slow living','慢活'],['Wellness','養生'],['Picnic','野餐'],['Stargazing','觀星'],['Grandchildren','含飴弄孫'],['Fitness','健身'],['Farm experience','農場體驗']]},
+
+  {n:'40-68 / 中彰投+南部 / 客家擂茶食農體驗族',sub:'延伸客家在地文化・聚焦擂茶等體感型食農活動參與者',
+   logic:'喜歡參與擂茶DIY、在地食農體驗活動的族群，重視「動手體驗＋在地飲食文化」的組合式旅遊型態。木屋周邊客家庄的擂茶、柿餅、梅子加工等體驗活動齊全，訴求可規劃「體驗+住宿」套裝行程。',
+   lm:['東勢客家文化園區(+8km)','石岡土牛客家文化館(+8km)','美濃客家文物館(+15km)','六堆客家文化園區(+15km)'],
+   tags:[['Hakka culture','客家文化'],['Hakka food','客家美食'],['Farm experience','農場體驗'],['Farmers market','農夫市集'],['Food and drink','食物和飲品'],['Cooking','烹飪'],['Tea ceremony','茶道'],['Local culture','地方文化'],['Cultural heritage','文化資產'],['Traditional culture','傳統文化'],['Family time','家庭時光'],['Nature','大自然'],['Gardening','園藝'],['Camping','露營'],['Hiking','健行'],['Weekend getaway','週末小旅行'],['Vacation home','度假小屋'],['Road trip','自駕旅行'],['Photography','攝影'],['Slow living','慢活'],['Retirement','退休'],['Senior lifestyle','樂齡生活'],['Wellness','養生'],['Reading','閱讀'],['Farmers market','農夫市集'],['Grandchildren','含飴弄孫'],['DIY','手作'],['Woodworking','木工'],['Bird watching','賞鳥'],['Farm to table','產地到餐桌']]},
+
+  {n:'30-58 / 中部山區周邊 / 暗空公園觀星社群',sub:'全新未測利基・聚焦觀星專項社群，區隔於秘境探索族',
+   logic:'台灣暗空公園觀星社群持續成長，成員會專程規劃無光害地點過夜觀星拍攝。木屋遠離城市光害、位處山區，天然具備觀星條件，訴求可以直接主打「觀星友善住宿」，是精準且過去從未被設計過的專項社群。',
+   lm:['合歡山暗空公園(+25km)','武陵農場(+15km)','阿里山(+20km)','大雪山(+15km)'],
+   tags:[['Stargazing','觀星'],['Astronomy','天文學'],['Astrophotography','星空攝影'],['Dark sky','暗空保育'],['Night photography','夜間攝影'],['Camping','露營'],['Glamping','豪華露營'],['Mountain','山岳'],['National park','國家公園'],['Hiking','健行'],['Nature','大自然'],['Photography','攝影'],['Camera','相機'],['Meteor shower','流星雨'],['Telescope','天文望遠鏡'],['Scenic area','風景區'],['Road trip','自駕旅行'],['Weekend getaway','週末小旅行'],['Vacation home','度假小屋'],['Outdoor apparel','戶外服飾'],['Camping gear','露營裝備'],['Slow living','慢活'],['Meditation','冥想'],['Wellness','養生'],['Bird watching','賞鳥'],['RV camping','休旅車露營'],['Fishing','釣魚'],['Solitude','獨處時光'],['Coffee','咖啡'],['Science','科學']]},
+
+  {n:'40-68 / 全台都會 / 二代宅多代同堂家族置產族',sub:'全新未測利基・以「家族單位」溝通，區隔於個人退休移居訴求',
+   logic:'過去建議多鎖定個人或夫妻退休移居，這組改以「整個家族一起置產」為溝通主軸——三代同堂共同出資、規劃假日團聚的第二居所。木屋園區的多院型產品天然適合家族分棟入住，訴求應強調「一家人有個共同去處」而非個人隱居。',
+   lm:['台北大安區(+8km)','台中西區(+8km)','高雄鼓山區(+8km)','台南東區(+8km)'],
+   tags:[['Multigenerational family','多代同堂'],['Family time','家庭時光'],['Grandchildren','含飴弄孫'],['Family reunion','家族聚會'],['Investor','投資理財'],['Real estate investment','房地產投資'],['Retirement','退休'],['Retirement planning','退休規劃'],['Senior lifestyle','樂齡生活'],['Cooking','烹飪'],['Tea ceremony','茶道'],['Farmers market','農夫市集'],['Gardening','園藝'],['Nature','大自然'],['Camping','露營'],['Hiking','健行'],['Photography','攝影'],['Interior design','室內設計'],['Architecture','建築設計'],['Weekend getaway','週末小旅行'],['Vacation home','度假小屋'],['Road trip','自駕旅行'],['Reading','閱讀'],['Wellness','養生'],['Pet','寵物'],['DIY','手作'],['Woodworking','木工'],['Bird watching','賞鳥'],['Slow living','慢活'],['Community','社區生活']]},
+
+  {n:'30-55 / 全台 / 香氛蠟燭手作生活美學家',sub:'全新未測利基・重視五感生活儀式感的細節型消費族群',
+   logic:'習慣自製或收藏香氛蠟燭、重視居家氣味與氛圍營造的族群，對「生活儀式感」有明確追求，消費行為顯示願意為細節付費。這群人容易被「木屋本身自帶木質香氣與自然氛圍」的產品特質打動，訴求可強調五感體驗。',
+   lm:['台北都會區(+10km)','台中都會區(+10km)','高雄都會區(+10km)','新竹都會區(+10km)'],
+   tags:[['Candle making','香氛蠟燭手作'],['Home fragrance','居家香氛'],['Aromatherapy','芳香療法'],['Essential oil','精油'],['Handicraft','手工藝'],['DIY','手作'],['Interior design','室內設計'],['Home decor','居家佈置'],['Lifestyle','生活風格'],['Slow living','慢活'],['Minimalism','極簡美學'],['Wellness','養生'],['Tea ceremony','茶道'],['Coffee','咖啡'],['Reading','閱讀'],['Gardening','園藝'],['Flower','花卉'],['Nature','大自然'],['Photography','攝影'],['Social media','社群媒體'],['Instagram','IG社群'],['Weekend getaway','週末小旅行'],['Vacation home','度假小屋'],['Camping','露營'],['Woodworking','木工'],['Art','藝術'],['Fashion','時尚'],['Meditation','冥想'],['Road trip','自駕旅行'],['Retirement','退休']]},
+
+  {n:'28-55 / 全台 / 露天電影戶外影展生活美學族',sub:'全新未測利基・訴求星空下看電影的獨特體驗，區隔一般旅遊訴求',
+   logic:'戶外電影院、露天影展近年在都會區興起，習慣參加這類活動的族群重視「換個場景體驗日常」的新鮮感。木屋前院或草地天然適合規劃野餐毯+投影布幕的觀影體驗，訴求可強調「在自己家院子看星空電影」的獨家生活情境。',
+   lm:['台北大安森林公園(+8km)','台中草悟道(+8km)','高雄駁二特區(+8km)','新竹護城河親水公園(+8km)'],
+   tags:[['Outdoor cinema','戶外電影院'],['Film festival','影展'],['Movie night','電影之夜'],['Picnic','野餐'],['Lawn','草地'],['Stargazing','觀星'],['Social media','社群媒體'],['Instagram','IG社群'],['Photography','攝影'],['Nature','大自然'],['Camping','露營'],['Outdoor cooking','野外炊煮'],['BBQ','烤肉'],['Friendship','交友社交'],['Family time','家庭時光'],['Coffee','咖啡'],['Wine','葡萄酒'],['Reading','閱讀'],['Slow living','慢活'],['Interior design','室內設計'],['Home decor','居家佈置'],['Weekend getaway','週末小旅行'],['Vacation home','度假小屋'],['Road trip','自駕旅行'],['Gardening','園藝'],['Art','藝術'],['Design','設計美學'],['Wellness','養生'],['Pet','寵物'],['Retirement','退休']]},
+];
+
+/* ── 舊第2批20組（已由上方第3批取代，保留備查）──
   {n:'35-65 / 全台生態圈 / 賞鳥生態觀察者',sub:'完全未測全新利基・有效標籤組明確含觀鳥',
    logic:'觀鳥是本案有效標籤組中明確出現、卻從未被真正聚焦設計的利基族群。賞鳥愛好者習慣安靜守候、重視棲地生態，木屋周邊的自然生態環境正是他們熟悉的場域類型，是精準度最高、族群噪音最少的一組。',
    lm:['大雪山國家森林遊樂區(+15km)','關渡自然公園(+8km)','高美濕地(+10km)','鰲鼓濕地(+10km)'],
@@ -900,6 +992,7 @@ const NEW_G=[
    lm:['台中審計新村(+3km)','南投埔里(+8km)','高雄美濃(+8km)','屏東潮州(+8km)'],
    tags:[['Vacation home','度假小屋'],['Boutique hotel','精品旅宿'],['Architecture','建築設計'],['Interior design','室內設計'],['Design','設計美學'],['Minimalism','極簡美學'],['Modern design','現代設計'],['Home decor','居家佈置'],['Nature','大自然'],['Photography','攝影'],['Camping','露營'],['Glamping','豪華露營'],['Weekend getaway','週末小旅行'],['Slow living','慢活'],['Woodworking','木工'],['DIY','手作'],['Reading','閱讀'],['Coffee','咖啡'],['Gardening','園藝'],['Vacation rental','度假屋出租']]},
 ];
+*/
 
 function renderNewAud(){
   const el=document.getElementById('new-aud-grid');
