@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>昌禾大苑首席｜受眾分析報告</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --accent:#8a6a3a;--accent-dark:#6a4a1e;--accent-light:#f8f0e2;--accent-border:#d0a860;
+  --bg:#f5f3f0;--s:#ffffff;--bd:#e6e0d6;--tx:#2a2620;--sub:#84786a;--sub2:#aca496;
+  --good:#1e6e3f;--goodl:#e6f4ea;--warn:#c05c00;
+  --radius:12px;--shadow-xs:0 1px 3px rgba(0,0,0,.05);--shadow-sm:0 2px 8px rgba(0,0,0,.07);--shadow-card:0 2px 10px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.04);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Microsoft JhengHei','Segoe UI',sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.6;min-height:100vh}
+.page-header{background:linear-gradient(180deg,#241c0e 0%,#180f04 100%);padding:0 40px;height:56px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;box-shadow:0 1px 0 rgba(255,255,255,.04),0 4px 20px rgba(0,0,0,.35);border-bottom:1px solid rgba(255,255,255,.06)}
+.ph-logo{width:30px;height:30px;background:linear-gradient(135deg,#c8a060,var(--accent-dark));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;flex-shrink:0}
+.ph-title{font-size:14px;font-weight:700;color:#f8f0e2;letter-spacing:-.2px}
+.ph-sub{font-size:11px;color:#c8a060;margin-left:2px}
+.ph-nav{margin-left:auto;display:flex;gap:8px;align-items:center}
+.ph-nav a{font-size:12px;color:#d0a860;text-decoration:none;padding:5px 13px;border-radius:6px;border:1px solid rgba(138,106,58,.25);background:rgba(138,106,58,.12);font-weight:500}
+.ph-nav a:hover{background:rgba(138,106,58,.22);color:#e8d0a0}
+#btt{position:fixed;right:24px;bottom:28px;width:38px;height:38px;border-radius:50%;background:rgba(24,15,4,.75);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.85);font-size:15px;cursor:pointer;opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s;pointer-events:none;z-index:150;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.3);font-family:inherit}
+#btt.show{opacity:1;transform:translateY(0);pointer-events:auto}
+#btt:hover{background:rgba(18,11,3,.9);transform:translateY(-2px)}
+.wrap{max-width:1200px;margin:0 auto;padding:32px 40px 48px}
+.case-header{background:var(--s);border:1px solid var(--bd);border-radius:var(--radius);padding:20px 24px;margin-bottom:10px;display:flex;align-items:center;gap:18px;box-shadow:var(--shadow-card)}
+.case-logo{width:44px;height:44px;background:linear-gradient(135deg,#c8a060,var(--accent-dark));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0}
+.case-info h2{font-size:17px;font-weight:700;color:var(--tx);letter-spacing:-.3px}
+.case-info p{font-size:12px;color:var(--sub);margin-top:3px;line-height:1.5}
+.case-stats{margin-left:auto;display:flex;gap:28px;flex-shrink:0}
+.stat{text-align:right}
+.stat-n{font-size:24px;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.stat-l{font-size:10px;color:var(--sub2);margin-top:3px;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+.top-link{font-size:12px;color:var(--accent);margin-bottom:24px;display:inline-block;text-decoration:none;font-weight:500}
+.top-link span{border-bottom:1px solid var(--accent-border)}
+.tab-bar{display:flex;gap:6px;margin-bottom:22px;background:var(--s);border:1px solid var(--bd);border-radius:10px;padding:5px;box-shadow:var(--shadow-xs)}
+.tab-btn{flex:1;padding:8px 14px;border-radius:7px;border:none;background:transparent;font-size:13px;font-weight:600;color:var(--sub);cursor:pointer;transition:all .15s;text-align:center;font-family:inherit}
+.tab-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 6px rgba(138,106,58,.35)}
+.tab-btn:hover:not(.active){background:var(--accent-light);color:var(--accent-dark)}
+.tab-pane{display:none}
+.tab-pane.show{display:block}
+.sec-title{font-size:12px;font-weight:700;color:var(--sub);margin-bottom:14px;display:flex;align-items:center;gap:10px;letter-spacing:.4px;text-transform:uppercase}
+.sec-title::before{content:'';display:inline-block;width:3px;height:14px;background:var(--accent);border-radius:2px;flex-shrink:0}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--bd)}
+.section{margin-bottom:28px}
+.note-bar{background:var(--accent-light);border:1px solid var(--accent-border);border-radius:10px;padding:10px 16px;font-size:12px;color:#6a4a1e;margin-bottom:20px;line-height:1.6}
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px}
+.sb-card{background:var(--s);border:1px solid var(--bd);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow-xs);text-align:center}
+.sb-n{font-size:26px;font-weight:900;color:var(--accent);line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.sb-n.warn{color:var(--warn)}
+.sb-l{font-size:10px;color:var(--sub2);font-weight:600;margin-top:4px;text-transform:uppercase;letter-spacing:.3px}
+.perf-table{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--s);border-radius:10px;overflow:hidden;border:1px solid var(--bd);box-shadow:var(--shadow-xs)}
+.perf-table th{background:#f5efe4;color:var(--sub);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;padding:9px 14px;text-align:left;border-bottom:1px solid var(--bd)}
+.perf-table td{padding:9px 14px;border-bottom:1px solid #f2ede3;color:var(--tx)}
+.perf-table tr:last-child td{border-bottom:none}
+.perf-table tr:hover td{background:#faf6ee}
+.tag-ok{color:var(--good);font-weight:700}
+.tag-warn{color:var(--warn);font-weight:600}
+.tag-mute{color:var(--sub2)}
+.aud-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;align-items:start}
+@media(max-width:760px){.aud-grid-2{grid-template-columns:1fr}}
+.aud-card{background:var(--s);border:1px solid var(--bd);border-radius:10px;overflow:hidden;box-shadow:var(--shadow-xs)}
+.aud-header{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;user-select:none;transition:background .15s}
+.aud-header:hover{background:#faf6ee}
+.aud-num{width:28px;height:28px;border-radius:8px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.aud-info{flex:1;min-width:0}
+.aud-name{font-size:13px;font-weight:700;color:var(--tx);line-height:1.3}
+.aud-sub{font-size:11px;color:var(--sub);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aud-arrow{font-size:10px;color:var(--sub2);transition:transform .2s;flex-shrink:0}
+.aud-card.open .aud-arrow{transform:rotate(90deg)}
+.aud-body{display:none;padding:0 16px 14px;border-top:1px solid #f2ede3}
+.aud-card.open .aud-body{display:block}
+.aud-sl{font-size:10px;font-weight:700;color:var(--sub2);text-transform:uppercase;letter-spacing:.4px;margin:12px 0 6px}
+.aud-logic{font-size:12px;color:var(--tx);line-height:1.7;background:var(--accent-light);border-radius:8px;padding:10px 13px;border-left:3px solid var(--accent)}
+.aud-lm{display:flex;flex-wrap:wrap;gap:6px}
+.aud-lm-tag{font-size:11px;background:var(--accent-light);color:var(--accent-dark);border:1px solid var(--accent-border);border-radius:6px;padding:3px 10px;font-weight:600}
+.tag-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}
+.tag-tbl th{background:#f5efe4;color:var(--sub);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;padding:6px 10px;text-align:left}
+.tag-tbl td{padding:5px 10px;border-bottom:1px solid #f5f1ea;color:var(--tx);cursor:pointer}
+.tag-tbl tr:last-child td{border-bottom:none}
+.tag-tbl tr:hover td{background:#faf6ee}
+.tag-tbl td:first-child{width:28px;color:var(--sub2);font-size:11px;font-weight:600}
+.tag-tbl td:nth-child(2){font-weight:500}
+.tag-tbl td:nth-child(3){color:var(--sub);font-size:11.5px}
+.profiles{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(max-width:900px){.profiles{grid-template-columns:1fr}}
+.profile-card{background:var(--s);border:1px solid var(--bd);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-xs);transition:box-shadow .2s,transform .2s}
+.profile-card:hover{box-shadow:var(--shadow-sm);transform:translateY(-2px)}
+.profile-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:12px}
+.profile-icon.amber{background:#fdf0dc}
+.profile-icon.teal{background:#e0eff2}
+.profile-name{font-size:15px;font-weight:700;color:var(--tx);margin-bottom:4px}
+.profile-meta{font-size:12px;color:var(--sub);margin-bottom:10px}
+.profile-tags{font-size:12px;color:#4a5568;margin-bottom:10px;line-height:1.6}
+.profile-behavior{font-size:12px;color:var(--sub);line-height:1.55;margin-bottom:12px}
+.profile-badge{display:inline-block;font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;margin-top:2px}
+.badge-amber{background:#fdf0dc;color:#7a5c20;border:1px solid #d4b06a}
+.badge-teal{background:#e0eff2;color:#2f6672;border:1px solid #87b5be}
+.tags-row{display:flex;flex-wrap:wrap;gap:8px}
+.core-tag{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;background:var(--s);border:1.5px solid var(--bd);border-radius:20px;font-size:13px;font-weight:600;color:var(--tx)}
+#copy-toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(8px);background:#1c130a;color:#f8f0e2;font-size:11px;font-weight:600;padding:7px 16px;border-radius:18px;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;z-index:300;white-space:nowrap}
+#copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.copy-all-row{display:flex;justify-content:flex-end;margin-top:6px}
+.copy-all-btn{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--accent-dark);background:var(--accent-light);border:1px solid var(--accent-border);border-radius:6px;padding:4px 10px;cursor:pointer;transition:background .15s;font-family:inherit}
+.copy-all-btn.done{background:#c8f0d4;color:#1a5a34}
+.tag-tbl tr.flash td{background:var(--accent-light)}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="ph-logo">禾</div>
+  <div class="ph-title">昌禾大苑首席｜受眾分析報告</div>
+  <div class="ph-sub">新竹縣新埔鎮</div>
+  <nav class="ph-nav">
+    <a href="hub.html">← 返回總覽</a>
+  </nav>
+</div>
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div id="copy-toast">✓ 已複製到剪貼簿</div>
+
+<div class="wrap">
+  <div class="case-header">
+    <div class="case-logo">禾</div>
+    <div class="case-info">
+      <h2>昌禾大苑首席</h2>
+      <p>新竹縣新埔鎮文山六街・自強重劃區・透天103戶・地坪24.9-34.9坪／建坪57.5-89.8坪・單價約54.4萬/坪・總價3,600-4,000萬/戶・2029Q4完工・昌禾開發建設</p>
+    </div>
+    <div class="case-stats">
+      <div class="stat"><div class="stat-n">46</div><div class="stat-l">累積潛客</div></div>
+      <div class="stat"><div class="stat-n">669</div><div class="stat-l">均CPL (NT$)</div></div>
+      <div class="stat"><div class="stat-n">16</div><div class="stat-l">已測受眾組</div></div>
+    </div>
+  </div>
+
+  <a class="top-link" href="hub.html"><span>← 返回建案總覽</span></a>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab(0,this)">受眾建議</button>
+    <button class="tab-btn" onclick="switchTab(1,this)">成效紀錄</button>
+  </div>
+
+  <!-- Tab 1: 受眾建議 -->
+  <div class="tab-pane show" id="tab0">
+    <div class="section">
+      <div class="sec-title">兩大核心受眾輪廓（實測驗證）</div>
+      <div class="profiles">
+        <div class="profile-card">
+          <div class="profile-icon amber">💎</div>
+          <div class="profile-name">精品鑑賞型</div>
+          <div class="profile-meta">年齡 30–60｜竹北湖口</div>
+          <div class="profile-tags">興趣：精品店、豪奢生活方式、私人銀行、路易威登、愛馬仕、遊艇</div>
+          <div class="profile-behavior">行為：用「精品/豪奢生活方式」興趣框架取代職稱，命中高消費力族群，換地標微調（+3K）依然有效，是全案量體最大且CPL最低的黃金方向</div>
+          <span class="profile-badge badge-amber">CPL NT$305.76-517.17 · 23潛客 · 全案最有效族群</span>
+        </div>
+        <div class="profile-card">
+          <div class="profile-icon teal">🏢</div>
+          <div class="profile-name">廣泛高階主管型</div>
+          <div class="profile-meta">年齡 35–65｜竹北東區湖口</div>
+          <div class="profile-tags">興趣：高階管理人員、企業家、商業模式、豪華轎車</div>
+          <div class="profile-behavior">行為：用「高階管理人員」廣泛職級標籤，不鎖定特定產業或窄職稱，比純竹科工程師/科技新貴命中率高出許多</div>
+          <span class="profile-badge badge-teal">CPL NT$567.80 · 10潛客 · 次高效族群</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section core-tags-row">
+      <div class="sec-title">跨受眾必保留的核心標籤</div>
+      <div class="tags-row">
+        <span class="core-tag">精品（生活風格內容）</span>
+        <span class="core-tag">高淨值人士（商業與財務）</span>
+        <span class="core-tag">高階管理人員</span>
+        <span class="core-tag">企業家（商業與財務）</span>
+        <span class="core-tag">私人銀行服務</span>
+        <span class="core-tag">豪華轎車（交通工具）</span>
+        <span class="core-tag">財富管理</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sec-title">建議受眾（8組）· 全新整理 · 更新 2026-09-10</div>
+      <div class="note-bar">📌 策略依據：實測16組中，窄職稱/窄身分式受眾（竹北東區工程師、科技新貴、東區關埔三代同堂、湖口科技業家庭、東區政治文教健康）全數掛零，與富宇學森／LUCE-VIVA案已證實的結論一致——竹科地區窄職稱鎖定持續失靈。本批8組全面延續兩大實測有效方向（精品鑑賞、廣泛高階主管），並以「企業主／自營業者」「私人銀行高資產」「豪華生活方式興趣」等廣泛框架取代已證實無效的窄職稱與窄身分包裝，全部使用地標定位＋興趣標籤組合，不打不動產/置產投資/家庭/已婚等通用基礎標籤。</div>
+      <div id="main-aud-grid" class="aud-grid-2"></div>
+    </div>
+  </div>
+
+  <!-- Tab 2: 成效紀錄 -->
+  <div class="tab-pane" id="tab1">
+    <div class="section">
+      <div class="sec-title">廣告成效總覽（2025-12-31 至 2026-09-10）</div>
+      <div class="stats-bar">
+        <div class="sb-card"><div class="sb-n">NT$30,777</div><div class="sb-l">總花費</div></div>
+        <div class="sb-card"><div class="sb-n">46</div><div class="sb-l">累積潛客</div></div>
+        <div class="sb-card"><div class="sb-n warn">669</div><div class="sb-l">均CPL (NT$)</div></div>
+        <div class="sb-card"><div class="sb-n">16</div><div class="sb-l">已測受眾組</div></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="sec-title">各受眾組實測成效</div>
+      <table class="perf-table">
+        <thead>
+          <tr><th>#</th><th>受眾組</th><th>花費</th><th>潛客</th><th>CPL</th><th>狀態</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>30-60 / 竹北湖口 / 精品房產（0120+興趣）</td><td>NT$5,198</td><td>17</td><td class="tag-ok">NT$305.76</td><td class="tag-ok">全案最佳</td></tr>
+          <tr><td>2</td><td>35-65 / 竹北東區湖口 / 高階主管</td><td>NT$5,678</td><td>10</td><td class="tag-ok">NT$567.80</td><td class="tag-ok">有效・進行中</td></tr>
+          <tr><td>3</td><td>30-60 / 竹北+3K / 精品房產</td><td>NT$3,103</td><td>6</td><td class="tag-ok">NT$517.17</td><td class="tag-ok">有效（1/22-1/30）</td></tr>
+          <tr><td>4</td><td>35-65 / 基地+8K / 有錢大家庭（0108擴大微調）</td><td>NT$2,622</td><td>4</td><td class="tag-ok">NT$655.50</td><td class="tag-ok">有效</td></tr>
+          <tr><td>5</td><td>30-60 / 湖口 / 通訊工程</td><td>NT$1,425</td><td>3</td><td class="tag-ok">NT$475.00</td><td class="tag-ok">有效（1/27-1/30）</td></tr>
+          <tr><td>6</td><td>30-60 / 竹北 / 醫材銷售（0120+興趣）</td><td>NT$2,077</td><td>2</td><td class="tag-warn">NT$1,038.50</td><td class="tag-mute">觀察中</td></tr>
+          <tr><td>7</td><td>30-60 / 竹東 / 工業研究</td><td>NT$1,299</td><td>2</td><td class="tag-ok">NT$649.50</td><td class="tag-mute">觀察中（1/27-1/30）</td></tr>
+          <tr><td>8</td><td>30-65 / 竹北東區北區 / 醫生律師</td><td>NT$1,346</td><td>1</td><td class="tag-warn">NT$1,346.00</td><td class="tag-mute">觀察中</td></tr>
+          <tr><td>9</td><td>40-65 / 竹北科 / 高收親子興趣</td><td>NT$1,515</td><td>1</td><td class="tag-warn">NT$1,515.00</td><td class="tag-mute">觀察中</td></tr>
+          <tr><td>10</td><td>35-65 / 竹北東區 / 工程師</td><td>NT$857</td><td>0</td><td class="tag-mute">—</td><td class="tag-mute">無效</td></tr>
+          <tr><td>11</td><td>35-65 / 竹北 / 高收興趣</td><td>NT$1,210</td><td>0</td><td class="tag-mute">—</td><td class="tag-mute">無效</td></tr>
+          <tr><td>12</td><td>30-60 / 竹北東區 / 科技新貴</td><td>NT$963</td><td>0</td><td class="tag-mute">—</td><td class="tag-mute">無效</td></tr>
+          <tr><td>13</td><td>30-60 / 東區關埔 / 三代同堂</td><td>NT$1,336</td><td>0</td><td class="tag-mute">—</td><td class="tag-mute">無效</td></tr>
+          <tr><td>14</td><td>30-60 / 湖口 / 科技業家庭</td><td>NT$637</td><td>0</td><td class="tag-mute">—</td><td class="tag-mute">無效</td></tr>
+          <tr><td>15</td><td>35-65 / 東區 / 政治文教健康（0123區域微調）</td><td>NT$1,510</td><td>0</td><td class="tag-mute">—</td><td class="tag-mute">無效</td></tr>
+          <tr><td>16</td><td>30-65 / 竹北東區湖口 / 科技業/股票/AI</td><td>NT$1</td><td>0</td><td class="tag-mute">—</td><td class="tag-mute">剛上線（0909）</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="section">
+      <div class="sec-title">策略備註</div>
+      <div class="note-bar">
+        <strong>有效輪廓：</strong>精品房產（0120+興趣）全案最佳，17潛客CPL305.76，換地標微調版（竹北+3K）同樣有效（6潛客CPL517.17）；高階主管10潛客CPL567.8；有錢大家庭、通訊工程小量測試皆正向。<br>
+        <strong>無效方向：</strong>竹北東區工程師、科技新貴、東區關埔三代同堂、湖口科技業家庭、東區政治文教健康等窄職稱或窄身分式受眾全數掛零，呼應富宇學森／LUCE-VIVA已證實的結論——竹科地區窄職稱鎖定持續失靈。<br>
+        <strong>建案優勢：</strong>自強重劃區透天產品，103戶規模適中，鄰近AI智慧產業園區（車程4分）、家樂福全聯生活機能齊全；開價54.4萬/坪對照591實價登錄該案自身已成交58筆均價57萬/坪，開價略低於已成交行情；同建商姊妹案「昌禾大墅謙禾」184筆成交均價55萬/坪，品牌在地已有識別度。
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(i,btn){
+  document.querySelectorAll('.tab-pane').forEach((p,j)=>p.classList.toggle('show',j===i));
+  document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
+}
+window.addEventListener('scroll',()=>{
+  document.getElementById('btt').classList.toggle('show',window.scrollY>400);
+});
+
+const MAIN_G=[
+  {n:'30-60/竹北湖口自強/精品鑑賞豪奢生活族深化版',sub:'延伸全案最佳組CPL$305.76/17潛客，加碼建案生活圈地標',logic:'我平常消費習慣就偏精品路線，出國會特別留意精品旗艦店，家裡用的東西也講究品牌與質感。買房子對我來說不只是居住需求，也是生活品味的延伸，會特別在意建案立面設計跟社區規劃格調。',lm:['竹北高鐵(+5km)','新豐高爾夫球場(+5km)','AI智慧產業園區(+3km)','巨城SOGO百貨(+8km)'],tags:[['Boutique','精品店（零售業者）'],['High-net-worth individual','高淨值人士（商業與財務）'],['Luxury lifestyle','豪奢生活方式（網站）'],['Business class','商務艙（航空旅行）'],['Luxury vehicle','豪華轎車（交通工具）'],['Entrepreneur','企業家（商業與財務）'],['Haute couture','高級訂製時裝（服飾）'],['Townhouse','排屋、連棟住宅（建築）'],['Villa','別墅（住宿）'],['Private banking','私人銀行服務'],['Louis Vuitton','路易威登（時尚品牌）'],['Hermès','愛馬仕（服飾）'],['Boutique hotel','精品旅宿'],['Yacht','遊艇（船舶）'],['Financial planning','財務規劃'],['Wealth management','財富管理'],['Interior design','室內設計'],['Home renovation ideas','裝潢設計靈感'],['Quality of life','生活品質'],['Investment','投資'],['Property value','房屋增值'],['Business networking','商務社交'],['Fine dining','精緻餐飲'],['Wine','葡萄酒'],['Art collecting','藝術收藏']]},
+
+  {n:'35-65/竹北東區湖口/高階主管廣泛職級深化版',sub:'延伸次佳組CPL$567.8/10潛客，用廣泛職級框架非窄職稱',logic:'我在公司做到中高階管理職，管的是團隊跟預算，責任比基層員工重很多。換房子對我而言是一種階段性的證明，也想給家人更好的居住品質，會在意社區管理跟整體規劃是否夠水準。',lm:['竹北高鐵(+5km)','新竹縣政府(+8km)','AI智慧產業園區(+3km)','巨城SOGO百貨(+8km)'],tags:[['Senior management','高階管理人員'],['Business model','商業模式（商業和金融業）'],['Entrepreneur','企業家（商業與財務）'],['Sole proprietorship','獨資企業（商業與財務）'],['Product manager','產品經理'],['Luxury vehicle','豪華轎車（交通工具）'],['Haute couture','高級訂製時裝（服飾）'],['Frequent traveler','經常旅行的用戶'],['Small business owner','小型企業主'],['International flyer','國際飛行常客'],['Business development','業務開發（商業活動）'],['Business opportunity','商機（商業和金融業）'],['Financial planning','財務規劃'],['Wealth management','財富管理'],['Interior design','室內設計'],['Home renovation ideas','裝潢設計靈感'],['Quality of life','生活品質'],['Investment','投資'],['Property value','房屋增值'],['Business networking','商務社交'],['Career development','職涯發展'],['Continuing education','終身學習'],['Luxury goods','精品'],['Fine dining','精緻餐飲'],['Boutique hotel','精品旅宿']]},
+
+  {n:'35-60/竹北湖口自強/企業主自營業者置產族',sub:'全新方向・以「企業主」廣泛框架取代已證實無效的三代同堂/科技業家庭',logic:'我自己開公司當老闆，生意做得穩定，時間彈性但責任全扛在自己身上。換房子對我來說是實力的展現，不喜歡被窄職稱定義，看的是整體生活品質跟資產保值性，不是單純的居住需求。',lm:['竹北工業區(+5km)','湖口工業區(+5km)','台元科技園區(+5km)','竹北高鐵'],tags:[['Business owner','企業主'],['Small business owner','小型企業主'],['Entrepreneur','企業家（商業與財務）'],['SME','中小企業'],['Business model','商業模式（商業和金融業）'],['Business development','業務開發（商業活動）'],['Cash flow management','現金流管理'],['Business loan','企業貸款'],['Trade association','公會'],['Luxury vehicle','豪華轎車（交通工具）'],['Financial planning','財務規劃'],['Wealth management','財富管理'],['Interior design','室內設計'],['Home renovation ideas','裝潢設計靈感'],['Quality of life','生活品質'],['Investment','投資'],['Property value','房屋增值'],['Business networking','商務社交'],['Luxury goods','精品'],['Career development','職涯發展'],['Continuing education','終身學習'],['Smart home','智慧家庭'],['Local community','在地社群'],['Fine dining','精緻餐飲'],['Business class','商務艙（航空旅行）']]},
+
+  {n:'30-58/竹北自強+新埔/私人銀行高資產理財族',sub:'全新方向・延伸精品組私人銀行標籤，深化資產配置角度',logic:'我的資產規模已經到銀行主動邀約私人銀行服務的門檻，理專會協助我做整體資產配置規劃。買房子我會用跟理專討論資產配置一樣的邏輯去評估——增值性、流動性、傳承性都要考慮進去。',lm:['竹北高鐵(+5km)','新竹縣政府(+8km)','巨城SOGO百貨(+8km)','AI智慧產業園區(+3km)'],tags:[['Private banking','私人銀行服務'],['Wealth management','財富管理'],['High-net-worth individual','高淨值人士（商業與財務）'],['Financial advisor','財務顧問（投資）'],['Asset management','資產管理（商業和金融業）'],['Estate planning','遺產規劃'],['Investment portfolio','投資組合'],['Stock exchange','證券交易所（投資）'],['Financial market','金融市場（投資）'],['Cash','現金'],['Gold','黃金（金屬與礦物）'],['Business class','商務艙（航空旅行）'],['Financial planning','財務規劃'],['Interior design','室內設計'],['Quality of life','生活品質'],['Investment','投資'],['Property value','房屋增值'],['Business networking','商務社交'],['Luxury goods','精品'],['Continuing education','終身學習'],['Fine dining','精緻餐飲'],['Wine','葡萄酒'],['Career development','職涯發展'],['Luxury vehicle','豪華轎車（交通工具）'],['Entrepreneur','企業家（商業與財務）']]},
+
+  {n:'35-65/竹北湖口/高爾夫豪華生活方式族',sub:'全新方向・延伸精品組地標(新豐高爾夫球場)，聚焦運動社交型豪奢生活',logic:'我平常有打高爾夫球的習慣，球敘也是重要的商務社交場合。生活步調講究品質，出國旅遊、餐飲選擇都偏高端路線，換房子也會希望社區跟居住環境能配得上這種生活水準。',lm:['新豐高爾夫球場(+5km)','新竹國際高爾夫球場(+10km)','竹北高鐵(+5km)','巨城SOGO百貨(+8km)'],tags:[['Golf','高爾夫球（體育運動）'],['Golf club membership','高爾夫球俱樂部會籍'],['Luxury lifestyle','豪奢生活方式（網站）'],['Business class','商務艙（航空旅行）'],['Luxury vehicle','豪華轎車（交通工具）'],['Fine dining','精緻餐飲'],['Wine','葡萄酒'],['Yacht','遊艇（船舶）'],['Vacation','度假（社會觀念）'],['Boutique hotel','精品旅宿'],['Private banking','私人銀行服務'],['High-net-worth individual','高淨值人士（商業與財務）'],['Entrepreneur','企業家（商業與財務）'],['Financial planning','財務規劃'],['Wealth management','財富管理'],['Interior design','室內設計'],['Quality of life','生活品質'],['Investment','投資'],['Property value','房屋增值'],['Business networking','商務社交'],['Luxury goods','精品'],['Villa','別墅（住宿）'],['Career development','職涯發展'],['Continuing education','終身學習'],['Art collecting','藝術收藏']]},
+
+  {n:'30-58/竹北東區湖口/建築設計美學鑑賞換屋族',sub:'全新方向・聚焦立面設計與建材工法鑑賞角度，區隔純精品消費角度',logic:'我對建築設計跟居家美學特別有研究，會主動比較不同建案的立面設計、公設規劃跟建材選用。換房子對我而言不只是換一個地方住，是要找到一個設計語彙跟自己品味相符的作品。',lm:['竹北高鐵(+5km)','AI智慧產業園區(+3km)','新竹縣政府(+8km)','巨城SOGO百貨(+8km)'],tags:[['Architecture','建築設計'],['Interior design','室內設計'],['Modern design','現代設計'],['Minimalism','極簡美學'],['Design magazine','設計雜誌'],['Home decor','居家佈置'],['Home renovation ideas','裝潢設計靈感'],['Furniture design','家具設計'],['Art','藝術'],['Art collecting','藝術收藏'],['Luxury lifestyle','豪奢生活方式（網站）'],['Boutique','精品店（零售業者）'],['Financial planning','財務規劃'],['Wealth management','財富管理'],['Quality of life','生活品質'],['Investment','投資'],['Property value','房屋增值'],['Business networking','商務社交'],['Luxury goods','精品'],['Continuing education','終身學習'],['Photography','攝影'],['Career development','職涯發展'],['Fine dining','精緻餐飲'],['Villa','別墅（住宿）'],['Boutique hotel','精品旅宿']]},
+
+  {n:'35-60/竹北湖口/進口車豪華旅遊愛好者',sub:'全新方向・延伸豪華轎車標籤，聚焦進口車與高端旅遊消費行為',logic:'我開的是進口車，出國旅遊也偏好精緻行程跟高端住宿，對生活品質的要求會反映在每一次消費選擇上。換房子這件事，我也會用同樣的標準去衡量——地段、規劃、質感缺一不可。',lm:['竹北高鐵(+5km)','巨城SOGO百貨(+8km)','新豐高爾夫球場(+5km)','AI智慧產業園區(+3km)'],tags:[['Luxury vehicle','豪華轎車（交通工具）'],['Mercedes-Benz','賓士（汽車）'],['BMW','BMW（汽車）'],['Business class','商務艙（航空旅行）'],['Boutique hotel','精品旅宿'],['Vacation','度假（社會觀念）'],['Independent travel','自助旅行'],['Fine dining','精緻餐飲'],['Wine','葡萄酒'],['Luxury lifestyle','豪奢生活方式（網站）'],['High-net-worth individual','高淨值人士（商業與財務）'],['Entrepreneur','企業家（商業與財務）'],['Financial planning','財務規劃'],['Wealth management','財富管理'],['Interior design','室內設計'],['Quality of life','生活品質'],['Investment','投資'],['Property value','房屋增值'],['Business networking','商務社交'],['Luxury goods','精品'],['Photography','攝影'],['Career development','職涯發展'],['Continuing education','終身學習'],['Smart home','智慧家庭'],['Local community','在地社群']]},
+
+  {n:'40-65/竹北自強湖口/資產傳承教育世家族',sub:'全新方向・廣泛版換屋/家族傳承框架，刻意避開已證實無效的三代同堂字眼',logic:'我這個階段最在意的是資產如何穩健增值、將來如何順利傳承給下一代。對居住品質有一定要求，也重視社區規劃是否適合長期自住與資產保值，不是單純追求坪數大小。',lm:['竹北高鐵(+5km)','新竹縣政府(+8km)','AI智慧產業園區(+3km)','巨城SOGO百貨(+8km)'],tags:[['Estate planning','遺產規劃'],['Wealth management','財富管理'],['Private banking','私人銀行服務'],['High-net-worth individual','高淨值人士（商業與財務）'],['Financial advisor','財務顧問（投資）'],['Asset management','資產管理（商業和金融業）'],['Retirement planning','退休規劃'],['Continuing education','終身學習'],['Financial planning','財務規劃'],['Investment','投資'],['Interior design','室內設計'],['Quality of life','生活品質'],['Property value','房屋增值'],['Business networking','商務社交'],['Luxury goods','精品'],['Entrepreneur','企業家（商業與財務）'],['Fine dining','精緻餐飲'],['Villa','別墅（住宿）'],['Boutique hotel','精品旅宿'],['Career development','職涯發展'],['Business class','商務艙（航空旅行）'],['Luxury vehicle','豪華轎車（交通工具）'],['Art collecting','藝術收藏'],['Photography','攝影'],['Smart home','智慧家庭']]}
+];
+
+function toggleAud2(id){
+  const c=document.getElementById(id);
+  c.classList.toggle('open');
+  if(c.classList.contains('open'))initAudCard(c);
+}
+function copyTxt(txt){return navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject();}
+function showToast(){const t=document.getElementById('copy-toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+function initAudCard(card){
+  if(card.dataset.cb)return;card.dataset.cb='1';
+  card.querySelectorAll('.tag-tbl tbody tr').forEach(row=>{
+    const en=row.cells[1]?row.cells[1].textContent.trim():'';if(!en)return;
+    row.addEventListener('click',()=>{
+      copyTxt(en).then(()=>{row.classList.add('flash');setTimeout(()=>row.classList.remove('flash'),600);showToast();});
+    });
+  });
+  card.querySelectorAll('.tag-tbl').forEach(tbl=>{
+    const wrap=document.createElement('div');wrap.className='copy-all-row';
+    const btn=document.createElement('button');
+    btn.className='copy-all-btn';
+    btn.innerHTML='⎘ 複製全部標籤';
+    btn.addEventListener('click',e=>{
+      e.stopPropagation();
+      const tags=Array.from(tbl.querySelectorAll('tbody tr')).map(r=>r.cells[1]?r.cells[1].textContent.trim():'').filter(Boolean).join('\n');
+      copyTxt(tags).then(()=>{btn.classList.add('done');btn.textContent='✓ 已複製';setTimeout(()=>{btn.classList.remove('done');btn.innerHTML='⎘ 複製全部標籤';},2000);});
+    });
+    wrap.appendChild(btn);tbl.after(wrap);
+  });
+}
+
+function buildAudCard(g,idx,prefix){
+  const id=prefix+(idx+1);
+  const rows=g.tags.map((t,i)=>`<tr><td>${i+1}</td><td>${t[0]}</td><td>${t[1]}</td></tr>`).join('');
+  const lmTags=g.lm.map(l=>`<span class="aud-lm-tag">${l}</span>`).join('');
+  return `<div class="aud-card" id="${id}">
+    <div class="aud-header" onclick="toggleAud2('${id}')">
+      <div class="aud-num">${idx+1}</div>
+      <div class="aud-info"><div class="aud-name">${g.n}</div><div class="aud-sub">${g.sub}</div></div>
+      <div class="aud-arrow">▶</div>
+    </div>
+    <div class="aud-body">
+      <div class="aud-sl">評估邏輯</div>
+      <div class="aud-logic">${g.logic}</div>
+      <div class="aud-sl">地標定位</div>
+      <div class="aud-lm">${lmTags}</div>
+      <div class="aud-sl">興趣標籤</div>
+      <table class="tag-tbl"><thead><tr><th>#</th><th>English</th><th>中文</th></tr></thead><tbody>${rows}</tbody></table>
+    </div>
+  </div>`;
+}
+
+(function(){
+  const mg=document.getElementById('main-aud-grid');
+  if(mg)mg.innerHTML=MAIN_G.map((g,i)=>buildAudCard(g,i,'m')).join('');
+})();
+</script>
+</body>
+</html>
